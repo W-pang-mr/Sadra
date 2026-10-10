@@ -39,7 +39,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ========== LOADING SCREEN ========== */
 #loading {
   position: fixed;
   inset: 0;
@@ -70,27 +69,17 @@ body {
   50% { transform: scale(1.15); opacity: 0.7; }
 }
 
-.loader-text {
-  font-size: 18px;
-  font-weight: 500;
-  opacity: 0.9;
-}
+.loader-text { font-size: 18px; font-weight: 500; opacity: 0.9; }
 
 .loader-bar {
-  width: 180px;
-  height: 4px;
+  width: 180px; height: 4px;
   background: rgba(255,255,255,0.25);
-  border-radius: 4px;
-  margin-top: 28px;
-  overflow: hidden;
+  border-radius: 4px; margin-top: 28px; overflow: hidden;
 }
 
 .loader-bar-inner {
-  height: 100%;
-  width: 30%;
-  background: white;
-  border-radius: 4px;
-  animation: loadingBar 1.2s ease-in-out infinite;
+  height: 100%; width: 30%; background: white;
+  border-radius: 4px; animation: loadingBar 1.2s ease-in-out infinite;
 }
 
 @keyframes loadingBar {
@@ -98,78 +87,42 @@ body {
   100% { transform: translateX(400%); }
 }
 
-/* ========== APP CONTAINER ========== */
 .app {
-  max-width: 480px;
-  margin: 0 auto;
-  min-height: 100vh;
-  padding: 0 16px 40px;
+  max-width: 480px; margin: 0 auto;
+  min-height: 100vh; padding: 0 16px 40px;
   position: relative;
 }
 
-/* ========== TOP BAR ========== */
 .topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 60px;
-  padding-top: env(safe-area-inset-top);
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px; padding-top: env(safe-area-inset-top);
 }
 
-.topbar h1 {
-  font-size: 28px;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-}
+.topbar h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
 
 .icon-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: none;
-  background: transparent;
-  font-size: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text);
-  transition: background 0.2s, transform 0.15s;
+  width: 44px; height: 44px; border-radius: 50%;
+  border: none; background: transparent; font-size: 22px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text); transition: background 0.2s, transform 0.15s;
 }
 
-.icon-btn:active {
-  background: rgba(0,0,0,0.06);
-  transform: scale(0.92);
-}
+.icon-btn:active { background: rgba(0,0,0,0.06); transform: scale(0.92); }
 
-/* ========== WALLET CARD ========== */
 .wallet-card {
-  position: relative;
-  height: 210px;
-  border-radius: 28px;
-  background: var(--grad);
-  color: white;
-  padding: 28px 24px;
-  overflow: hidden;
-  box-shadow: var(--shadow);
-  margin-bottom: 20px;
+  position: relative; height: 210px; border-radius: 28px;
+  background: var(--grad); color: white; padding: 28px 24px;
+  overflow: hidden; box-shadow: var(--shadow); margin-bottom: 20px;
   animation: cardEnter 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @keyframes cardEnter {
-  from {
-    opacity: 0;
-    transform: translateY(30px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to { opacity: 1; transform: none; }
 }
 
 .wallet-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
+  content: ""; position: absolute; inset: 0;
   background:
     radial-gradient(circle at 15% 20%, rgba(255,255,255,0.4), transparent 50%),
     repeating-radial-gradient(circle at 80% 70%, rgba(255,255,255,0.08) 0 3px, transparent 3px 12px);
@@ -177,15 +130,10 @@ body {
 }
 
 .wallet-card::after {
-  content: "";
-  position: absolute;
-  top: -60%;
-  left: -80%;
-  width: 50%;
-  height: 220%;
+  content: ""; position: absolute; top: -60%; left: -80%;
+  width: 50%; height: 220%;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
-  transform: rotate(25deg);
-  animation: shine 6s ease-in-out infinite;
+  transform: rotate(25deg); animation: shine 6s ease-in-out infinite;
 }
 
 @keyframes shine {
@@ -194,113 +142,52 @@ body {
 }
 
 .balance-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 18px;
-  position: relative;
-  z-index: 2;
+  display: flex; align-items: center; gap: 12px;
+  margin-top: 18px; position: relative; z-index: 2;
 }
 
-.balance-row svg {
-  width: 42px;
-  height: 42px;
-  flex-shrink: 0;
-}
+.balance-row svg { width: 42px; height: 42px; flex-shrink: 0; }
 
-.balance-amount {
-  font-size: 44px;
-  font-weight: 700;
-  letter-spacing: -1px;
-  line-height: 1;
-}
-
-.balance-unit {
-  font-size: 28px;
-  font-weight: 600;
-  opacity: 0.85;
-  margin-left: 6px;
-}
+.balance-amount { font-size: 44px; font-weight: 700; letter-spacing: -1px; line-height: 1; }
+.balance-unit { font-size: 28px; font-weight: 600; opacity: 0.85; margin-left: 6px; }
 
 .usd-value {
-  margin-top: 8px;
-  font-size: 20px;
-  font-weight: 500;
-  opacity: 0.9;
-  position: relative;
-  z-index: 2;
+  margin-top: 8px; font-size: 20px; font-weight: 500;
+  opacity: 0.9; position: relative; z-index: 2;
 }
 
 .wallet-handle {
-  position: absolute;
-  bottom: 22px;
-  left: 24px;
+  position: absolute; bottom: 22px; left: 24px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 14px;
-  font-weight: 600;
-  opacity: 0.9;
-  z-index: 2;
+  font-size: 14px; font-weight: 600; opacity: 0.9; z-index: 2;
 }
 
 .address-vertical {
-  position: absolute;
-  right: 12px;
-  top: 18px;
-  bottom: 18px;
+  position: absolute; right: 12px; top: 18px; bottom: 18px;
   writing-mode: vertical-rl;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 11px;
-  opacity: 0.7;
-  letter-spacing: 0.5px;
-  z-index: 2;
-  word-break: break-all;
-  line-height: 1.3;
+  font-size: 11px; opacity: 0.7; letter-spacing: 0.5px;
+  z-index: 2; word-break: break-all; line-height: 1.3;
 }
 
 .qr-btn {
-  position: absolute;
-  right: 52px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 58px;
-  height: 52px;
-  border-radius: 16px;
-  background: rgba(255,255,255,0.9);
-  border: none;
-  font-size: 24px;
-  color: #1e5cbe;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 3;
-  transition: transform 0.2s, background 0.2s;
+  position: absolute; right: 52px; top: 50%; transform: translateY(-50%);
+  width: 58px; height: 52px; border-radius: 16px;
+  background: rgba(255,255,255,0.9); border: none;
+  font-size: 24px; color: #1e5cbe;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 3; transition: transform 0.2s, background 0.2s;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-.qr-btn:active {
-  transform: translateY(-50%) scale(0.9);
-}
+.qr-btn:active { transform: translateY(-50%) scale(0.9); }
 
-/* ========== ACTION BUTTONS ========== */
-.actions {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 24px;
-}
+.actions { display: flex; gap: 12px; margin-bottom: 24px; }
 
 .action-btn {
-  flex: 1;
-  height: 56px;
-  border-radius: 28px;
-  border: none;
-  background: var(--grad);
-  color: white;
-  font-size: 17px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  flex: 1; height: 56px; border-radius: 28px; border: none;
+  background: var(--grad); color: white; font-size: 17px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
   box-shadow: 0 8px 20px rgba(36, 129, 204, 0.35);
   transition: transform 0.15s, box-shadow 0.2s;
   animation: btnEnter 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -310,348 +197,161 @@ body {
 .action-btn:nth-child(2) { animation-delay: 0.18s; }
 
 @keyframes btnEnter {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: none; }
 }
 
-.action-btn:active {
-  transform: scale(0.96);
-  box-shadow: 0 4px 12px rgba(36, 129, 204, 0.3);
-}
+.action-btn:active { transform: scale(0.96); box-shadow: 0 4px 12px rgba(36, 129, 204, 0.3); }
 
-.action-btn.ghost {
-  background: #e8f1fb;
-  color: var(--primary);
-  box-shadow: none;
-}
+.action-btn.ghost { background: #e8f1fb; color: var(--primary); box-shadow: none; }
 
-/* ========== TRANSACTIONS ========== */
 .tx-section {
-  background: var(--card);
-  border-radius: 24px;
-  overflow: hidden;
+  background: var(--card); border-radius: 24px; overflow: hidden;
   box-shadow: 0 4px 20px rgba(0,0,0,0.04);
   animation: fadeUp 0.5s 0.25s both;
 }
 
 @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
 }
 
-.tx-header {
-  padding: 18px 20px 12px;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--muted);
-}
+.tx-header { padding: 18px 20px 12px; font-size: 15px; font-weight: 600; color: var(--muted); }
 
 .tx-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 20px;
-  border-bottom: 1px solid #f1f5f9;
-  transition: background 0.15s;
-  animation: txSlide 0.4s both;
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 20px; border-bottom: 1px solid #f1f5f9;
+  transition: background 0.15s; animation: txSlide 0.4s both;
 }
 
-.tx-item:last-child {
-  border-bottom: none;
-}
-
-.tx-item:active {
-  background: #f8fafc;
-}
+.tx-item:last-child { border-bottom: none; }
+.tx-item:active { background: #f8fafc; }
 
 @keyframes txSlide {
-  from {
-    opacity: 0;
-    transform: translateX(-16px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+  from { opacity: 0; transform: translateX(-16px); }
+  to { opacity: 1; transform: none; }
 }
 
 .tx-avatar {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  background: var(--grad);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  flex-shrink: 0;
+  width: 46px; height: 46px; border-radius: 50%;
+  background: var(--grad); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
 }
 
-.tx-avatar.in {
-  background: linear-gradient(135deg, #22c55e, #4ade80);
-}
+.tx-avatar.in { background: linear-gradient(135deg, #22c55e, #4ade80); }
 
-.tx-info {
-  flex: 1;
-  min-width: 0;
-}
+.tx-info { flex: 1; min-width: 0; }
+.tx-title { font-size: 16px; font-weight: 600; margin-bottom: 2px; }
+.tx-subtitle { font-size: 13px; color: var(--muted); }
+.tx-amount { font-size: 16px; font-weight: 700; white-space: nowrap; }
+.tx-amount.in { color: var(--green); }
 
-.tx-title {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 2px;
-}
+.empty-state { padding: 48px 24px; text-align: center; color: var(--muted); font-size: 15px; }
 
-.tx-subtitle {
-  font-size: 13px;
-  color: var(--muted);
-}
-
-.tx-amount {
-  font-size: 16px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.tx-amount.in {
-  color: var(--green);
-}
-
-.empty-state {
-  padding: 48px 24px;
-  text-align: center;
-  color: var(--muted);
-  font-size: 15px;
-}
-
-/* ========== BOTTOM SHEETS ========== */
 .sheet-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.45);
-  z-index: 100;
-  opacity: 0;
-  visibility: hidden;
+  position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+  z-index: 100; opacity: 0; visibility: hidden;
   transition: opacity 0.3s, visibility 0.3s;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  display: flex; align-items: flex-end; justify-content: center;
 }
 
-.sheet-overlay.show {
-  opacity: 1;
-  visibility: visible;
-}
+.sheet-overlay.show { opacity: 1; visibility: visible; }
 
 .sheet {
-  background: white;
-  width: 100%;
-  max-width: 480px;
+  background: white; width: 100%; max-width: 480px;
   border-radius: 28px 28px 0 0;
   padding: 24px 20px calc(28px + env(safe-area-inset-bottom));
   transform: translateY(100%);
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.sheet-overlay.show .sheet {
-  transform: translateY(0);
-}
+.sheet-overlay.show .sheet { transform: translateY(0); }
 
-.sheet h2 {
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-
-.sheet p {
-  color: var(--muted);
-  font-size: 15px;
-  margin-bottom: 16px;
-}
+.sheet h2 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+.sheet p { color: var(--muted); font-size: 15px; margin-bottom: 16px; }
 
 .address-box {
-  background: #f1f5f9;
-  border-radius: 16px;
-  padding: 16px;
+  background: #f1f5f9; border-radius: 16px; padding: 16px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 14px;
-  word-break: break-all;
-  text-align: center;
-  margin-bottom: 16px;
-  line-height: 1.5;
+  font-size: 14px; word-break: break-all; text-align: center;
+  margin-bottom: 16px; line-height: 1.5;
 }
 
 .full-btn {
-  width: 100%;
-  height: 54px;
-  border-radius: 27px;
-  border: none;
-  background: var(--grad);
-  color: white;
-  font-size: 17px;
-  font-weight: 600;
-  margin-bottom: 10px;
-  transition: transform 0.15s;
+  width: 100%; height: 54px; border-radius: 27px; border: none;
+  background: var(--grad); color: white; font-size: 17px; font-weight: 600;
+  margin-bottom: 10px; transition: transform 0.15s;
 }
 
-.full-btn:active {
-  transform: scale(0.97);
-}
+.full-btn:active { transform: scale(0.97); }
+.full-btn.ghost { background: #e8f1fb; color: var(--primary); }
+.full-btn:disabled { opacity: 0.5; }
 
-.full-btn.ghost {
-  background: #e8f1fb;
-  color: var(--primary);
-}
-
-/* ========== MENU ========== */
-.menu-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 90;
-  display: none;
-}
-
-.menu-overlay.show {
-  display: block;
-}
+.menu-overlay { position: fixed; inset: 0; z-index: 90; display: none; }
+.menu-overlay.show { display: block; }
 
 .menu {
-  position: absolute;
-  top: 70px;
-  right: 16px;
-  width: 260px;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.15);
-  overflow: hidden;
-  opacity: 0;
-  transform: scale(0.9);
-  transform-origin: top right;
+  position: absolute; top: 70px; right: 16px; width: 260px;
+  background: white; border-radius: 20px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.15); overflow: hidden;
+  opacity: 0; transform: scale(0.9); transform-origin: top right;
   transition: opacity 0.2s, transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.menu-overlay.show .menu {
-  opacity: 1;
-  transform: scale(1);
-}
+.menu-overlay.show .menu { opacity: 1; transform: scale(1); }
 
 .menu-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 16px 18px;
-  font-size: 16px;
-  border: none;
-  background: none;
-  width: 100%;
-  text-align: left;
-  color: var(--text);
-  transition: background 0.15s;
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 18px; font-size: 16px;
+  border: none; background: none; width: 100%;
+  text-align: left; color: var(--text); transition: background 0.15s;
 }
 
-.menu-item:active {
-  background: #f1f5f9;
-}
+.menu-item:active { background: #f1f5f9; }
+.menu-item small { display: block; font-size: 12px; color: var(--green); margin-top: 2px; }
 
-.menu-item small {
-  display: block;
-  font-size: 12px;
-  color: var(--green);
-  margin-top: 2px;
-}
-
-/* ========== SEND PAGE ========== */
 .send-page {
-  position: fixed;
-  inset: 0;
-  background: var(--bg);
-  z-index: 80;
+  position: fixed; inset: 0; background: var(--bg); z-index: 80;
   transform: translateX(100%);
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-  overflow-y: auto;
-  padding-bottom: 120px;
+  overflow-y: auto; padding-bottom: 120px;
 }
 
-.send-page.show {
-  transform: translateX(0);
-}
+.send-page.show { transform: translateX(0); }
 
 .send-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  height: 60px;
-  padding: 0 16px;
-  font-size: 20px;
-  font-weight: 700;
-  background: white;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  display: flex; align-items: center; gap: 12px;
+  height: 60px; padding: 0 16px;
+  font-size: 20px; font-weight: 700;
+  background: white; position: sticky; top: 0; z-index: 10;
   border-bottom: 1px solid #f1f5f9;
 }
 
 .recipient-card {
-  background: white;
-  border-radius: 20px;
-  padding: 16px;
-  margin: 16px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  background: white; border-radius: 20px; padding: 16px;
+  margin: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.04);
 }
 
-.recipient-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 14px;
-}
+.recipient-info { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
 
 .recipient-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--grad);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 16px;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--grad); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 16px;
 }
 
-.recipient-name {
-  font-weight: 600;
-  font-size: 16px;
-}
-
+.recipient-name { font-weight: 600; font-size: 16px; }
 .recipient-addr {
-  font-size: 13px;
-  color: var(--muted);
+  font-size: 13px; color: var(--muted);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 .input-field {
-  width: 100%;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 14px 16px;
-  font-size: 16px;
-  background: #f8fafc;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%; border: 1.5px solid #e2e8f0; border-radius: 14px;
+  padding: 14px 16px; font-size: 16px; background: #f8fafc;
+  outline: none; transition: border-color 0.2s, box-shadow 0.2s;
   font-family: inherit;
 }
 
@@ -661,113 +361,55 @@ body {
 }
 
 .amount-display {
-  text-align: center;
-  margin: 32px 0 8px;
-  font-size: 52px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+  text-align: center; margin: 32px 0 8px;
+  font-size: 52px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
 }
 
-.amount-display small {
-  font-size: 24px;
-  color: var(--muted);
-  font-weight: 600;
-}
+.amount-display small { font-size: 24px; color: var(--muted); font-weight: 600; }
 
-.usd-convert {
-  text-align: center;
-  color: var(--muted);
-  font-size: 17px;
-  margin-bottom: 8px;
-}
-
-.balance-hint {
-  text-align: center;
-  color: var(--muted);
-  font-size: 14px;
-  margin: 6px 0;
-}
+.usd-convert { text-align: center; color: var(--muted); font-size: 17px; margin-bottom: 8px; }
+.balance-hint { text-align: center; color: var(--muted); font-size: 14px; margin: 6px 0; }
 
 .warn-text {
-  text-align: center;
-  color: var(--red);
-  font-size: 14px;
-  font-weight: 600;
-  height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: all 0.25s;
+  text-align: center; color: var(--red); font-size: 14px; font-weight: 600;
+  height: 0; overflow: hidden; opacity: 0; transition: all 0.25s;
 }
 
-.warn-text.show {
-  height: 22px;
-  opacity: 1;
-  margin: 6px 0;
-}
+.warn-text.show { height: 22px; opacity: 1; margin: 6px 0; }
 
-/* ========== KEYPAD ========== */
 .keypad {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: white;
-  border-radius: 24px 24px 0 0;
+  position: fixed; left: 0; right: 0; bottom: 0;
+  background: white; border-radius: 24px 24px 0 0;
   padding: 14px 16px calc(16px + env(safe-area-inset-bottom));
   transform: translateY(110%);
   transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
-  z-index: 85;
-  box-shadow: 0 -8px 30px rgba(0,0,0,0.08);
+  z-index: 85; box-shadow: 0 -8px 30px rgba(0,0,0,0.08);
 }
 
-.keypad.show {
-  transform: translateY(0);
-}
+.keypad.show { transform: translateY(0); }
 
 .keys-grid {
-  max-width: 480px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  max-width: 480px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
 }
 
 .key {
-  height: 56px;
-  border-radius: 16px;
-  border: none;
-  background: #f1f5f9;
-  font-size: 26px;
-  font-weight: 600;
-  color: var(--text);
-  transition: transform 0.12s, background 0.12s;
+  height: 56px; border-radius: 16px; border: none;
+  background: #f1f5f9; font-size: 26px; font-weight: 600;
+  color: var(--text); transition: transform 0.12s, background 0.12s;
 }
 
-.key:active {
-  background: #dbeafe;
-  transform: scale(0.93);
-}
+.key:active { background: #dbeafe; transform: scale(0.93); }
 
 .key.done {
-  grid-column: 1 / -1;
-  height: 52px;
-  font-size: 17px;
-  background: var(--grad);
-  color: white;
+  grid-column: 1 / -1; height: 52px; font-size: 17px;
+  background: var(--grad); color: white;
 }
 
-/* ========== SETUP / UNLOCK ========== */
 .auth-screen {
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 60px 24px 40px;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  max-width: 480px; margin: 0 auto; padding: 60px 24px 40px;
+  min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
   animation: fadeIn 0.4s ease;
 }
 
@@ -776,138 +418,66 @@ body {
   to { opacity: 1; transform: none; }
 }
 
-.auth-screen h1 {
-  text-align: center;
-  font-size: 32px;
-  margin-bottom: 8px;
-}
+.auth-screen h1 { text-align: center; font-size: 32px; margin-bottom: 8px; }
+.auth-screen p { text-align: center; color: var(--muted); margin-bottom: 32px; font-size: 16px; }
 
-.auth-screen p {
-  text-align: center;
-  color: var(--muted);
-  margin-bottom: 32px;
-  font-size: 16px;
-}
-
-.form-label {
-  display: block;
-  font-size: 14px;
-  color: var(--muted);
-  margin-bottom: 8px;
-  font-weight: 500;
-}
+.form-label { display: block; font-size: 14px; color: var(--muted); margin-bottom: 8px; font-weight: 500; }
 
 .form-textarea {
-  width: 100%;
-  min-height: 110px;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 14px;
-  font-size: 16px;
-  background: #f8fafc;
-  outline: none;
-  resize: none;
-  font-family: inherit;
-  margin-bottom: 16px;
-  transition: border-color 0.2s;
+  width: 100%; min-height: 110px;
+  border: 1.5px solid #e2e8f0; border-radius: 16px;
+  padding: 14px; font-size: 16px; background: #f8fafc;
+  outline: none; resize: none; font-family: inherit;
+  margin-bottom: 16px; transition: border-color 0.2s;
 }
 
-.form-textarea:focus {
-  border-color: var(--primary2);
-}
+.form-textarea:focus { border-color: var(--primary2); }
 
 .form-input {
-  width: 100%;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 14px 16px;
-  font-size: 16px;
-  background: #f8fafc;
-  outline: none;
-  margin-bottom: 12px;
-  transition: border-color 0.2s;
-  font-family: inherit;
+  width: 100%; border: 1.5px solid #e2e8f0; border-radius: 14px;
+  padding: 14px 16px; font-size: 16px; background: #f8fafc;
+  outline: none; margin-bottom: 12px;
+  transition: border-color 0.2s; font-family: inherit;
 }
 
-.form-input:focus {
-  border-color: var(--primary2);
-}
+.form-input:focus { border-color: var(--primary2); }
 
-.msg {
-  text-align: center;
-  font-size: 15px;
-  min-height: 22px;
-  margin-top: 12px;
-}
-
+.msg { text-align: center; font-size: 15px; min-height: 22px; margin-top: 12px; }
 .msg.err { color: var(--red); }
 .msg.ok { color: var(--green); }
 
 .link-btn {
-  background: none;
-  border: none;
-  color: var(--red);
-  font-size: 15px;
-  margin-top: 24px;
-  width: 100%;
-  padding: 12px;
+  background: none; border: none; color: var(--red);
+  font-size: 15px; margin-top: 24px; width: 100%; padding: 12px;
 }
 
-/* ========== TOAST ========== */
 #toast {
-  position: fixed;
-  left: 50%;
-  bottom: 100px;
+  position: fixed; left: 50%; bottom: 100px;
   transform: translate(-50%, 30px);
-  background: rgba(30, 30, 30, 0.92);
-  color: white;
-  padding: 14px 24px;
-  border-radius: 30px;
-  font-size: 15px;
-  opacity: 0;
-  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  z-index: 200;
-  pointer-events: none;
-  max-width: 90%;
-  text-align: center;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  background: rgba(30, 30, 30, 0.92); color: white;
+  padding: 14px 24px; border-radius: 30px; font-size: 15px;
+  opacity: 0; transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 200; pointer-events: none; max-width: 90%;
+  text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.2);
 }
 
-#toast.show {
-  opacity: 1;
-  transform: translate(-50%, 0);
-}
+#toast.show { opacity: 1; transform: translate(-50%, 0); }
 
-/* ========== UTILS ========== */
 .hidden { display: none !important; }
 
 .spin {
-  width: 22px;
-  height: 22px;
+  width: 22px; height: 22px;
   border: 3px solid rgba(255,255,255,0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  display: inline-block;
+  border-top-color: white; border-radius: 50%;
+  animation: spin 0.7s linear infinite; display: inline-block;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-.pop {
-  animation: pop 0.22s cubic-bezier(0.22, 1, 0.36, 1);
-}
+.pop { animation: pop 0.22s cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes pop { from { transform: scale(0.88); opacity: 0.6; } to { transform: scale(1); opacity: 1; } }
 
-@keyframes pop {
-  from { transform: scale(0.88); opacity: 0.6; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-.shake {
-  animation: shake 0.4s ease;
-}
-
+.shake { animation: shake 0.4s ease; }
 @keyframes shake {
   20%, 60% { transform: translateX(-7px); }
   40%, 80% { transform: translateX(7px); }
@@ -916,17 +486,14 @@ body {
 </head>
 <body>
 
-<!-- LOADING -->
 <div id="loading">
   <div class="loader-diamond">💎</div>
   <div class="loader-text">Loading Wallet…</div>
   <div class="loader-bar"><div class="loader-bar-inner"></div></div>
 </div>
 
-<!-- TOAST -->
 <div id="toast"></div>
 
-<!-- SETUP -->
 <div id="setup" class="auth-screen hidden">
   <h1>💎 Import Wallet</h1>
   <p>Enter your 12 or 24 secret recovery words</p>
@@ -939,7 +506,6 @@ body {
   <div id="setupMsg" class="msg"></div>
 </div>
 
-<!-- UNLOCK -->
 <div id="unlock" class="auth-screen hidden">
   <h1>💎 Wallet</h1>
   <p>Enter your passcode to unlock</p>
@@ -949,7 +515,6 @@ body {
   <button class="link-btn" id="forgetBtn">Remove wallet from this device</button>
 </div>
 
-<!-- MAIN APP -->
 <div id="main" class="app hidden">
   <div class="topbar">
     <h1>Wallet</h1>
@@ -989,12 +554,11 @@ body {
   </div>
 </div>
 
-<!-- MENU -->
 <div class="menu-overlay" id="menuBg">
   <div class="menu">
     <button class="menu-item" data-m="cur">💲 Currency</button>
     <button class="menu-item" data-m="lock">🔒 Passcode Lock</button>
-    <button class="menu-item" data-m="keys">🔑 Keys & Backup</button>
+    <button class="menu-item" data-m="keys">🔑 Keys &amp; Backup</button>
     <button class="menu-item" data-m="apps">
       <span>🔗 Connected Apps<small>● STON.fi</small></span>
     </button>
@@ -1002,7 +566,6 @@ body {
   </div>
 </div>
 
-<!-- RECEIVE SHEET -->
 <div class="sheet-overlay" id="recvBg">
   <div class="sheet">
     <h2>Add Funds</h2>
@@ -1013,7 +576,6 @@ body {
   </div>
 </div>
 
-<!-- SEND PAGE -->
 <div class="send-page" id="sendPage">
   <div class="send-header">
     <button class="icon-btn" id="backBtn">←</button>
@@ -1044,14 +606,13 @@ body {
   <div class="usd-convert" id="conv">= $0.00</div>
   <div class="warn-text" id="warn">Insufficient funds</div>
   <div class="balance-hint" id="balInfo">Balance: 0 TON</div>
-  <div class="balance-hint">Network fee ≈ 0.005 TON</div>
+  <div class="balance-hint">Network fee ≈ 0.01 TON</div>
 
   <div style="padding: 0 16px; margin-top: 24px;">
     <button class="full-btn" id="goBtn" disabled>Continue</button>
   </div>
 </div>
 
-<!-- KEYPAD -->
 <div class="keypad" id="kp">
   <div class="keys-grid" id="keys"></div>
 </div>
@@ -1060,14 +621,12 @@ body {
 (function () {
   "use strict";
 
-  // ===================== CONFIG =====================
   const API = "https://toncenter.com/api/v2";
   const API_KEY = "e08b96c939bcca03c136cbc8e48e0f49d4b622013cf97b7fa00f8ad553ff9910";
   const KEY = "ton_wallet_enc_v1";
   const CHOICE = "ton_wallet_choice_v1";
   const FEE = "0.01";
 
-  // ===================== STATE =====================
   let words = null;
   let wallet = null;
   let kp0 = null;
@@ -1080,7 +639,6 @@ body {
   let amt = "0";
   let wasBad = false;
 
-  // ===================== HELPERS =====================
   const $ = (id) => document.getElementById(id);
 
   function toast(msg) {
@@ -1102,15 +660,12 @@ body {
     }[c]));
   }
 
-  function sleep(ms) {
-    return new Promise(r => setTimeout(r, ms));
-  }
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
   function buzz() {
     try { navigator.vibrate && navigator.vibrate(10); } catch (e) {}
   }
 
-  // ===================== LIBRARY LOADER =====================
   const TON_URLS = [
     "https://esm.sh/@ton/ton@15",
     "https://esm.sh/@ton/ton@15.2.0",
@@ -1155,7 +710,6 @@ body {
     });
   }
 
-  // ===================== ENCRYPTION =====================
   const enc = new TextEncoder();
   const dec = new TextDecoder();
 
@@ -1198,7 +752,6 @@ body {
     return dec.decode(plain);
   }
 
-  // ===================== KEY DERIVATION =====================
   function toBuf(u8) {
     return window.Buffer ? window.Buffer.from(u8) : u8;
   }
@@ -1265,7 +818,6 @@ body {
     };
   }
 
-  // ===================== API =====================
   async function api(path) {
     const url = API + path + (path.includes("?") ? "&" : "?") + "api_key=" + API_KEY;
     const res = await fetch(url);
@@ -1280,7 +832,6 @@ body {
     return json.result;
   }
 
-  // ===================== WALLET LOAD =====================
   async function loadWallet(wordsArr) {
     words = wordsArr;
     let chosen = null;
@@ -1306,7 +857,6 @@ body {
         await sleep(250);
       }
       if (!chosen) {
-        // fallback to first candidate (no red error shown)
         chosen = await buildWallet(CANDIDATES[0], words);
       }
     }
@@ -1322,7 +872,6 @@ body {
     refresh();
   }
 
-  // ===================== REFRESH =====================
   async function refresh() {
     const btn = $("refreshBtn");
     btn.style.opacity = "0.4";
@@ -1330,15 +879,14 @@ body {
     try {
       balNano = BigInt(await api("/getAddressBalance?address=" + address));
       const ton = TON.fromNano(balNano);
-      $("balN").textContent = parseFloat(ton).toString();
+      $("balN").textContent = ton;
 
-      // price
       fetch("https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=usd")
         .then(r => r.json())
         .then(p => {
-          price = p["the-open-network"]?.usd || 0;
-          \( ("usd").textContent = " \)" + (parseFloat(ton) * price).toFixed(2);
-          updateAmountUI();
+          price = (p["the-open-network"] && p["the-open-network"].usd) || 0;
+          $("usd").textContent = "$" + (parseFloat(ton) * price).toFixed(2);
+          try { updateAmountUI(); } catch (e) {}
         })
         .catch(() => {});
     } catch (e) {}
@@ -1357,11 +905,8 @@ body {
 
   function formatTime(utime) {
     return new Date(utime * 1000).toLocaleString("en", {
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false
+      month: "short", day: "numeric",
+      hour: "2-digit", minute: "2-digit", hour12: false
     });
   }
 
@@ -1397,19 +942,23 @@ body {
 
     $("txList").innerHTML = items.map((x, i) => {
       const isIn = x.dir === "in";
-      return `
-        <div class="tx-item" style="animation-delay:${i * 0.04}s">
-          <div class="tx-avatar \( {isIn ? "in" : ""}"> \){isIn ? "↓" : "↑"}</div>
-          <div class="tx-info">
-            <div class="tx-title">${esc(shortAddr(x.addr))}</div>
-            <div class="tx-subtitle">${isIn ? "Incoming" : "Outgoing"} · \( {formatTime(x.time)} \){x.memo ? " · " + esc(x.memo) : ""}</div>
-          </div>
-          <div class="tx-amount \( {isIn ? "in" : ""}"> \){isIn ? "+" : "−"}${parseFloat(TON.fromNano(BigInt(x.value)))} 💎</div>
-        </div>`;
+      const avatarCls = isIn ? "tx-avatar in" : "tx-avatar";
+      const amtCls = isIn ? "tx-amount in" : "tx-amount";
+      const arrow = isIn ? "↓" : "↑";
+      const sign = isIn ? "+" : "−";
+      const val = parseFloat(TON.fromNano(BigInt(x.value || "0")));
+      const memoPart = x.memo ? " · " + esc(x.memo) : "";
+      return '<div class="tx-item" style="animation-delay:' + (i * 0.04) + 's">' +
+        '<div class="' + avatarCls + '">' + arrow + '</div>' +
+        '<div class="tx-info">' +
+          '<div class="tx-title">' + esc(shortAddr(x.addr)) + '</div>' +
+          '<div class="tx-subtitle">' + (isIn ? "Incoming" : "Outgoing") + ' · ' + formatTime(x.time) + memoPart + '</div>' +
+        '</div>' +
+        '<div class="' + amtCls + '">' + sign + val + ' 💎</div>' +
+      '</div>';
     }).join("");
   }
 
-  // ===================== UI SCREENS =====================
   function showScreen(name) {
     ["setup", "unlock", "main"].forEach(id => {
       $(id).classList.toggle("hidden", id !== name);
@@ -1422,7 +971,6 @@ body {
     el.className = "msg " + (ok ? "ok" : "err");
   }
 
-  // ===================== MENU =====================
   $("menuBtn").onclick = () => $("menuBg").classList.add("show");
   $("menuBg").onclick = (e) => {
     if (e.target.id === "menuBg") $("menuBg").classList.remove("show");
@@ -1447,7 +995,6 @@ body {
     };
   });
 
-  // ===================== RECEIVE =====================
   $("addBtn").onclick = $("qrBtn").onclick = () => $("recvBg").classList.add("show");
   $("recvClose").onclick = () => $("recvBg").classList.remove("show");
   $("recvBg").onclick = (e) => {
@@ -1465,11 +1012,10 @@ body {
 
   $("refreshBtn").onclick = refresh;
 
-  // ===================== SEND FLOW =====================
   const keyLabels = ["1","2","3","4","5","6","7","8","9",".","0","⌫"];
   $("keys").innerHTML = keyLabels.map(k =>
-    `<button class="key" data-k="\( {k}"> \){k}</button>`
-  ).join("") + `<button class="key done" id="doneBtn">Done</button>`;
+    '<button class="key" data-k="' + k + '">' + k + '</button>'
+  ).join("") + '<button class="key done" id="doneBtn">Done</button>';
 
   function showKeypad(show) {
     $("kp").classList.toggle("show", show);
@@ -1482,7 +1028,7 @@ body {
     $("memo").value = "";
     updateRecipient();
     updateAmountUI();
-    $("balInfo").textContent = "Balance: " + parseFloat(TON.fromNano(balNano)) + " TON";
+    $("balInfo").textContent = "Balance: " + TON.fromNano(balNano) + " TON";
     $("sendPage").classList.add("show");
     setTimeout(() => showKeypad(true), 280);
   }
@@ -1499,20 +1045,18 @@ body {
   $("toAddr").onfocus = () => showKeypad(false);
   $("memo").onfocus = () => showKeypad(false);
 
+  function isValidAddress(a) {
+    if (!a) return false;
+    try { TON.Address.parseFriendly(a); return true; } catch (e) {}
+    try { TON.Address.parse(a); return true; } catch (e2) {}
+    return false;
+  }
+
   function updateRecipient() {
     const a = $("toAddr").value.trim();
-    let ok = false;
-    try {
-      TON.Address.parseFriendly(a);
-      ok = true;
-    } catch (e) {
-      try {
-        TON.Address.parse(a);
-        ok = true;
-      } catch (e2) {}
-    }
+    const ok = isValidAddress(a);
     $("rAva").textContent = ok ? a.slice(0, 2).toUpperCase() : "?";
-    $("rName").textContent = ok ? "Recipient" : "Recipient";
+    $("rName").textContent = "Recipient";
     $("rAddr").textContent = ok ? shortAddr(a) : "Enter address below";
     return ok;
   }
@@ -1541,7 +1085,7 @@ body {
     $("conv").textContent = "= $" + (n * price).toFixed(2);
 
     const nano = amtNano();
-    const bad = nano > 0n && nano + TON.toNano(FEE) > balNano;
+    const bad = nano > 0n && (nano + TON.toNano(FEE)) > balNano;
     $("warn").classList.toggle("show", bad);
 
     if (bad && !wasBad) {
@@ -1610,7 +1154,7 @@ body {
           TON.internal({
             to: dest,
             value: amtNano(),
-            bounce,
+            bounce: bounce,
             body: memo || undefined
           })
         ]
@@ -1620,13 +1164,12 @@ body {
       setTimeout(refresh, 3000);
       setTimeout(refresh, 10000);
     } catch (e) {
-      toast("Error: " + (e.message || e));
+      toast("Error: " + (e && e.message ? e.message : e));
       go.disabled = false;
       updateAmountUI();
     }
   };
 
-  // ===================== IMPORT / UNLOCK =====================
   $("importBtn").onclick = async () => {
     const w = $("words").value.trim().toLowerCase().split(/\s+/).filter(Boolean);
     const p1 = $("pass1").value;
@@ -1644,7 +1187,7 @@ body {
 
     setMsg("setupMsg", "Please wait…", true);
     try {
-      await loadLibraries();
+      if (!TON || !CR || !client) await loadLibraries();
       localStorage.removeItem(CHOICE);
       localStorage.setItem(KEY, await encrypt(w.join(" "), p1));
       $("words").value = "";
@@ -1652,7 +1195,7 @@ body {
       $("pass2").value = "";
       await loadWallet(w);
     } catch (e) {
-      setMsg("setupMsg", "Error: " + (e.message || e), false);
+      setMsg("setupMsg", "Error: " + (e && e.message ? e.message : e), false);
     }
   };
 
@@ -1662,7 +1205,7 @@ body {
       const plain = await decrypt(localStorage.getItem(KEY), $("unlockPass").value);
       $("unlockPass").value = "";
       $("unlockMsg").textContent = "";
-      await loadLibraries();
+      if (!TON || !CR || !client) await loadLibraries();
       await loadWallet(plain.split(" "));
     } catch (e) {
       setMsg("unlockMsg", "Wrong passcode", false);
@@ -1681,7 +1224,6 @@ body {
     }
   };
 
-  // ===================== START =====================
   async function boot() {
     try {
       await loadLibraries();
@@ -1693,13 +1235,13 @@ body {
         showScreen("setup");
       }
     } catch (e) {
-      $("loading").innerHTML = `
-        <div style="text-align:center;padding:40px;color:white">
-          <div style="font-size:48px;margin-bottom:16px">⚠️</div>
-          <div style="font-size:18px;margin-bottom:12px">Failed to load libraries</div>
-          <div style="opacity:0.8;font-size:14px;max-width:280px;margin:0 auto 24px">${esc(e.message)}</div>
-          <button onclick="location.reload()" style="background:white;color:#1e5cbe;border:none;padding:12px 28px;border-radius:30px;font-size:16px;font-weight:600">Retry</button>
-        </div>`;
+      $("loading").innerHTML =
+        '<div style="text-align:center;padding:40px;color:white">' +
+          '<div style="font-size:48px;margin-bottom:16px">⚠️</div>' +
+          '<div style="font-size:18px;margin-bottom:12px">Failed to load libraries</div>' +
+          '<div style="opacity:0.8;font-size:14px;max-width:280px;margin:0 auto 24px">' + esc(e.message) + '</div>' +
+          '<button onclick="location.reload()" style="background:white;color:#1e5cbe;border:none;padding:12px 28px;border-radius:30px;font-size:16px;font-weight:600">Retry</button>' +
+        '</div>';
     }
   }
 
