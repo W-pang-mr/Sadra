@@ -22,33 +22,23 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .topbar h1{font-size:28px;font-weight:700;letter-spacing:-.5px}
 .icon-btn{width:44px;height:44px;border-radius:50%;border:none;background:transparent;font-size:22px;display:flex;align-items:center;justify-content:center;color:var(--text);transition:background .2s,transform .15s}
 .icon-btn:active{background:rgba(0,0,0,.06);transform:scale(.92)}
-.wallet-card{position:relative;height:210px;border-radius:28px;background:var(--grad);color:#fff;padding:28px 24px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:20px;animation:cardEnter .6s cubic-bezier(.22,1,.36,1)}
-@keyframes cardEnter{from{opacity:0;transform:translateY(30px) scale(.95)}to{opacity:1;transform:none}}
-.wallet-card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 15% 20%,rgba(255,255,255,.4),transparent 50%),repeating-radial-gradient(circle at 80% 70%,rgba(255,255,255,.08) 0 3px,transparent 3px 12px);pointer-events:none}
-.wallet-card::after{content:"";position:absolute;top:-60%;left:-80%;width:50%;height:220%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);transform:rotate(25deg);animation:shine 6s ease-in-out infinite}
-@keyframes shine{0%,70%{left:-80%}100%{left:140%}}
+.wallet-card{position:relative;height:210px;border-radius:28px;background:var(--grad);color:#fff;padding:28px 24px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:20px}
 .balance-row{display:flex;align-items:center;gap:12px;margin-top:18px;position:relative;z-index:2}
 .balance-row svg{width:42px;height:42px;flex-shrink:0}
 .balance-amount{font-size:44px;font-weight:700;letter-spacing:-1px;line-height:1}
 .balance-unit{font-size:28px;font-weight:600;opacity:.85;margin-left:6px}
 .usd-value{margin-top:8px;font-size:20px;font-weight:500;opacity:.9;position:relative;z-index:2}
-.wallet-handle{position:absolute;bottom:22px;left:24px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:14px;font-weight:600;opacity:.9;z-index:2}
+.wallet-handle{position:absolute;bottom:22px;left:24px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:12px;font-weight:600;opacity:.9;z-index:2}
 .address-vertical{position:absolute;right:12px;top:18px;bottom:18px;writing-mode:vertical-rl;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:11px;opacity:.7;letter-spacing:.5px;z-index:2;word-break:break-all;line-height:1.3}
-.qr-btn{position:absolute;right:52px;top:50%;transform:translateY(-50%);width:58px;height:52px;border-radius:16px;background:rgba(255,255,255,.9);border:none;font-size:24px;color:#1e5cbe;display:flex;align-items:center;justify-content:center;z-index:3;transition:transform .2s,background .2s;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.qr-btn{position:absolute;right:52px;top:50%;transform:translateY(-50%);width:58px;height:52px;border-radius:16px;background:rgba(255,255,255,.9);border:none;font-size:24px;color:#1e5cbe;display:flex;align-items:center;justify-content:center;z-index:3;box-shadow:0 4px 12px rgba(0,0,0,.1)}
 .qr-btn:active{transform:translateY(-50%) scale(.9)}
 .actions{display:flex;gap:12px;margin-bottom:24px}
-.action-btn{flex:1;height:56px;border-radius:28px;border:none;background:var(--grad);color:#fff;font-size:17px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 20px rgba(36,129,204,.35);transition:transform .15s,box-shadow .2s;animation:btnEnter .5s cubic-bezier(.22,1,.36,1) both}
-.action-btn:nth-child(1){animation-delay:.1s}
-.action-btn:nth-child(2){animation-delay:.18s}
-@keyframes btnEnter{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.action-btn{flex:1;height:56px;border-radius:28px;border:none;background:var(--grad);color:#fff;font-size:17px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 20px rgba(36,129,204,.35)}
 .action-btn:active{transform:scale(.96)}
-.tx-section{background:var(--card);border-radius:24px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.04);animation:fadeUp .5s .25s both}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.tx-section{background:var(--card);border-radius:24px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.04)}
 .tx-header{padding:18px 20px 12px;font-size:15px;font-weight:600;color:var(--muted)}
-.tx-item{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid #f1f5f9;transition:background .15s;animation:txSlide .4s both}
+.tx-item{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid #f1f5f9}
 .tx-item:last-child{border-bottom:none}
-.tx-item:active{background:#f8fafc}
-@keyframes txSlide{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
 .tx-avatar{width:46px;height:46px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .tx-avatar.in{background:linear-gradient(135deg,#22c55e,#4ade80)}
 .tx-info{flex:1;min-width:0}
@@ -64,15 +54,15 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .sheet h2{font-size:22px;font-weight:700;margin-bottom:8px}
 .sheet p{color:var(--muted);font-size:15px;margin-bottom:16px}
 .address-box{background:#f1f5f9;border-radius:16px;padding:16px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:14px;word-break:break-all;text-align:center;margin-bottom:16px;line-height:1.5}
-.full-btn{width:100%;height:54px;border-radius:27px;border:none;background:var(--grad);color:#fff;font-size:17px;font-weight:600;margin-bottom:10px;transition:transform .15s}
+.full-btn{width:100%;height:54px;border-radius:27px;border:none;background:var(--grad);color:#fff;font-size:17px;font-weight:600;margin-bottom:10px}
 .full-btn:active{transform:scale(.97)}
 .full-btn.ghost{background:#e8f1fb;color:var(--primary)}
 .full-btn:disabled{opacity:.5}
 .menu-overlay{position:fixed;inset:0;z-index:90;display:none}
 .menu-overlay.show{display:block}
-.menu{position:absolute;top:70px;right:16px;width:260px;background:#fff;border-radius:20px;box-shadow:0 12px 40px rgba(0,0,0,.15);overflow:hidden;opacity:0;transform:scale(.9);transform-origin:top right;transition:opacity .2s,transform .2s cubic-bezier(.22,1,.36,1)}
+.menu{position:absolute;top:70px;right:16px;width:260px;background:#fff;border-radius:20px;box-shadow:0 12px 40px rgba(0,0,0,.15);overflow:hidden;opacity:0;transform:scale(.9);transform-origin:top right;transition:opacity .2s,transform .2s}
 .menu-overlay.show .menu{opacity:1;transform:scale(1)}
-.menu-item{display:flex;align-items:center;gap:14px;padding:16px 18px;font-size:16px;border:none;background:none;width:100%;text-align:left;color:var(--text);transition:background .15s}
+.menu-item{display:flex;align-items:center;gap:14px;padding:16px 18px;font-size:16px;border:none;background:none;width:100%;text-align:left;color:var(--text)}
 .menu-item:active{background:#f1f5f9}
 .menu-item small{display:block;font-size:12px;color:var(--green);margin-top:2px}
 .send-page{position:fixed;inset:0;background:var(--bg);z-index:80;transform:translateX(100%);transition:transform .35s cubic-bezier(.22,1,.36,1);overflow-y:auto;padding-bottom:120px}
@@ -83,7 +73,7 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .recipient-avatar{width:44px;height:44px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px}
 .recipient-name{font-weight:600;font-size:16px}
 .recipient-addr{font-size:13px;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
-.input-field{width:100%;border:1.5px solid #e2e8f0;border-radius:14px;padding:14px 16px;font-size:16px;background:#f8fafc;outline:none;transition:border-color .2s,box-shadow .2s;font-family:inherit}
+.input-field{width:100%;border:1.5px solid #e2e8f0;border-radius:14px;padding:14px 16px;font-size:16px;background:#f8fafc;outline:none;font-family:inherit}
 .input-field:focus{border-color:var(--primary2);box-shadow:0 0 0 3px rgba(51,144,236,.15)}
 .amount-display{text-align:center;margin:32px 0 8px;font-size:52px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px}
 .amount-display small{font-size:24px;color:var(--muted);font-weight:600}
@@ -94,31 +84,36 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .keypad{position:fixed;left:0;right:0;bottom:0;background:#fff;border-radius:24px 24px 0 0;padding:14px 16px calc(16px + env(safe-area-inset-bottom));transform:translateY(110%);transition:transform .32s cubic-bezier(.22,1,.36,1);z-index:85;box-shadow:0 -8px 30px rgba(0,0,0,.08)}
 .keypad.show{transform:translateY(0)}
 .keys-grid{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.key{height:56px;border-radius:16px;border:none;background:#f1f5f9;font-size:26px;font-weight:600;color:var(--text);transition:transform .12s,background .12s}
+.key{height:56px;border-radius:16px;border:none;background:#f1f5f9;font-size:26px;font-weight:600;color:var(--text)}
 .key:active{background:#dbeafe;transform:scale(.93)}
 .key.done{grid-column:1/-1;height:52px;font-size:17px;background:var(--grad);color:#fff}
-.auth-screen{max-width:480px;margin:0 auto;padding:60px 24px 40px;min-height:100vh;display:flex;flex-direction:column;justify-content:center;animation:fadeIn .4s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.auth-screen{max-width:480px;margin:0 auto;padding:60px 24px 40px;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
 .auth-screen h1{text-align:center;font-size:32px;margin-bottom:8px}
 .auth-screen p{text-align:center;color:var(--muted);margin-bottom:32px;font-size:16px}
 .form-label{display:block;font-size:14px;color:var(--muted);margin-bottom:8px;font-weight:500}
-.form-textarea{width:100%;min-height:110px;border:1.5px solid #e2e8f0;border-radius:16px;padding:14px;font-size:16px;background:#f8fafc;outline:none;resize:none;font-family:inherit;margin-bottom:16px;transition:border-color .2s}
+.form-textarea{width:100%;min-height:110px;border:1.5px solid #e2e8f0;border-radius:16px;padding:14px;font-size:16px;background:#f8fafc;outline:none;resize:none;font-family:inherit;margin-bottom:16px}
 .form-textarea:focus{border-color:var(--primary2)}
-.form-input{width:100%;border:1.5px solid #e2e8f0;border-radius:14px;padding:14px 16px;font-size:16px;background:#f8fafc;outline:none;margin-bottom:12px;transition:border-color .2s;font-family:inherit}
+.form-input{width:100%;border:1.5px solid #e2e8f0;border-radius:14px;padding:14px 16px;font-size:16px;background:#f8fafc;outline:none;margin-bottom:12px;font-family:inherit}
 .form-input:focus{border-color:var(--primary2)}
 .msg{text-align:center;font-size:15px;min-height:22px;margin-top:12px}
 .msg.err{color:var(--red)}
 .msg.ok{color:var(--green)}
 .link-btn{background:none;border:none;color:var(--red);font-size:15px;margin-top:24px;width:100%;padding:12px}
-#toast{position:fixed;left:50%;bottom:100px;transform:translate(-50%,30px);background:rgba(30,30,30,.92);color:#fff;padding:14px 24px;border-radius:30px;font-size:15px;opacity:0;transition:all .3s cubic-bezier(.22,1,.36,1);z-index:200;pointer-events:none;max-width:90%;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+#toast{position:fixed;left:50%;bottom:100px;transform:translate(-50%,30px);background:rgba(30,30,30,.92);color:#fff;padding:14px 24px;border-radius:30px;font-size:15px;opacity:0;transition:all .3s cubic-bezier(.22,1,.36,1);z-index:200;pointer-events:none;max-width:90%;text-align:center}
 #toast.show{opacity:1;transform:translate(-50%,0)}
 .hidden{display:none!important}
 .spin{width:22px;height:22px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
 @keyframes spin{to{transform:rotate(360deg)}}
-.pop{animation:pop .22s cubic-bezier(.22,1,.36,1)}
-@keyframes pop{from{transform:scale(.88);opacity:.6}to{transform:scale(1);opacity:1}}
 .shake{animation:shake .4s ease}
 @keyframes shake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+#debugBox{position:fixed;inset:0;background:#0f172a;color:#e2e8f0;z-index:300;overflow:auto;padding:16px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;display:none}
+#debugBox.show{display:block}
+#debugBox h2{font-size:16px;margin:0 0 12px;color:#60a5fa}
+#debugBox .row{padding:8px;margin-bottom:6px;background:#1e293b;border-radius:8px;border-left:3px solid #3b82f6;word-break:break-all;line-height:1.5}
+#debugBox .row.match{background:#14532d;border-left-color:#22c55e}
+#debugBox .label{color:#fbbf24;font-weight:700;display:block;margin-bottom:4px}
+#debugBox .addr{color:#93c5fd}
+#debugBox .close{position:sticky;top:0;float:right;background:#dc2626;color:#fff;border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600}
 </style>
 </head>
 <body>
@@ -130,6 +125,16 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 </div>
 
 <div id="toast"></div>
+
+<div id="debugBox">
+  <button class="close" onclick="document.getElementById('debugBox').classList.remove('show')">✕ Close</button>
+  <h2>🔍 Debug: All Candidate Addresses</h2>
+  <p style="color:#94a3b8;font-size:11px;margin-bottom:12px">
+    Looking for: <span style="color:#22c55e">UQCuzJ0_EsVDdLCUAF10bDaSWrv9yo7N8TlxC-xJB7xq90vq</span><br>
+    (Long-press to copy any address)
+  </p>
+  <div id="debugList"></div>
+</div>
 
 <div id="setup" class="auth-screen hidden">
   <h1>💎 Import Wallet</h1>
@@ -185,9 +190,7 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 
   <div class="tx-section">
     <div class="tx-header">Recent Activity</div>
-    <div id="txList">
-      <div class="empty-state">Loading transactions…</div>
-    </div>
+    <div id="txList"><div class="empty-state">Loading transactions…</div></div>
   </div>
 </div>
 
@@ -196,9 +199,7 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
     <button class="menu-item" data-m="cur">💲 Currency</button>
     <button class="menu-item" data-m="lock">🔒 Passcode Lock</button>
     <button class="menu-item" data-m="keys">🔑 Keys &amp; Backup</button>
-    <button class="menu-item" data-m="apps">
-      <span>🔗 Connected Apps<small>● STON.fi</small></span>
-    </button>
+    <button class="menu-item" data-m="debug">🐞 Debug Addresses</button>
     <button class="menu-item" data-m="what">❓ What is Wallet?</button>
   </div>
 </div>
@@ -218,7 +219,6 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
     <button class="icon-btn" id="backBtn">←</button>
     Send TON
   </div>
-
   <div class="recipient-card">
     <div class="recipient-info">
       <div class="recipient-avatar" id="rAva">?</div>
@@ -230,7 +230,6 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
     <input id="toAddr" class="input-field" placeholder="Wallet address (UQ… / EQ…)" autocomplete="off" autocapitalize="none">
     <input id="memo" class="input-field" placeholder="Memo (optional)" style="margin-top:10px">
   </div>
-
   <div class="amount-display" id="amtBox">
     <svg width="40" height="40" viewBox="0 0 24 24">
       <path d="M6 3h12l4 6-10 12L2 9z" fill="#3390ec"/>
@@ -239,20 +238,16 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
     <span id="amtV">0</span>
     <small>TON</small>
   </div>
-
   <div class="usd-convert" id="conv">= $0.00</div>
   <div class="warn-text" id="warn">Insufficient funds</div>
   <div class="balance-hint" id="balInfo">Balance: 0 TON</div>
   <div class="balance-hint" id="feeInfo">Network fee ≈ 0.00007 TON</div>
-
   <div style="padding:0 16px;margin-top:24px">
     <button class="full-btn" id="goBtn" disabled>Continue</button>
   </div>
 </div>
 
-<div class="keypad" id="kp">
-  <div class="keys-grid" id="keys"></div>
-</div>
+<div class="keypad" id="kp"><div class="keys-grid" id="keys"></div></div>
 
 <script>
 (function(){
@@ -265,6 +260,9 @@ const CHOICE="ton_wallet_choice_v1";
 const FEE="0.00007";
 const FEE_NANO=70000n;
 
+// ⬇️ آدرس واقعی ولتت — کد دنبال نسخه‌ای می‌گرده که این آدرس رو تولید کنه
+const TARGET_ADDR="UQCuzJ0_EsVDdLCUAF10bDaSWrv9yo7N8TlxC-xJB7xq90vq";
+
 let words=null,wallet=null,kp0=null,address="",balNano=0n;
 let client=null,TON=null,CR=null,price=0,amt="0",wasBad=false;
 
@@ -272,7 +270,7 @@ const $=id=>document.getElementById(id);
 
 function toast(msg){
   const el=$("toast");el.textContent=msg;el.classList.add("show");
-  clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove("show"),2400);
+  clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove("show"),2800);
 }
 function shortAddr(a){return(!a||a.length<12)?(a||""):a.slice(0,4)+"…"+a.slice(-4);}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
@@ -280,18 +278,8 @@ function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 function buzz(){try{navigator.vibrate&&navigator.vibrate(10);}catch(e){}}
 
 // ========== LIB LOADER ==========
-const TON_URLS=[
-  "https://esm.sh/@ton/ton@15",
-  "https://esm.sh/@ton/ton@15.2.0",
-  "https://cdn.jsdelivr.net/npm/@ton/ton@15/+esm",
-  "https://fastly.jsdelivr.net/npm/@ton/ton@15/+esm"
-];
-const CRYPTO_URLS=[
-  "https://esm.sh/@ton/crypto@3",
-  "https://esm.sh/@ton/crypto@3.3.0",
-  "https://cdn.jsdelivr.net/npm/@ton/crypto@3/+esm",
-  "https://fastly.jsdelivr.net/npm/@ton/crypto@3/+esm"
-];
+const TON_URLS=["https://esm.sh/@ton/ton@15","https://esm.sh/@ton/ton@15.2.0","https://cdn.jsdelivr.net/npm/@ton/ton@15/+esm","https://fastly.jsdelivr.net/npm/@ton/ton@15/+esm"];
+const CRYPTO_URLS=["https://esm.sh/@ton/crypto@3","https://esm.sh/@ton/crypto@3.3.0","https://cdn.jsdelivr.net/npm/@ton/crypto@3/+esm","https://fastly.jsdelivr.net/npm/@ton/crypto@3/+esm"];
 async function tryImport(urls,check){
   for(const url of urls){
     try{const mod=await import(url);if(check(mod))return mod;}catch(e){}
@@ -305,16 +293,15 @@ async function loadLibraries(){
       window.Buffer=buf.Buffer||(buf.default&&buf.default.Buffer);
     }
   }catch(e){}
-  TON=await tryImport(TON_URLS,m=>m.WalletContractV4&&m.TonClient);
-  if(!TON)throw new Error("Could not load TON library. Check your connection / VPN.");
+  TON=await tryImport(TON_URLS,m=>m.WalletContractV4&&m.WalletContractV3R2&&m.TonClient);
+  if(!TON)throw new Error("Could not load TON library. Check VPN.");
   CR=await tryImport(CRYPTO_URLS,m=>m.mnemonicToPrivateKey&&m.keyPairFromSeed);
   if(!CR)throw new Error("Could not load crypto library.");
   client=new TON.TonClient({endpoint:API+"/jsonRPC",apiKey:API_KEY});
 }
 
-// ========== ENCRYPTION ==========
-const enc=new TextEncoder();
-const dec=new TextDecoder();
+// ========== CRYPTO ==========
+const enc=new TextEncoder(),dec=new TextDecoder();
 function toB64(u8){let s="";for(let i=0;i<u8.length;i++)s+=String.fromCharCode(u8[i]);return btoa(s);}
 function fromB64(s){const bin=atob(s);const u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);return u8;}
 async function deriveKey(pass,salt){
@@ -335,53 +322,96 @@ async function decrypt(blob,pass){
   return dec.decode(plain);
 }
 
-// ========== BIP39 KEY DERIVATION ==========
+// ========== HD DERIVATION ==========
 function toBuf(u8){return window.Buffer?window.Buffer.from(u8):u8;}
 async function hmac(key,data){
   const k=await crypto.subtle.importKey("raw",key,{name:"HMAC",hash:"SHA-512"},false,["sign"]);
   return new Uint8Array(await crypto.subtle.sign("HMAC",k,data));
 }
-// SLIP-0010 ed25519 HD derivation با مسیر دلخواه
-async function bip39KeyPair(wordsArr,path){
-  const material=await crypto.subtle.importKey(
-    "raw",enc.encode(wordsArr.join(" ").normalize("NFKD")),"PBKDF2",false,["deriveBits"]);
+
+// Standard SLIP-0010 ed25519 from BIP39 seed
+async function slip10(wordsArr,path,passphrase){
+  const mnemonic=wordsArr.join(" ").normalize("NFKD");
+  const salt=("mnemonic"+(passphrase||"")).normalize("NFKD");
+  const material=await crypto.subtle.importKey("raw",enc.encode(mnemonic),"PBKDF2",false,["deriveBits"]);
   const seed=new Uint8Array(await crypto.subtle.deriveBits(
-    {name:"PBKDF2",salt:enc.encode("mnemonic"),iterations:2048,hash:"SHA-512"},material,512));
+    {name:"PBKDF2",salt:enc.encode(salt),iterations:2048,hash:"SHA-512"},material,512));
   let I=await hmac(enc.encode("ed25519 seed"),seed);
-  let k=I.slice(0,32);
-  let c=I.slice(32);
+  let k=I.slice(0,32),c=I.slice(32);
   for(const p of path){
     const idx=p>>>0;
     const data=new Uint8Array(37);
     data.set(k,1);
-    data[33]=(idx>>>24)&255;
-    data[34]=(idx>>>16)&255;
-    data[35]=(idx>>>8)&255;
-    data[36]=idx&255;
+    data[33]=(idx>>>24)&255;data[34]=(idx>>>16)&255;data[35]=(idx>>>8)&255;data[36]=idx&255;
     I=await hmac(c,data);
-    k=I.slice(0,32);
-    c=I.slice(32);
+    k=I.slice(0,32);c=I.slice(32);
   }
   return CR.keyPairFromSeed(toBuf(k));
 }
 
-// ========== ONLY V4R2 BIP39 ==========
 const H=0x80000000;
-// فقط دو مسیر رایج BIP39 برای V4R2 — بدون V5، بدون V3، بدون TON-standard
-const CANDIDATES=[
-  {id:"bip-v4r2-a", v:"V4R2", path:[44|H, 607|H, 0|H],         label:"V4R2 / BIP39 (m/44'/607'/0')"},
-  {id:"bip-v4r2-b", v:"V4R2", path:[44|H, 607|H, 0|H, 0, 0],   label:"V4R2 / BIP39 (m/44'/607'/0'/0/0)"}
+
+// همه روش‌های ممکن
+const DERIVATIONS=[
+  {name:"TON-standard",            fn:async w=>await CR.mnemonicToPrivateKey(w)},
+  {name:"BIP39 m/44'/607'/0'",     fn:async w=>await slip10(w,[44|H,607|H,0|H])},
+  {name:"BIP39 m/44'/607'/0'/0'",  fn:async w=>await slip10(w,[44|H,607|H,0|H,0|H])},
+  {name:"BIP39 m/44'/607'/0'/0/0", fn:async w=>await slip10(w,[44|H,607|H,0|H,0,0])},
+  {name:"BIP39 m/44'/607'/0'/0'/0'",fn:async w=>await slip10(w,[44|H,607|H,0|H,0|H,0|H])},
+  {name:"BIP39 m/44'/607'/0'/0",   fn:async w=>await slip10(w,[44|H,607|H,0|H,0])},
+  {name:"Ledger m/44'/607'/0'/0'", fn:async w=>await slip10(w,[44|H,607|H,0|H,0|H])},
 ];
 
-async function buildWallet(cand,wordsArr){
-  const kp=await bip39KeyPair(wordsArr,cand.path);
-  const w=TON.WalletContractV4.create({workchain:0,publicKey:kp.publicKey});
-  return {
-    id:cand.id,
-    kp,wallet:w,
-    addr:w.address.toString({bounceable:false,urlSafe:true}),
-    label:cand.label
-  };
+// همه نسخه‌های قرارداد
+const VERSIONS=[
+  {v:"V3R1",make:pk=>TON.WalletContractV3R1.create({workchain:0,publicKey:pk})},
+  {v:"V3R2",make:pk=>TON.WalletContractV3R2.create({workchain:0,publicKey:pk})},
+  {v:"V4R1",make:pk=>TON.WalletContractV4.create({workchain:0,publicKey:pk,revision:"R1"})},
+  {v:"V4R2",make:pk=>TON.WalletContractV4.create({workchain:0,publicKey:pk,revision:"R2"})},
+  {v:"V5R1",make:pk=>TON.WalletContractV5R1.create({workchain:0,publicKey:pk})},
+];
+
+// Brute force — همه ترکیب‌ها، مقایسه با TARGET
+async function bruteForce(wordsArr,target){
+  const all=[];
+  for(const d of DERIVATIONS){
+    let kp;
+    try{kp=await d.fn(wordsArr);}
+    catch(e){console.warn("Derivation failed:",d.name,e);continue;}
+    for(const v of VERSIONS){
+      let w;
+      try{w=v.make(kp.publicKey);}catch(e){continue;}
+      let addr;
+      try{addr=w.address.toString({bounceable:false,urlSafe:true});}catch(e){continue;}
+      const entry={deriv:d.name,version:v.v,addr,kp,wallet:w};
+      all.push(entry);
+      // مقایسه با target (با حذف - و _ هم چک می‌کنیم)
+      const normA=addr.replace(/[-_]/g,"");
+      const normT=target.replace(/[-_]/g,"");
+      if(addr===target||normA===normT){
+        console.log("%c✅✅✅ MATCH FOUND ✅✅✅","color:#22c55e;font-size:20px;font-weight:bold",entry);
+        return {found:entry,all};
+      }
+    }
+  }
+  console.log("%c❌ No exact match with target. All candidates:","color:#ef4444;font-weight:bold");
+  console.table(all.map(x=>({derivation:x.deriv,version:x.version,address:x.addr})));
+  return {found:null,all};
+}
+
+// نمایش Debug table
+function showDebug(all,target,found){
+  const box=$("debugBox"),list=$("debugList");
+  list.innerHTML=all.map(x=>{
+    const normA=x.addr.replace(/[-_]/g,"");
+    const normT=target.replace(/[-_]/g,"");
+    const match=normA===normT;
+    return '<div class="row'+(match?" match":"")+'">'+
+      '<span class="label">'+(match?"✅ ":"")+esc(x.deriv)+" + "+esc(x.version)+'</span>'+
+      '<span class="addr">'+esc(x.addr)+'</span>'+
+    '</div>';
+  }).join("");
+  box.classList.add("show");
 }
 
 // ========== API ==========
@@ -389,8 +419,7 @@ async function api(path){
   const url=API+path+(path.includes("?")?"&":"?")+"api_key="+API_KEY;
   const res=await fetch(url);
   const text=await res.text();
-  let json;
-  try{json=JSON.parse(text);}catch(e){throw new Error("HTTP "+res.status);}
+  let json;try{json=JSON.parse(text);}catch(e){throw new Error("HTTP "+res.status);}
   if(!json.ok)throw new Error(json.error||"API error");
   return json.result;
 }
@@ -402,66 +431,52 @@ async function loadWallet(wordsArr){
   const saved=localStorage.getItem(CHOICE);
 
   if(saved){
-    const found=CANDIDATES.find(c=>c.id===saved);
-    if(found){
-      try{chosen=await buildWallet(found,words);}catch(e){chosen=null;}
-    }
+    try{
+      const meta=JSON.parse(saved);
+      const d=DERIVATIONS.find(x=>x.name===meta.deriv);
+      const v=VERSIONS.find(x=>x.v===meta.version);
+      if(d&&v){
+        const kp=await d.fn(wordsArr);
+        const w=v.make(kp.publicKey);
+        chosen={deriv:meta.deriv,version:meta.version,kp,wallet:w,
+                addr:w.address.toString({bounceable:false,urlSafe:true})};
+      }
+    }catch(e){chosen=null;}
   }
 
   if(!chosen){
-    const tried=[];
-    for(const cand of CANDIDATES){
-      let built;
-      try{built=await buildWallet(cand,words);}catch(e){continue;}
-      tried.push(built.label+" → "+built.addr);
+    toast("🔍 Searching all versions…");
+    const res=await bruteForce(wordsArr,TARGET_ADDR);
 
-      try{
-        const info=await api("/getAddressInformation?address="+built.addr);
-        const bal=BigInt(info.balance||"0");
-        let hasTx=false;
-        if(info.state==="uninitialized"&&bal===0n){
-          try{
-            const txs=await api("/getTransactions?address="+built.addr+"&limit=1");
-            hasTx=txs&&txs.length>0;
-          }catch(e){}
-        }
-        if(info.state!=="uninitialized"||bal>0n||hasTx){
-          chosen=built;
-          localStorage.setItem(CHOICE,built.id);
-          console.log("✅ Wallet matched:",built.label,built.addr);
-          toast("Wallet detected: "+built.label);
-          break;
-        }
-      }catch(e){}
-      await sleep(250);
-    }
-    if(!chosen){
-      chosen=await buildWallet(CANDIDATES[0],words);
-      console.warn("⚠️ No wallet matched. Tried:\n"+tried.join("\n"));
-      console.warn("Fallback:",chosen.label,chosen.addr);
-      toast("Fallback: "+chosen.label);
+    if(res.found){
+      chosen=res.found;
+      localStorage.setItem(CHOICE,JSON.stringify({deriv:res.found.deriv,version:res.found.version}));
+      toast("✅ Found: "+res.found.deriv+" + "+res.found.version);
+    }else{
+      // نمایش جدول دیباگ به کاربر
+      showDebug(res.all,TARGET_ADDR,null);
+      toast("⚠️ هیچ نسخه‌ای مچ نشد — جدول دیباگ نمایش داده شد");
+      return;
     }
   }
 
   kp0=chosen.kp;wallet=chosen.wallet;address=chosen.addr;
   $("cardAddr").textContent=address;
   $("recvAddr").textContent=address;
-  $("walletHandle").textContent=chosen.label;
+  $("walletHandle").textContent=chosen.deriv+" / "+chosen.version;
   showScreen("main");
   refresh();
 }
 
 // ========== REFRESH ==========
 async function refresh(){
-  const btn=$("refreshBtn");
-  btn.style.opacity="0.4";
+  const btn=$("refreshBtn");btn.style.opacity="0.4";
   try{
     balNano=BigInt(await api("/getAddressBalance?address="+address));
     const ton=TON.fromNano(balNano);
     $("balN").textContent=ton;
     fetch("https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=usd")
-      .then(r=>r.json())
-      .then(p=>{
+      .then(r=>r.json()).then(p=>{
         price=(p["the-open-network"]&&p["the-open-network"].usd)||0;
         $("usd").textContent="$"+(parseFloat(ton)*price).toFixed(2);
         try{updateAmountUI();}catch(e){}
@@ -471,54 +486,31 @@ async function refresh(){
   try{
     const txs=await api("/getTransactions?address="+address+"&limit=25");
     renderTransactions(txs);
-  }catch(e){
-    $("txList").innerHTML='<div class="empty-state">Could not load transactions</div>';
-  }
+  }catch(e){$("txList").innerHTML='<div class="empty-state">Could not load transactions</div>';}
   btn.style.opacity="1";
 }
-
 function formatTime(utime){
   return new Date(utime*1000).toLocaleString("en",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit",hour12:false});
 }
-
 function renderTransactions(list){
   const items=[];
   list.forEach(tx=>{
-    if(tx.in_msg&&tx.in_msg.source){
-      items.push({dir:"in",addr:tx.in_msg.source,value:tx.in_msg.value,memo:tx.in_msg.message,time:tx.utime});
-    }
-    (tx.out_msgs||[]).forEach(o=>{
-      if(o.destination){
-        items.push({dir:"out",addr:o.destination,value:o.value,memo:o.message,time:tx.utime});
-      }
-    });
+    if(tx.in_msg&&tx.in_msg.source)items.push({dir:"in",addr:tx.in_msg.source,value:tx.in_msg.value,memo:tx.in_msg.message,time:tx.utime});
+    (tx.out_msgs||[]).forEach(o=>{if(o.destination)items.push({dir:"out",addr:o.destination,value:o.value,memo:o.message,time:tx.utime});});
   });
   if(!items.length){$("txList").innerHTML='<div class="empty-state">No transactions yet</div>';return;}
   $("txList").innerHTML=items.map((x,i)=>{
     const isIn=x.dir==="in";
-    const avatarCls=isIn?"tx-avatar in":"tx-avatar";
-    const amtCls=isIn?"tx-amount in":"tx-amount";
-    const arrow=isIn?"↓":"↑";
-    const sign=isIn?"+":"−";
     const val=parseFloat(TON.fromNano(BigInt(x.value||"0")));
-    const memoPart=x.memo?" · "+esc(x.memo):"";
-    return '<div class="tx-item" style="animation-delay:'+(i*0.04)+'s">'+
-      '<div class="'+avatarCls+'">'+arrow+'</div>'+
-      '<div class="tx-info">'+
-        '<div class="tx-title">'+esc(shortAddr(x.addr))+'</div>'+
-        '<div class="tx-subtitle">'+(isIn?"Incoming":"Outgoing")+' · '+formatTime(x.time)+memoPart+'</div>'+
-      '</div>'+
-      '<div class="'+amtCls+'">'+sign+val+' 💎</div>'+
-    '</div>';
+    return '<div class="tx-item">'+
+      '<div class="tx-avatar '+(isIn?"in":"")+'">'+(isIn?"↓":"↑")+'</div>'+
+      '<div class="tx-info"><div class="tx-title">'+esc(shortAddr(x.addr))+'</div>'+
+      '<div class="tx-subtitle">'+(isIn?"Incoming":"Outgoing")+' · '+formatTime(x.time)+(x.memo?" · "+esc(x.memo):"")+'</div></div>'+
+      '<div class="tx-amount '+(isIn?"in":"")+'">'+(isIn?"+":"−")+val+' 💎</div></div>';
   }).join("");
 }
-
-function showScreen(name){
-  ["setup","unlock","main"].forEach(id=>{$ (id).classList.toggle("hidden",id!==name);});
-}
-function setMsg(id,text,ok){
-  const el=$(id);el.textContent=text;el.className="msg "+(ok?"ok":"err");
-}
+function showScreen(name){["setup","unlock","main"].forEach(id=>{$(id).classList.toggle("hidden",id!==name);});}
+function setMsg(id,text,ok){const el=$(id);el.textContent=text;el.className="msg "+(ok?"ok":"err");}
 
 // ========== MENU ==========
 $("menuBtn").onclick=()=>$("menuBg").classList.add("show");
@@ -528,10 +520,10 @@ document.querySelectorAll("[data-m]").forEach(btn=>{
     $("menuBg").classList.remove("show");
     const m=btn.dataset.m;
     if(m==="lock"){words=null;wallet=null;kp0=null;showScreen("unlock");}
-    else if(m==="keys")toast("Your words are stored encrypted on this device only");
+    else if(m==="keys")toast("Encrypted on this device only");
     else if(m==="cur")toast("Currency: USD");
-    else if(m==="apps")toast("STON.fi is connected");
-    else toast("Non-custodial TON wallet — only you hold the keys");
+    else if(m==="debug")$("debugBox").classList.add("show");
+    else toast("Non-custodial TON wallet");
   };
 });
 
@@ -539,22 +531,15 @@ document.querySelectorAll("[data-m]").forEach(btn=>{
 $("addBtn").onclick=$("qrBtn").onclick=()=>$("recvBg").classList.add("show");
 $("recvClose").onclick=()=>$("recvBg").classList.remove("show");
 $("recvBg").onclick=e=>{if(e.target.id==="recvBg")$("recvBg").classList.remove("show");};
-$("copyBtn").onclick=async()=>{
-  try{await navigator.clipboard.writeText(address);toast("Address copied");}
-  catch(e){prompt("Copy this address:",address);}
-};
+$("copyBtn").onclick=async()=>{try{await navigator.clipboard.writeText(address);toast("Copied");}catch(e){prompt("Copy:",address);}};
 $("refreshBtn").onclick=refresh;
 
-// ========== SEND FLOW ==========
+// ========== SEND ==========
 const keyLabels=["1","2","3","4","5","6","7","8","9",".","0","⌫"];
-$("keys").innerHTML=keyLabels.map(k=>'<button class="key" data-k="'+k+'">'+k+'</button>').join("")+
-  '<button class="key done" id="doneBtn">Done</button>';
-
-function showKeypad(show){$("kp").classList.toggle("show",show);}
-
+$("keys").innerHTML=keyLabels.map(k=>'<button class="key" data-k="'+k+'">'+k+'</button>').join("")+'<button class="key done" id="doneBtn">Done</button>';
+function showKeypad(s){$("kp").classList.toggle("show",s);}
 function openSend(){
-  amt="0";wasBad=false;
-  $("toAddr").value="";$("memo").value="";
+  amt="0";wasBad=false;$("toAddr").value="";$("memo").value="";
   updateRecipient();updateAmountUI();
   $("balInfo").textContent="Balance: "+TON.fromNano(balNano)+" TON";
   $("feeInfo").textContent="Network fee ≈ "+FEE+" TON";
@@ -562,112 +547,75 @@ function openSend(){
   setTimeout(()=>showKeypad(true),280);
 }
 function closeSend(){showKeypad(false);$("sendPage").classList.remove("show");}
-
 $("sendBtn").onclick=openSend;
 $("backBtn").onclick=closeSend;
 $("doneBtn").onclick=()=>showKeypad(false);
 $("amtBox").onclick=()=>showKeypad(true);
 $("toAddr").onfocus=()=>showKeypad(false);
 $("memo").onfocus=()=>showKeypad(false);
-
 function isValidAddress(a){
   if(!a)return false;
   try{TON.Address.parseFriendly(a);return true;}catch(e){}
-  try{TON.Address.parse(a);return true;}catch(e2){}
-  return false;
+  try{TON.Address.parse(a);return true;}catch(e){return false;}
 }
 function updateRecipient(){
   const a=$("toAddr").value.trim();
   const ok=isValidAddress(a);
   $("rAva").textContent=ok?a.slice(0,2).toUpperCase():"?";
-  $("rName").textContent="Recipient";
   $("rAddr").textContent=ok?shortAddr(a):"Enter address below";
   return ok;
 }
 $("toAddr").oninput=()=>{updateRecipient();updateAmountUI();};
-
-function amtNano(){
-  try{return TON.toNano(amt.replace(/\.$/,"")||"0");}catch(e){return 0n;}
-}
+function amtNano(){try{return TON.toNano(amt.replace(/\.$/,"")||"0");}catch(e){return 0n;}}
 function updateAmountUI(){
-  const v=$("amtV");
-  v.textContent=amt;
-  v.classList.remove("pop");void v.offsetWidth;v.classList.add("pop");
+  $("amtV").textContent=amt;
   const n=parseFloat(amt)||0;
   $("conv").textContent="= $"+(n*price).toFixed(2);
   const nano=amtNano();
   const bad=nano>0n&&(nano+FEE_NANO)>balNano;
   $("warn").classList.toggle("show",bad);
-  if(bad&&!wasBad){
-    const box=$("amtBox");
-    box.classList.remove("shake");void box.offsetWidth;box.classList.add("shake");
-    buzz();
-  }
-  wasBad=bad;
   const go=$("goBtn");
   const ok=nano>0n&&!bad&&updateRecipient();
   go.disabled=!ok;
   go.textContent=n>0?"Send "+amt.replace(/\.$/,"")+" TON":"Continue";
 }
-
 $("keys").onclick=e=>{
-  const btn=e.target.closest(".key");
-  if(!btn||btn.id==="doneBtn")return;
-  buzz();
+  const btn=e.target.closest(".key");if(!btn||btn.id==="doneBtn")return;buzz();
   const k=btn.dataset.k;
-  if(k==="⌫"){amt=amt.length>1?amt.slice(0,-1):"0";}
+  if(k==="⌫")amt=amt.length>1?amt.slice(0,-1):"0";
   else if(k==="."){if(!amt.includes("."))amt+=".";}
-  else{
-    if(amt==="0")amt=k;
-    else if(amt.length<14&&!(amt.includes(".")&&amt.split(".")[1].length>=9))amt+=k;
-  }
+  else{if(amt==="0")amt=k;else if(amt.length<14&&!(amt.includes(".")&&amt.split(".")[1].length>=9))amt+=k;}
   updateAmountUI();
 };
-
-// ========== SEND TX ==========
 $("goBtn").onclick=async()=>{
-  const go=$("goBtn");
-  const to=$("toAddr").value.trim();
-  const memo=$("memo").value.trim();
+  const go=$("goBtn"),to=$("toAddr").value.trim(),memo=$("memo").value.trim();
   let dest,bounce=false;
-  try{
-    try{
-      const p=TON.Address.parseFriendly(to);
-      dest=p.address;bounce=p.isBounceable;
-    }catch(e){dest=TON.Address.parse(to);}
-  }catch(e){return toast("Invalid address");}
-
-  go.disabled=true;
-  go.innerHTML='<span class="spin"></span>';
-  showKeypad(false);
-
+  try{try{const p=TON.Address.parseFriendly(to);dest=p.address;bounce=p.isBounceable;}catch(e){dest=TON.Address.parse(to);}}
+  catch(e){return toast("Invalid address");}
+  go.disabled=true;go.innerHTML='<span class="spin"></span>';showKeypad(false);
   try{
     const opened=client.open(wallet);
     const seqno=await opened.getSeqno();
     await opened.sendTransfer({
-      seqno,
-      secretKey:kp0.secretKey,
+      seqno,secretKey:kp0.secretKey,
       sendMode:TON.SendMode.PAY_GAS_SEPARATELY+TON.SendMode.IGNORE_ERRORS,
       messages:[TON.internal({to:dest,value:amtNano(),bounce,body:memo||undefined})]
     });
-    toast("✅ Sent! It will appear in a few seconds");
+    toast("✅ Sent!");
     closeSend();
-    setTimeout(refresh,3000);
-    setTimeout(refresh,10000);
+    setTimeout(refresh,3000);setTimeout(refresh,10000);
   }catch(e){
     toast("Error: "+(e&&e.message?e.message:e));
-    go.disabled=false;
-    updateAmountUI();
+    go.disabled=false;updateAmountUI();
   }
 };
 
-// ========== IMPORT / UNLOCK ==========
+// ========== IMPORT/UNLOCK ==========
 $("importBtn").onclick=async()=>{
   const w=$("words").value.trim().toLowerCase().split(/\s+/).filter(Boolean);
-  const p1=$("pass1").value;
-  const p2=$("pass2").value;
+  const p1=$("pass1").value,p2=$("pass2").value;
   if(w.length!==12&&w.length!==24)return setMsg("setupMsg","Enter exactly 12 or 24 words",false);
-  if(p1.length<4)return setMsg("setupMsg","Passcode must be at least 4 characters",false);
+  if(p1.length<4)return setMsg("setupMsg","Passcode min 4 chars",false);
   if(p1!==p2)return setMsg("setupMsg","Passcodes don't match",false);
   setMsg("setupMsg","Please wait…",true);
   try{
@@ -676,27 +624,20 @@ $("importBtn").onclick=async()=>{
     localStorage.setItem(KEY,await encrypt(w.join(" "),p1));
     $("words").value="";$("pass1").value="";$("pass2").value="";
     await loadWallet(w);
-  }catch(e){
-    setMsg("setupMsg","Error: "+(e&&e.message?e.message:e),false);
-  }
+  }catch(e){setMsg("setupMsg","Error: "+(e&&e.message?e.message:e),false);}
 };
-
 $("unlockBtn").onclick=async()=>{
   setMsg("unlockMsg","Please wait…",true);
   try{
     const plain=await decrypt(localStorage.getItem(KEY),$("unlockPass").value);
-    $("unlockPass").value="";
-    $("unlockMsg").textContent="";
+    $("unlockPass").value="";$("unlockMsg").textContent="";
     if(!TON||!CR||!client)await loadLibraries();
     await loadWallet(plain.split(" "));
-  }catch(e){
-    setMsg("unlockMsg","Wrong passcode",false);
-  }
+  }catch(e){setMsg("unlockMsg","Wrong passcode",false);}
 };
 $("unlockPass").addEventListener("keydown",e=>{if(e.key==="Enter")$("unlockBtn").click();});
-
 $("forgetBtn").onclick=()=>{
-  if(confirm("Remove this wallet from this device?\nMake sure you have saved your secret words!")){
+  if(confirm("Remove wallet from this device?\nMake sure you saved the seed!")){
     localStorage.removeItem(KEY);localStorage.removeItem(CHOICE);location.reload();
   }
 };
@@ -709,13 +650,11 @@ async function boot(){
     if(localStorage.getItem(KEY))showScreen("unlock");
     else showScreen("setup");
   }catch(e){
-    $("loading").innerHTML=
-      '<div style="text-align:center;padding:40px;color:white">'+
-        '<div style="font-size:48px;margin-bottom:16px">⚠️</div>'+
-        '<div style="font-size:18px;margin-bottom:12px">Failed to load libraries</div>'+
-        '<div style="opacity:.8;font-size:14px;max-width:280px;margin:0 auto 24px">'+esc(e.message)+'</div>'+
-        '<button onclick="location.reload()" style="background:white;color:#1e5cbe;border:none;padding:12px 28px;border-radius:30px;font-size:16px;font-weight:600">Retry</button>'+
-      '</div>';
+    $("loading").innerHTML='<div style="text-align:center;padding:40px;color:white">'+
+      '<div style="font-size:48px;margin-bottom:16px">⚠️</div>'+
+      '<div style="font-size:18px;margin-bottom:12px">Failed to load</div>'+
+      '<div style="opacity:.8;font-size:14px;max-width:280px;margin:0 auto 24px">'+esc(e.message)+'</div>'+
+      '<button onclick="location.reload()" style="background:white;color:#1e5cbe;border:none;padding:12px 28px;border-radius:30px;font-size:16px;font-weight:600">Retry</button></div>';
   }
 }
 boot();
