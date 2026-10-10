@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wallet</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#f1f1f4;font-family:-apple-system,Roboto,"Segoe UI",sans-serif;color:#111;min-height:100vh}
+.app{max-width:480px;margin:0 auto;padding:16px 16px 40px}
+.top{display:flex;align-items:center;justify-content:space-between;height:48px;margin-bottom:12px}
+.top h1{font-size:24px;margin:0;font-weight:700}
+.icon-btn{background:none;border:0;font-size:24px;padding:8px;color:#111}
+.card{position:relative;height:200px;border-radius:32px;background:linear-gradient(135deg,#69c2f7 0%,#4a9be8 55%,#3d8ae0 100%);color:#fff;padding:24px;overflow:hidden;box-shadow:0 10px 30px rgba(61,138,224,.35)}
+.card .bal{position:absolute;left:24px;top:58px;display:flex;align-items:center;gap:10px;font-size:44px;font-weight:700}
+.card .bal span{font-size:44px}
+.card .bal small{color:#cfeaff;font-size:44px;font-weight:600}
+.card .usd{position:absolute;left:24px;top:116px;color:#d6efff;font-size:20px;font-weight:600}
+.card .name{position:absolute;left:24px;bottom:22px;font-family:monospace;font-weight:700;font-size:15px;letter-spacing:.5px}
+.card .addr{position:absolute;right:14px;top:16px;bottom:16px;writing-mode:vertical-rl;font-family:monospace;font-size:13px;color:#1d4fa8;opacity:.8;word-break:break-all;line-height:1.15}
+.card .qr{position:absolute;right:62px;top:50%;transform:translateY(-50%);width:64px;height:56px;border-radius:14px;background:linear-gradient(#f5f5f5,#cfcfcf);display:flex;align-items:center;justify-content:center;border:0;font-size:26px}
+.row{display:flex;gap:12px;margin:18px 0}
+.btn{flex:1;border:0;border-radius:30px;background:#5577f5;color:#fff;font-size:20px;font-weight:600;height:64px}
+.btn:active{opacity:.8}
+.btn.full{width:100%;flex:none}
+.btn.ghost{background:#e4e7fb;color:#3a57d8}
+.list{background:#fff;border-radius:28px;padding:6px 0;overflow:hidden}
+.tx{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid #eee}
+.tx:last-child{border-bottom:0}
+.ava{width:52px;height:52px;border-radius:50%;background:linear-gradient(#3f9be8,#2f78d4);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;flex:none}
+.tx .mid{flex:1;min-width:0}
+.tx .t1{font-size:18px;font-weight:600}
+.tx .t2{color:#555;font-size:15px}
+.tx .t3{color:#888;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tx .amt{font-weight:700;font-size:18px;display:flex;align-items:center;gap:4px}
+.tx .amt.in{color:#2bb04a}
+.empty{padding:30px;text-align:center;color:#888}
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:flex-end;justify-content:center;z-index:10}
+.sheet-bg.show{display:flex}
+.sheet{background:#fff;width:100%;max-width:480px;border-radius:28px 28px 0 0;padding:22px 20px 30px;max-height:92vh;overflow:auto}
+.sheet h2{margin:0 0 14px;font-size:22px}
+label{display:block;font-size:14px;color:#666;margin:12px 0 6px}
+input,textarea{width:100%;border:1.5px solid #dde1ea;border-radius:16px;padding:14px;font-size:17px;background:#f7f8fb;outline:none;font-family:inherit;color:#111}
+input:focus,textarea:focus{border-color:#5577f5}
+textarea{min-height:110px;resize:none;direction:ltr}
+.msg{margin-top:12px;font-size:15px;text-align:center;min-height:20px}
+.err{color:#d93636}.ok{color:#2bb04a}
+.center{max-width:480px;margin:0 auto;padding:60px 20px}
+.center h1{text-align:center}
+.center p{text-align:center;color:#666}
+.addr-box{word-break:break-all;background:#f1f3f9;border-radius:16px;padding:14px;font-family:monospace;font-size:15px;text-align:center}
+.mini{font-size:13px;color:#888;text-align:center;margin-top:14px}
+.link{background:none;border:0;color:#d93636;font-size:15px;margin-top:20px;width:100%}
+</style>
+</head>
+<body>
+
+<!-- SETUP -->
+<div id="setup" class="center" style="display:none">
+  <h1>💎 Import Wallet</h1>
+  <p>Enter your 12 (or 24) secret words. Wallet type: V5R1.</p>
+  <label>Secret words</label>
+  <textarea id="words" placeholder="word1 word2 word3 ..." autocapitalize="none" autocomplete="off" spellcheck="false"></textarea>
+  <label>Set a passcode (encrypts the words on this device)</label>
+  <input id="pass1" type="password" placeholder="Passcode (min 4 chars)">
+  <input id="pass2" type="password" placeholder="Repeat passcode" style="margin-top:10px">
+  <div style="height:16px"></div>
+  <button class="btn full" id="importBtn">Import</button>
+  <div id="setupMsg" class="msg"></div>
+</div>
+
+<!-- UNLOCK -->
+<div id="unlock" class="center" style="display:none">
+  <h1>💎 Wallet</h1>
+  <p>Enter your passcode</p>
+  <input id="unlockPass" type="password" placeholder="Passcode">
+  <div style="height:16px"></div>
+  <button class="btn full" id="unlockBtn">Unlock</button>
+  <div id="unlockMsg" class="msg"></div>
+  <button class="link" id="forgetBtn">Remove wallet from this device</button>
+</div>
+
+<!-- MAIN -->
+<div id="main" class="app" style="display:none">
+  <div class="top">
+    <h1>Wallet</h1>
+    <button class="icon-btn" id="refreshBtn" title="Refresh">⟳</button>
+  </div>
+  <div class="card">
+    <div class="bal">💎 <span id="balInt">0</span><small id="balDec"></small><small style="font-size:30px;margin-left:2px">TON</small></div>
+    <div class="usd" id="usd">$0.00</div>
+    <div class="name" id="cardName">MY WALLET</div>
+    <button class="qr" id="qrBtn">▣</button>
+    <div class="addr" id="cardAddr"></div>
+  </div>
+  <div class="row">
+    <button class="btn" id="addBtn">Add Funds</button>
+    <button class="btn" id="sendBtn">Send</button>
+  </div>
+  <div class="list" id="txList"><div class="empty">Loading…</div></div>
+  <button class="link" id="lockBtn" style="color:#888">Lock</button>
+</div>
+
+<!-- RECEIVE -->
+<div class="sheet-bg" id="recvBg"><div class="sheet">
+  <h2>Add Funds</h2>
+  <p style="color:#666;margin-top:0">Send TON to this address:</p>
+  <div class="addr-box" id="recvAddr"></div>
+  <div style="height:14px"></div>
+  <button class="btn full" id="copyBtn">Copy address</button>
+  <div style="height:10px"></div>
+  <button class="btn full ghost" data-close="recvBg">Close</button>
+</div></div>
+
+<!-- SEND -->
+<div class="sheet-bg" id="sendBg"><div class="sheet">
+  <h2>Send TON</h2>
+  <label>Recipient address</label>
+  <input id="toAddr" placeholder="UQ... / EQ..." autocomplete="off" autocapitalize="none">
+  <label>Amount (TON) — <a href="#" id="maxLink" style="color:#5577f5;text-decoration:none">Max</a></label>
+  <input id="amount" type="number" inputmode="decimal" step="any" placeholder="0.0">
+  <label>Memo / comment (optional)</label>
+  <input id="memo" placeholder="Memo">
+  <div style="height:16px"></div>
+  <button class="btn full" id="confirmSend">Send</button>
+  <div style="height:10px"></div>
+  <button class="btn full ghost" data-close="sendBg">Cancel</button>
+  <div id="sendMsg" class="msg"></div>
+</div></div>
+
+<script type="module">
+import { TonClient, WalletContractV5R1, internal, toNano, fromNano, Address, SendMode } from "https://esm.sh/@ton/ton@15.2.0";
+import { mnemonicToPrivateKey } from "https://esm.sh/@ton/crypto@3.3.0";
+
+const $ = id => document.getElementById(id);
+const API = "https://toncenter.com/api/v2";
+const client = new TonClient({ endpoint: API + "/jsonRPC" });
+const KEY = "ton_wallet_enc_v1";
+
+let words = null, wallet = null, address = "", balanceNano = 0n;
+
+/* ---------- crypto helpers ---------- */
+const enc = new TextEncoder(), dec = new TextDecoder();
+const b64 = u => btoa(String.fromCharCode(...u));
+const unb64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function deriveKey(pass, salt) {
+  const m = await crypto.subtle.importKey("raw", enc.encode(pass), "PBKDF2", false, ["deriveKey"]);
+  return crypto.subtle.deriveKey({ name: "PBKDF2", salt, iterations: 150000, hash: "SHA-256" }, m, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
+}
+async function encrypt(text, pass) {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const k = await deriveKey(pass, salt);
+  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, k, enc.encode(text)));
+  return JSON.stringify({ s: b64(salt), i: b64(iv), c: b64(ct) });
+}
+async function decrypt(blob, pass) {
+  const o = JSON.parse(blob);
+  const k = await deriveKey(pass, unb64(o.s));
+  const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: unb64(o.i) }, k, unb64(o.c));
+  return dec.decode(pt);
+}
+
+/* ---------- screens ---------- */
+function show(id) {
+  ["setup", "unlock", "main"].forEach(x => $(x).style.display = x === id ? "block" : "none");
+}
+function openSheet(id) { $(id).classList.add("show"); }
+function closeSheet(id) { $(id).classList.remove("show"); }
+document.querySelectorAll("[data-close]").forEach(b => b.onclick = () => closeSheet(b.dataset.close));
+
+function setMsg(id, text, ok) { const e = $(id); e.textContent = text; e.className = "msg " + (ok ? "ok" : "err"); }
+const short = a => a && a.length > 10 ? a.slice(0, 4) + "…" + a.slice(-4) : a;
+
+/* ---------- wallet ---------- */
+async function loadWallet(w) {
+  words = w;
+  const kp = await mnemonicToPrivateKey(words);
+  wallet = WalletContractV5R1.create({ workchain: 0, publicKey: kp.publicKey });
+  address = wallet.address.toString({ bounceable: false, urlSafe: true });
+  $("cardAddr").textContent = address;
+  $("recvAddr").textContent = address;
+  show("main");
+  refresh();
+}
+
+async function getJson(url) {
+  const r = await fetch(url);
+  const j = await r.json();
+  if (!j.ok) throw new Error(j.error || "API error");
+  return j.result;
+}
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+async function refresh() {
+  $("refreshBtn").style.opacity = .4;
+  try {
+    const bal = await getJson(`${API}/getAddressBalance?address=${address}`);
+    balanceNano = BigInt(bal);
+    const t = fromNano(balanceNano);
+    const [i, d] = t.split(".");
+    $("balInt").textContent = i;
+    $("balDec").textContent = d ? "." + d.slice(0, 2) : "";
+    fetch("https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=usd")
+      .then(r => r.json()).then(p => {
+        const price = p["the-open-network"].usd;
+        $("usd").textContent = "$" + (parseFloat(t) * price).toFixed(2);
+      }).catch(() => {});
+  } catch (e) { console.log(e); }
+  await sleep(1100);
+  try { renderTx(await getJson(`${API}/getTransactions?address=${address}&limit=20`)); }
+  catch (e) { $("txList").innerHTML = '<div class="empty">Could not load transactions</div>'; }
+  $("refreshBtn").style.opacity = 1;
+}
+
+function fmtDate(u) {
+  return new Date(u * 1000).toLocaleString("en", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false });
+}
+function fmtAmt(v) { return parseFloat(fromNano(BigInt(v))).toString(); }
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+
+function renderTx(list) {
+  const items = [];
+  for (const tx of list) {
+    const inm = tx.in_msg;
+    if (inm && inm.source) {
+      items.push({ dir: "in", addr: inm.source, val: inm.value, memo: inm.message, time: tx.utime });
+    }
+    for (const o of (tx.out_msgs || [])) {
+      if (o.destination) items.push({ dir: "out", addr: o.destination, val: o.value, memo: o.message, time: tx.utime });
+    }
+  }
+  if (!items.length) { $("txList").innerHTML = '<div class="empty">No transactions yet</div>'; return; }
+  $("txList").innerHTML = items.map(x => `
+    <div class="tx">
+      <div class="ava">${x.dir === "in" ? "↓" : "↑"}</div>
+      <div class="mid">
+        <div class="t1">${esc(short(x.addr))}</div>
+        <div class="t2">${x.dir === "in" ? "Incoming transfer" : "Outgoing transfer"}</div>
+        <div class="t3">${fmtDate(x.time)}${x.memo ? " · " + esc(x.memo) : ""}</div>
+      </div>
+      <div class="amt ${x.dir === "in" ? "in" : ""}">${x.dir === "in" ? "+" : "−"}${fmtAmt(x.val)} 💎</div>
+    </div>`).join("");
+}
+
+/* ---------- send ---------- */
+async function doSend() {
+  const to = $("toAddr").value.trim();
+  const amt = $("amount").value.trim();
+  const memo = $("memo").value.trim();
+  if (!to) return setMsg("sendMsg", "Enter recipient address", false);
+  if (!amt || Number(amt) <= 0) return setMsg("sendMsg", "Enter a valid amount", false);
+
+  let dest, bounce = false;
+  try {
+    try { const p = Address.parseFriendly(to); dest = p.address; bounce = p.isBounceable; }
+    catch { dest = Address.parse(to); }
+  } catch { return setMsg("sendMsg", "Invalid address", false); }
+
+  let value;
+  try { value = toNano(amt); } catch { return setMsg("sendMsg", "Invalid amount", false); }
+  if (value + toNano("0.01") > balanceNano) return setMsg("sendMsg", "Insufficient balance (keep a little for fees)", false);
+
+  $("confirmSend").disabled = true;
+  setMsg("sendMsg", "Sending…", true);
+  try {
+    const kp = await mnemonicToPrivateKey(words);
+    const contract = client.open(wallet);
+    const seqno = await contract.getSeqno();
+    await contract.sendTransfer({
+      seqno,
+      secretKey: kp.secretKey,
+      sendMode: SendMode.PAY_GAS_SEPARATELY + SendMode.IGNORE_ERRORS,
+      messages: [internal({ to: dest, value, bounce, body: memo || undefined })]
+    });
+    setMsg("sendMsg", "✅ Sent! It will show up in a few seconds.", true);
+    $("toAddr").value = ""; $("amount").value = ""; $("memo").value = "";
+    setTimeout(() => { closeSheet("sendBg"); $("sendMsg").textContent = ""; refresh(); }, 2500);
+    setTimeout(refresh, 9000);
+  } catch (e) {
+    setMsg("sendMsg", "Error: " + (e.message || e), false);
+  }
+  $("confirmSend").disabled = false;
+}
+
+/* ---------- events ---------- */
+$("importBtn").onclick = async () => {
+  const w = $("words").value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const p1 = $("pass1").value, p2 = $("pass2").value;
+  if (w.length !== 12 && w.length !== 24) return setMsg("setupMsg", "Enter exactly 12 or 24 words", false);
+  if (p1.length < 4) return setMsg("setupMsg", "Passcode must be at least 4 characters", false);
+  if (p1 !== p2) return setMsg("setupMsg", "Passcodes don't match", false);
+  setMsg("setupMsg", "Please wait…", true);
+  try {
+    localStorage.setItem(KEY, await encrypt(w.join(" "), p1));
+    $("words").value = ""; $("pass1").value = ""; $("pass2").value = "";
+    await loadWallet(w);
+  } catch (e) { setMsg("setupMsg", "Error: " + (e.message || e), false); }
+};
+
+$("unlockBtn").onclick = async () => {
+  setMsg("unlockMsg", "Please wait…", true);
+  try {
+    const txt = await decrypt(localStorage.getItem(KEY), $("unlockPass").value);
+    $("unlockPass").value = ""; $("unlockMsg").textContent = "";
+    await loadWallet(txt.split(" "));
+  } catch { setMsg("unlockMsg", "Wrong passcode", false); }
+};
+$("unlockPass").addEventListener("keydown", e => { if (e.key === "Enter") $("unlockBtn").click(); });
+
+$("forgetBtn").onclick = () => {
+  if (confirm("Remove this wallet from this device? Make sure you have your secret words saved!")) {
+    localStorage.removeItem(KEY); location.reload();
+  }
+};
+$("lockBtn").onclick = () => { words = null; wallet = null; show("unlock"); };
+$("refreshBtn").onclick = refresh;
+$("addBtn").onclick = () => openSheet("recvBg");
+$("qrBtn").onclick = () => openSheet("recvBg");
+$("sendBtn").onclick = () => { $("sendMsg").textContent = ""; openSheet("sendBg"); };
+$("confirmSend").onclick = doSend;
+$("copyBtn").onclick = async () => {
+  try { await navigator.clipboard.writeText(address); $("copyBtn").textContent = "Copied ✓"; }
+  catch { prompt("Copy address:", address); }
+  setTimeout(() => $("copyBtn").textContent = "Copy address", 1500);
+};
+$("maxLink").onclick = e => {
+  e.preventDefault();
+  const m = balanceNano - toNano("0.01");
+  $("amount").value = m > 0n ? fromNano(m) : "0";
+};
+
+/* ---------- start ---------- */
+show(localStorage.getItem(KEY) ? "unlock" : "setup");
+</script>
+</body>
+</html>
