@@ -7,7 +7,7 @@
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:#f1f1f4;font-family:-apple-system,Roboto,"Segoe UI",sans-serif;color:#111;min-height:100vh}
-.app{max-width:480px;margin:0 auto;padding:16px 16px 40px}
+.app{max-width:480px;margin:0 auto;padding:16px 16px 60px}
 .top{display:flex;align-items:center;justify-content:space-between;height:48px;margin-bottom:12px}
 .top h1{font-size:24px;margin:0;font-weight:700}
 .icon-btn{background:none;border:0;font-size:24px;padding:8px;color:#111}
@@ -46,12 +46,12 @@ input:focus,textarea:focus{border-color:#5577f5}
 textarea{min-height:110px;resize:none;direction:ltr}
 .msg{margin-top:12px;font-size:15px;text-align:center;min-height:20px;word-break:break-word}
 .err{color:#d93636}.ok{color:#2bb04a}
-.center{max-width:480px;margin:0 auto;padding:60px 20px}
+.center{max-width:480px;margin:0 auto;padding:60px 20px 120px}
 .center h1{text-align:center}
 .center p{text-align:center;color:#666}
 .addr-box{word-break:break-all;background:#f1f3f9;border-radius:16px;padding:14px;font-family:monospace;font-size:15px;text-align:center}
 .link{background:none;border:0;color:#d93636;font-size:15px;margin-top:20px;width:100%}
-#libStatus{position:fixed;left:0;right:0;bottom:0;padding:8px 12px;font-size:13px;text-align:center;background:#fff3cd;color:#664d03;z-index:20;word-break:break-word}
+#libStatus{position:fixed;left:0;right:0;bottom:0;padding:8px 12px;font-size:12px;text-align:left;direction:ltr;background:#fff3cd;color:#664d03;z-index:20;word-break:break-word;max-height:38vh;overflow:auto;white-space:pre-wrap}
 #libStatus.good{display:none}
 #libStatus.bad{background:#f8d7da;color:#842029}
 </style>
@@ -136,12 +136,13 @@ textarea{min-height:110px;resize:none;direction:ltr}
 <script>
 var $ = function (id) { return document.getElementById(id); };
 var API = "https://toncenter.com/api/v2";
+var API_KEY = "e08b96c939bcca03c136cbc8e48e0f49d4b622013cf97b7fa00f8ad553ff9910";
 var KEY = "ton_wallet_enc_v1";
 
 var words = null, wallet = null, address = "", balanceNano = 0n, client = null;
 var TON = null, CRYPTO = null;
 
-/* ---------- show errors on screen ---------- */
+/* ---------- on-screen status / debug ---------- */
 function setStatus(text, cls) {
   var e = $("libStatus");
   e.textContent = text;
@@ -152,39 +153,63 @@ window.addEventListener("unhandledrejection", function (e) {
   setStatus("Error: " + (e.reason && e.reason.message ? e.reason.message : e.reason), "bad");
 });
 
-/* ---------- load TON libraries (with fallbacks) ---------- */
-var SETS = [
-  ["https://esm.sh/@ton/ton@15.2.0?bundle", "https://esm.sh/@ton/crypto@3.3.0?bundle"],
-  ["https://esm.sh/@ton/ton@15.2.0", "https://esm.sh/@ton/crypto@3.3.0"],
-  ["https://cdn.jsdelivr.net/npm/@ton/ton@15.2.0/+esm", "https://cdn.jsdelivr.net/npm/@ton/crypto@3.3.0/+esm"],
-  ["https://esm.sh/@ton/ton@15.1.0?bundle", "https://esm.sh/@ton/crypto@3.3.0?bundle"]
+/* ---------- load TON libraries (many CDN fallbacks) ---------- */
+var TON_URLS = [
+  "https://esm.sh/@ton/ton@15",
+  "https://esm.sh/@ton/ton@15.2.0",
+  "https://esm.sh/@ton/ton",
+  "https://cdn.jsdelivr.net/npm/@ton/ton@15/+esm",
+  "https://fastly.jsdelivr.net/npm/@ton/ton@15/+esm",
+  "https://gcore.jsdelivr.net/npm/@ton/ton@15/+esm",
+  "https://esm.run/@ton/ton@15",
+  "https://cdn.skypack.dev/@ton/ton@15",
+  "https://esm.sh/@ton/ton@15.2.0?bundle"
+];
+var CRYPTO_URLS = [
+  "https://esm.sh/@ton/crypto@3",
+  "https://esm.sh/@ton/crypto@3.3.0",
+  "https://esm.sh/@ton/crypto",
+  "https://cdn.jsdelivr.net/npm/@ton/crypto@3/+esm",
+  "https://fastly.jsdelivr.net/npm/@ton/crypto@3/+esm",
+  "https://gcore.jsdelivr.net/npm/@ton/crypto@3/+esm",
+  "https://esm.run/@ton/crypto@3",
+  "https://cdn.skypack.dev/@ton/crypto@3",
+  "https://esm.sh/@ton/crypto@3.3.0?bundle"
 ];
 
+async function tryImport(urls, check, label, log) {
+  for (var i = 0; i < urls.length; i++) {
+    try {
+      setStatus("Loading " + label + " (" + (i + 1) + "/" + urls.length + ")…\n" + log.join("\n"));
+      var m = await import(urls[i]);
+      if (!check(m)) throw new Error("export missing");
+      log.push("OK  " + label + ": " + urls[i]);
+      return m;
+    } catch (e) {
+      log.push("FAIL " + label + " #" + (i + 1) + " " + urls[i].replace("https://", "") + " -> " + ((e && e.message) ? e.message.slice(0, 60) : e));
+    }
+  }
+  return null;
+}
+
 async function loadLibs() {
+  var log = [];
   try {
     if (!window.Buffer) {
       var b = await import("https://esm.sh/buffer@6.0.3");
       window.Buffer = b.Buffer || (b.default && b.default.Buffer);
     }
-  } catch (e) { /* ignore, esm.sh usually polyfills it */ }
+  } catch (e) { log.push("buffer polyfill skipped"); }
 
-  var lastErr = "";
-  for (var i = 0; i < SETS.length; i++) {
-    try {
-      setStatus("Loading libraries… (" + (i + 1) + "/" + SETS.length + ")");
-      var t = await import(SETS[i][0]);
-      var c = await import(SETS[i][1]);
-      if (!t.WalletContractV5R1) throw new Error("WalletContractV5R1 missing");
-      TON = t; CRYPTO = c;
-      client = new TON.TonClient({ endpoint: API + "/jsonRPC" });
-      setStatus("", "good");
-      return;
-    } catch (e) {
-      lastErr = (e && e.message) ? e.message : String(e);
-    }
+  TON = await tryImport(TON_URLS, function (m) { return m.WalletContractV5R1 && m.TonClient; }, "ton", log);
+  CRYPTO = TON && await tryImport(CRYPTO_URLS, function (m) { return m.mnemonicToPrivateKey; }, "crypto", log);
+
+  if (!TON || !CRYPTO) {
+    setStatus("Could not load libraries. Turn on VPN and reload.\n\n" + log.join("\n"), "bad");
+    throw new Error("libs failed");
   }
-  setStatus("Could not load libraries: " + lastErr + " — check your internet / VPN and reload.", "bad");
-  throw new Error("libs failed");
+  client = new TON.TonClient({ endpoint: API + "/jsonRPC", apiKey: API_KEY });
+  setStatus("", "good");
 }
 var libsReady = loadLibs();
 libsReady.catch(function () {});
@@ -235,10 +260,13 @@ async function loadWallet(w) {
   refresh();
 }
 
-async function getJson(url) {
-  var r = await fetch(url);
-  var j = await r.json();
-  if (!j.ok) throw new Error(j.error || "API error");
+async function getJson(path) {
+  var sep = path.indexOf("?") > -1 ? "&" : "?";
+  var r = await fetch(API + path + sep + "api_key=" + API_KEY);
+  var txt = await r.text();
+  var j;
+  try { j = JSON.parse(txt); } catch (e) { throw new Error("HTTP " + r.status + " " + txt.slice(0, 80)); }
+  if (!j.ok) throw new Error((j.error || "API error") + " (HTTP " + r.status + ")");
   return j.result;
 }
 function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
@@ -246,21 +274,25 @@ function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 async function refresh() {
   $("refreshBtn").style.opacity = .4;
   try {
-    var bal = await getJson(API + "/getAddressBalance?address=" + address);
+    var bal = await getJson("/getAddressBalance?address=" + address);
     balanceNano = BigInt(bal);
     var t = TON.fromNano(balanceNano);
     var parts = t.split(".");
     $("balInt").textContent = parts[0];
     $("balDec").textContent = parts[1] ? "." + parts[1].slice(0, 2) : "";
+    setStatus("", "good");
     fetch("https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=usd")
       .then(function (r) { return r.json(); }).then(function (p) {
         var price = p["the-open-network"].usd;
         $("usd").textContent = "$" + (parseFloat(t) * price).toFixed(2);
       }).catch(function () {});
-  } catch (e) { console.log(e); }
-  await sleep(1100);
-  try { renderTx(await getJson(API + "/getTransactions?address=" + address + "&limit=20")); }
-  catch (e) { $("txList").innerHTML = '<div class="empty">Could not load transactions</div>'; }
+  } catch (e) { setStatus("Balance error: " + (e.message || e), "bad"); }
+  await sleep(400);
+  try { renderTx(await getJson("/getTransactions?address=" + address + "&limit=20")); }
+  catch (e) {
+    $("txList").innerHTML = '<div class="empty">Could not load transactions</div>';
+    setStatus("Transactions error: " + (e.message || e), "bad");
+  }
   $("refreshBtn").style.opacity = 1;
 }
 
@@ -329,6 +361,7 @@ async function doSend() {
     setTimeout(refresh, 9000);
   } catch (e) {
     setMsg("sendMsg", "Error: " + (e.message || e), false);
+    setStatus("Send error: " + (e.message || e), "bad");
   }
   $("confirmSend").disabled = false;
 }
@@ -383,7 +416,7 @@ $("maxLink").onclick = function (e) {
   $("amount").value = m > 0n ? TON.fromNano(m) : "0";
 };
 
-/* ---------- start (shows immediately, before libraries load) ---------- */
+/* ---------- start ---------- */
 show(localStorage.getItem(KEY) ? "unlock" : "setup");
 </script>
 </body>
