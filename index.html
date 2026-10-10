@@ -5,505 +5,292 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Wallet</title>
 <style>
+:root{--bg:#f4f6f9;--card:#fff;--b1:#2481cc;--b2:#3390ec;--tx:#222;--mut:#707579;--grn:#2eaf4f;--red:#ff4d4f;--grad:linear-gradient(135deg,#2481cc,#3390ec)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:#f1f1f4;font-family:-apple-system,Roboto,"Segoe UI",sans-serif;color:#111;min-height:100vh}
-.app{max-width:480px;margin:0 auto;padding:16px 16px 60px}
-.top{display:flex;align-items:center;justify-content:space-between;height:48px;margin-bottom:12px}
-.top h1{font-size:24px;margin:0;font-weight:700}
-.icon-btn{background:none;border:0;font-size:24px;padding:8px;color:#111}
-.card{position:relative;height:200px;border-radius:32px;background:linear-gradient(135deg,#69c2f7 0%,#4a9be8 55%,#3d8ae0 100%);color:#fff;padding:24px;overflow:hidden;box-shadow:0 10px 30px rgba(61,138,224,.35)}
-.card .bal{position:absolute;left:24px;top:58px;display:flex;align-items:center;gap:10px;font-size:44px;font-weight:700}
-.card .bal span{font-size:44px}
-.card .bal small{color:#cfeaff;font-size:44px;font-weight:600}
-.card .usd{position:absolute;left:24px;top:116px;color:#d6efff;font-size:20px;font-weight:600}
-.card .name{position:absolute;left:24px;bottom:22px;font-family:monospace;font-weight:700;font-size:15px;letter-spacing:.5px}
-.card .addr{position:absolute;right:14px;top:16px;bottom:16px;writing-mode:vertical-rl;font-family:monospace;font-size:13px;color:#1d4fa8;opacity:.8;word-break:break-all;line-height:1.15}
-.card .qr{position:absolute;right:62px;top:50%;transform:translateY(-50%);width:64px;height:56px;border-radius:14px;background:linear-gradient(#f5f5f5,#cfcfcf);display:flex;align-items:center;justify-content:center;border:0;font-size:26px}
-.row{display:flex;gap:12px;margin:18px 0}
-.btn{flex:1;border:0;border-radius:30px;background:#5577f5;color:#fff;font-size:20px;font-weight:600;height:64px}
-.btn:active{opacity:.8}
-.btn:disabled{opacity:.5}
-.btn.full{width:100%;flex:none}
-.btn.ghost{background:#e4e7fb;color:#3a57d8}
-.list{background:#fff;border-radius:28px;padding:6px 0;overflow:hidden}
-.tx{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid #eee}
-.tx:last-child{border-bottom:0}
-.ava{width:52px;height:52px;border-radius:50%;background:linear-gradient(#3f9be8,#2f78d4);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;flex:none}
-.tx .mid{flex:1;min-width:0}
-.tx .t1{font-size:18px;font-weight:600}
-.tx .t2{color:#555;font-size:15px}
-.tx .t3{color:#888;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tx .amt{font-weight:700;font-size:18px;display:flex;align-items:center;gap:4px}
-.tx .amt.in{color:#2bb04a}
-.empty{padding:30px;text-align:center;color:#888}
-.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:flex-end;justify-content:center;z-index:10}
-.sheet-bg.show{display:flex}
-.sheet{background:#fff;width:100%;max-width:480px;border-radius:28px 28px 0 0;padding:22px 20px 30px;max-height:92vh;overflow:auto}
-.sheet h2{margin:0 0 14px;font-size:22px}
-label{display:block;font-size:14px;color:#666;margin:12px 0 6px}
-input,textarea{width:100%;border:1.5px solid #dde1ea;border-radius:16px;padding:14px;font-size:17px;background:#f7f8fb;outline:none;font-family:inherit;color:#111}
-input:focus,textarea:focus{border-color:#5577f5}
-textarea{min-height:110px;resize:none;direction:ltr}
-.msg{margin-top:12px;font-size:15px;text-align:center;min-height:20px;word-break:break-word}
-.err{color:#d93636}.ok{color:#2bb04a}
-.center{max-width:480px;margin:0 auto;padding:60px 20px 120px}
-.center h1{text-align:center}
-.center p{text-align:center;color:#666}
-.addr-box{word-break:break-all;background:#f1f3f9;border-radius:16px;padding:14px;font-family:monospace;font-size:15px;text-align:center}
-.link{background:none;border:0;color:#d93636;font-size:15px;margin-top:20px;width:100%}
-#libStatus{position:fixed;left:0;right:0;bottom:0;padding:8px 12px;font-size:12px;text-align:left;direction:ltr;background:#fff3cd;color:#664d03;z-index:20;word-break:break-word;max-height:38vh;overflow:auto;white-space:pre-wrap}
-#libStatus.good{display:none}
-#libStatus.bad{background:#f8d7da;color:#842029}
+body{margin:0;background:var(--bg);font-family:Inter,Roboto,-apple-system,"Segoe UI",sans-serif;color:var(--tx);min-height:100vh}
+button{font-family:inherit;border:0;cursor:pointer;transition:transform .15s ease,opacity .15s ease,background .15s ease}
+button:active,.tx:active,.mi:active{transform:scale(.96)}
+.app{max-width:480px;margin:0 auto;padding:12px 16px 60px;animation:fade .4s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.top{display:flex;align-items:center;justify-content:space-between;height:52px}
+.top h1{font-size:26px;margin:0;font-weight:700}
+.ib{background:none;font-size:22px;padding:8px 10px;color:var(--tx);border-radius:50%}
+.card{position:relative;height:200px;border-radius:28px;background:linear-gradient(135deg,#1e5cbe,#4ba3e3);color:#fff;padding:24px;overflow:hidden;box-shadow:0 12px 30px rgba(30,92,190,.3)}
+.card:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 10%,rgba(255,255,255,.35),transparent 45%),repeating-radial-gradient(circle at 70% 60%,rgba(255,255,255,.07) 0 2px,transparent 2px 9px);pointer-events:none}
+.card:after{content:"";position:absolute;top:-50%;left:-60%;width:40%;height:200%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent);transform:rotate(20deg);animation:shine 5s ease-in-out infinite}
+@keyframes shine{0%,60%{left:-60%}100%{left:130%}}
+.bal{position:absolute;left:24px;top:52px;display:flex;align-items:center;gap:10px;font-size:42px;font-weight:700;z-index:1}
+.bal small{font-size:30px;font-weight:600;color:#d3ebff}
+.usd{position:absolute;left:24px;top:112px;color:#d3ebff;font-size:20px;font-weight:600;z-index:1}
+.hd{position:absolute;left:24px;bottom:22px;font-family:monospace;font-weight:700;font-size:14px;z-index:1}
+.addr{position:absolute;right:14px;top:16px;bottom:16px;writing-mode:vertical-rl;font-family:monospace;font-size:12px;opacity:.75;word-break:break-all;line-height:1.15;z-index:1}
+.qr{position:absolute;right:58px;top:50%;transform:translateY(-50%);width:60px;height:54px;border-radius:16px;background:rgba(255,255,255,.88);font-size:24px;z-index:1}
+.row{display:flex;gap:12px;margin:16px 0}
+.btn{flex:1;border-radius:30px;background:var(--grad);color:#fff;font-size:18px;font-weight:600;height:58px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn.full{width:100%;flex:none}.btn:disabled{opacity:.45}
+.btn.ghost{background:#e5eefa;color:var(--b1)}
+.list{background:var(--card);border-radius:24px;padding:4px 0;overflow:hidden}
+.tx{display:flex;align-items:center;gap:14px;padding:13px 16px;border-bottom:1px solid #eef0f3;transition:background .2s,transform .15s}
+.tx:active{background:#eaf2fb}.tx:last-child{border:0}
+.ava{width:48px;height:48px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;flex:none}
+.ava.in{background:linear-gradient(135deg,#2eaf4f,#52c96f)}
+.tx .m{flex:1;min-width:0}.t1{font-size:17px;font-weight:600}.t2{color:var(--mut);font-size:14px}.t3{color:var(--mut);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.amt{font-weight:700;font-size:17px}.amt.in{color:var(--grn)}
+.empty{padding:28px;text-align:center;color:var(--mut)}
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:flex-end;justify-content:center;z-index:50;opacity:0;pointer-events:none;transition:opacity .25s}
+.sheet-bg.show{opacity:1;pointer-events:auto}
+.sheet{background:#fff;width:100%;max-width:480px;border-radius:26px 26px 0 0;padding:22px 20px 30px;transform:translateY(100%);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.sheet-bg.show .sheet{transform:none}
+.sheet h2{margin:0 0 12px}
+.abox{word-break:break-all;background:var(--bg);border-radius:16px;padding:14px;font-family:monospace;font-size:14px;text-align:center}
+#menuBg{position:fixed;inset:0;z-index:45;display:none}#menuBg.show{display:block}
+#menu{position:absolute;top:60px;right:14px;width:260px;background:#fff;border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,.18);overflow:hidden;opacity:0;transform:scale(.85);transform-origin:top right;transition:opacity .2s,transform .2s cubic-bezier(.2,.8,.2,1)}
+#menuBg.show #menu{opacity:1;transform:none}
+.mi{display:flex;align-items:center;gap:12px;padding:14px 16px;font-size:16px;border-bottom:1px solid #f0f2f5;transition:background .2s,transform .15s}
+.mi:active{background:#eaf2fb}.mi:last-child{border:0}.mi small{display:block;color:var(--grn);font-size:12px}
+.page{position:fixed;inset:0;background:var(--bg);transform:translateX(100%);transition:transform .32s cubic-bezier(.2,.8,.2,1);z-index:40;overflow:auto}
+.page.show{transform:none}.page.kp{padding-bottom:350px}
+.pin{max-width:480px;margin:0 auto;padding:8px 16px 30px}
+.hdr{display:flex;align-items:center;gap:10px;height:52px;font-size:20px;font-weight:700}
+.rec{background:#fff;border-radius:22px;padding:14px;margin-top:6px}
+.badge{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.badge .ava{width:44px;height:44px;font-size:16px;font-weight:700}
+.badge b{display:block}.badge span{color:var(--mut);font-size:13px;font-family:monospace}
+input{width:100%;border:1.5px solid #e2e6ea;border-radius:14px;padding:13px;font-size:16px;background:#f9fafb;outline:none;font-family:inherit;color:var(--tx);transition:border-color .2s}
+input:focus{border-color:var(--b2)}
+.amtbox{text-align:center;margin:26px 0 8px}
+.amtn{display:inline-flex;align-items:center;gap:10px;font-size:52px;font-weight:700;color:var(--tx)}
+.amtn small{font-size:24px;color:var(--mut);font-weight:600}
+.pop{animation:pop .18s ease}@keyframes pop{from{transform:scale(.92);opacity:.6}to{transform:none;opacity:1}}
+.shake{animation:shake .4s ease}@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.conv{text-align:center;color:var(--mut);font-size:17px;transition:opacity .2s}
+.info{text-align:center;color:var(--mut);font-size:14px;margin:8px 0 4px}
+.warn{text-align:center;color:var(--red);font-size:14px;font-weight:600;height:0;overflow:hidden;opacity:0;transition:all .25s}
+.warn.show{height:22px;opacity:1;margin:6px 0}
+#kp{position:fixed;left:0;right:0;bottom:0;background:#fff;border-radius:24px 24px 0 0;padding:12px 14px calc(14px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);z-index:60;box-shadow:0 -8px 30px rgba(0,0,0,.08)}
+#kp.show{transform:none}
+.keys{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.key{height:56px;border-radius:16px;background:#f4f6f9;font-size:26px;font-weight:600;color:var(--tx)}
+.key:active{background:#d9e8f7;transform:scale(.96)}
+.done{grid-column:1/-1;height:54px;font-size:18px}
+label{display:block;font-size:14px;color:var(--mut);margin:12px 0 6px}
+textarea{width:100%;min-height:100px;border:1.5px solid #e2e6ea;border-radius:14px;padding:13px;font-size:16px;background:#f9fafb;outline:none;font-family:inherit;resize:none}
+.center{max-width:480px;margin:0 auto;padding:56px 20px 120px}.center h1{text-align:center}.center p{text-align:center;color:var(--mut)}
+.msg{margin-top:12px;font-size:15px;text-align:center;min-height:20px;word-break:break-word}.err{color:var(--red)}.ok{color:var(--grn)}
+.link{background:none;color:var(--red);font-size:15px;margin-top:18px;width:100%}
+.sp{width:20px;height:20px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+#toast{position:fixed;left:50%;bottom:90px;transform:translate(-50%,20px);background:rgba(34,34,34,.92);color:#fff;padding:12px 20px;border-radius:24px;font-size:15px;opacity:0;transition:all .25s;z-index:90;pointer-events:none;max-width:90%;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+#libStatus{position:fixed;left:0;right:0;bottom:0;padding:8px 12px;font-size:12px;text-align:left;direction:ltr;background:#fff3cd;color:#664d03;z-index:95;word-break:break-word;max-height:38vh;overflow:auto;white-space:pre-wrap}
+#libStatus.good{display:none}#libStatus.bad{background:#f8d7da;color:#842029}
 </style>
 </head>
 <body>
-
 <div id="libStatus">Loading libraries…</div>
+<div id="toast"></div>
 
-<!-- SETUP -->
 <div id="setup" class="center" style="display:none">
-  <h1>💎 Import Wallet</h1>
-  <p>Enter your 12 (or 24) secret words.</p>
+  <h1>💎 Import Wallet</h1><p>Enter your 12 (or 24) secret words.</p>
   <label>Secret words</label>
   <textarea id="words" placeholder="word1 word2 word3 ..." autocapitalize="none" autocomplete="off" spellcheck="false"></textarea>
-  <label>Set a passcode (encrypts the words on this device)</label>
+  <label>Passcode (encrypts the words on this device)</label>
   <input id="pass1" type="password" placeholder="Passcode (min 4 chars)">
   <input id="pass2" type="password" placeholder="Repeat passcode" style="margin-top:10px">
-  <div style="height:16px"></div>
-  <button class="btn full" id="importBtn">Import</button>
-  <div id="setupMsg" class="msg"></div>
+  <div style="height:16px"></div><button class="btn full" id="importBtn">Import</button><div id="setupMsg" class="msg"></div>
 </div>
 
-<!-- UNLOCK -->
 <div id="unlock" class="center" style="display:none">
-  <h1>💎 Wallet</h1>
-  <p>Enter your passcode</p>
+  <h1>💎 Wallet</h1><p>Enter your passcode</p>
   <input id="unlockPass" type="password" placeholder="Passcode">
-  <div style="height:16px"></div>
-  <button class="btn full" id="unlockBtn">Unlock</button>
-  <div id="unlockMsg" class="msg"></div>
+  <div style="height:16px"></div><button class="btn full" id="unlockBtn">Unlock</button><div id="unlockMsg" class="msg"></div>
   <button class="link" id="forgetBtn">Remove wallet from this device</button>
 </div>
 
-<!-- MAIN -->
 <div id="main" class="app" style="display:none">
-  <div class="top">
-    <h1>Wallet</h1>
-    <button class="icon-btn" id="refreshBtn" title="Refresh">⟳</button>
-  </div>
+  <div class="top"><h1>Wallet</h1><div><button class="ib" id="refreshBtn">⟳</button><button class="ib" id="menuBtn">⋮</button></div></div>
   <div class="card">
-    <div class="bal">💎 <span id="balInt">0</span><small id="balDec"></small><small style="font-size:30px;margin-left:2px">TON</small></div>
+    <div class="bal"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 12L2 9z" fill="#bfe3ff"/><path d="M2 9h20M9 3l3 6 3-6M12 21 9 9m3 12 3-12" stroke="#fff" stroke-width="1" fill="none"/></svg><span id="balN">0</span><small>TON</small></div>
     <div class="usd" id="usd">$0.00</div>
-    <div class="name" id="cardName">MY WALLET</div>
+    <div class="hd">@GIFTSDouble</div>
     <button class="qr" id="qrBtn">▣</button>
     <div class="addr" id="cardAddr"></div>
   </div>
-  <div class="row">
-    <button class="btn" id="addBtn">Add Funds</button>
-    <button class="btn" id="sendBtn">Send</button>
-  </div>
+  <div class="row"><button class="btn" id="addBtn">⊕ Add Funds</button><button class="btn" id="sendBtn">➤ Send</button></div>
   <div class="list" id="txList"><div class="empty">Loading…</div></div>
-  <button class="link" id="lockBtn" style="color:#888">Lock</button>
 </div>
 
-<!-- RECEIVE -->
-<div class="sheet-bg" id="recvBg"><div class="sheet">
-  <h2>Add Funds</h2>
-  <p style="color:#666;margin-top:0">Send TON to this address:</p>
-  <div class="addr-box" id="recvAddr"></div>
-  <div style="height:14px"></div>
-  <button class="btn full" id="copyBtn">Copy address</button>
-  <div style="height:10px"></div>
-  <button class="btn full ghost" data-close="recvBg">Close</button>
+<div id="menuBg"><div id="menu">
+  <button class="mi" style="width:100%;background:none;text-align:left" data-m="cur">💲 Currency</button>
+  <button class="mi" style="width:100%;background:none;text-align:left" data-m="lock">🔒 Passcode Lock</button>
+  <button class="mi" style="width:100%;background:none;text-align:left" data-m="keys">🔑 Keys &amp; Backup</button>
+  <button class="mi" style="width:100%;background:none;text-align:left" data-m="apps"><span>🔗 Connected Apps<small>● STON.fi</small></span></button>
+  <button class="mi" style="width:100%;background:none;text-align:left" data-m="what">❓ What is Wallet?</button>
 </div></div>
 
-<!-- SEND -->
-<div class="sheet-bg" id="sendBg"><div class="sheet">
-  <h2>Send TON</h2>
-  <label>Recipient address</label>
-  <input id="toAddr" placeholder="UQ... / EQ..." autocomplete="off" autocapitalize="none">
-  <label>Amount (TON) — <a href="#" id="maxLink" style="color:#5577f5;text-decoration:none">Max</a></label>
-  <input id="amount" type="number" inputmode="decimal" step="any" placeholder="0.0">
-  <label>Memo / comment (optional)</label>
-  <input id="memo" placeholder="Memo">
-  <div style="height:16px"></div>
-  <button class="btn full" id="confirmSend">Send</button>
-  <div style="height:10px"></div>
-  <button class="btn full ghost" data-close="sendBg">Cancel</button>
-  <div id="sendMsg" class="msg"></div>
+<div class="sheet-bg" id="recvBg"><div class="sheet">
+  <h2>Add Funds</h2><p style="color:var(--mut);margin-top:0">Send TON to this address:</p>
+  <div class="abox" id="recvAddr"></div><div style="height:14px"></div>
+  <button class="btn full" id="copyBtn">Copy address</button><div style="height:10px"></div>
+  <button class="btn full ghost" id="recvClose">Close</button>
 </div></div>
+
+<div class="page" id="sendPage"><div class="pin">
+  <div class="hdr"><button class="ib" id="backBtn">←</button>Send money to</div>
+  <div class="rec">
+    <div class="badge"><div class="ava" id="rAva">?</div><div><b id="rName">Recipient</b><span id="rAddr">Enter address below</span></div></div>
+    <input id="toAddr" placeholder="Wallet address (UQ… / EQ…)" autocomplete="off" autocapitalize="none">
+    <input id="memo" placeholder="Memo (optional)" style="margin-top:8px">
+  </div>
+  <div class="amtbox" id="amtBox"><div class="amtn" id="amtN"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 12L2 9z" fill="#3390ec"/><path d="M2 9h20M9 3l3 6 3-6" stroke="#fff" stroke-width="1" fill="none"/></svg><span id="amtV">0</span><small>TON</small></div></div>
+  <div class="conv" id="conv">= $0.00</div>
+  <div class="warn" id="warn">Insufficient funds</div>
+  <div class="info" id="balInfo">Balance: 0 TON</div>
+  <div class="info">Network fee: ~0.005 TON</div>
+  <div style="height:14px"></div>
+  <button class="btn full" id="goBtn" disabled>Continue</button>
+</div></div>
+
+<div id="kp"><div class="keys" id="keys"></div></div>
 
 <script>
-var $ = function (id) { return document.getElementById(id); };
-var API = "https://toncenter.com/api/v2";
-var API_KEY = "e08b96c939bcca03c136cbc8e48e0f49d4b622013cf97b7fa00f8ad553ff9910";
-var KEY = "ton_wallet_enc_v1";
-var CHOICE_KEY = "ton_wallet_choice_v1";
+var $=function(i){return document.getElementById(i)};
+var API="https://toncenter.com/api/v2",API_KEY="e08b96c939bcca03c136cbc8e48e0f49d4b622013cf97b7fa00f8ad553ff9910";
+var KEY="ton_wallet_enc_v1",CHOICE="ton_wallet_choice_v1",FEE="0.01";
+var words=null,wallet=null,kp0=null,address="",balNano=0n,client=null,TON=null,CR=null,price=0,amt="0",wasBad=false;
 
-var words = null, wallet = null, currentKp = null, address = "", balanceNano = 0n, client = null;
-var TON = null, CRYPTO = null;
+function setStatus(t,c){var e=$("libStatus");e.textContent=t;e.className=c||""}
+function toast(t){var e=$("toast");e.textContent=t;e.className="show";clearTimeout(toast.t);toast.t=setTimeout(function(){e.className=""},2200)}
+window.addEventListener("error",function(e){if(!e.message||/^Script error/.test(e.message))return;setStatus("Error: "+e.message,"bad")});
+window.addEventListener("unhandledrejection",function(e){setStatus("Error: "+(e.reason&&e.reason.message?e.reason.message:e.reason),"bad")});
 
-/* ---------- on-screen status / debug ---------- */
-function setStatus(text, cls) {
-  var e = $("libStatus");
-  e.textContent = text;
-  e.className = cls || "";
-}
-window.addEventListener("error", function (e) {
-  // "Script error." is an opaque cross-origin message from CDN scripts, not useful and not fatal
-  if (!e.message || e.message === "Script error." || e.message === "Script error") return;
-  setStatus("Error: " + e.message, "bad");
-});
-window.addEventListener("unhandledrejection", function (e) {
-  setStatus("Error: " + (e.reason && e.reason.message ? e.reason.message : e.reason), "bad");
-});
+/* ---- libraries ---- */
+var TU=["https://esm.sh/@ton/ton@15","https://esm.sh/@ton/ton@15.2.0","https://cdn.jsdelivr.net/npm/@ton/ton@15/+esm","https://fastly.jsdelivr.net/npm/@ton/ton@15/+esm","https://esm.run/@ton/ton@15"];
+var CU=["https://esm.sh/@ton/crypto@3","https://esm.sh/@ton/crypto@3.3.0","https://cdn.jsdelivr.net/npm/@ton/crypto@3/+esm","https://fastly.jsdelivr.net/npm/@ton/crypto@3/+esm","https://esm.run/@ton/crypto@3"];
+async function tryImp(urls,ok,lb,log){for(var i=0;i<urls.length;i++){try{setStatus("Loading "+lb+" ("+(i+1)+"/"+urls.length+")…\n"+log.join("\n"));var m=await import(urls[i]);if(!ok(m))throw new Error("export missing");return m}catch(e){log.push("FAIL "+urls[i].replace("https://","")+" -> "+(e&&e.message?e.message.slice(0,50):e))}}return null}
+async function loadLibs(){var log=[];
+ try{if(!window.Buffer){var b=await import("https://esm.sh/buffer@6.0.3");window.Buffer=b.Buffer||(b.default&&b.default.Buffer)}}catch(e){}
+ TON=await tryImp(TU,function(m){return m.WalletContractV5R1&&m.WalletContractV4&&m.TonClient},"ton",log);
+ CR=TON&&await tryImp(CU,function(m){return m.mnemonicToPrivateKey&&m.keyPairFromSeed},"crypto",log);
+ if(!TON||!CR){setStatus("Could not load libraries. Turn on VPN and reload.\n\n"+log.join("\n"),"bad");throw new Error("libs failed")}
+ client=new TON.TonClient({endpoint:API+"/jsonRPC",apiKey:API_KEY});setStatus("","good")}
+var libsReady=loadLibs();libsReady.catch(function(){});
 
-/* ---------- load TON libraries (many CDN fallbacks) ---------- */
-var TON_URLS = [
-  "https://esm.sh/@ton/ton@15",
-  "https://esm.sh/@ton/ton@15.2.0",
-  "https://esm.sh/@ton/ton",
-  "https://cdn.jsdelivr.net/npm/@ton/ton@15/+esm",
-  "https://fastly.jsdelivr.net/npm/@ton/ton@15/+esm",
-  "https://gcore.jsdelivr.net/npm/@ton/ton@15/+esm",
-  "https://esm.run/@ton/ton@15",
-  "https://cdn.skypack.dev/@ton/ton@15",
-  "https://esm.sh/@ton/ton@15.2.0?bundle"
-];
-var CRYPTO_URLS = [
-  "https://esm.sh/@ton/crypto@3",
-  "https://esm.sh/@ton/crypto@3.3.0",
-  "https://esm.sh/@ton/crypto",
-  "https://cdn.jsdelivr.net/npm/@ton/crypto@3/+esm",
-  "https://fastly.jsdelivr.net/npm/@ton/crypto@3/+esm",
-  "https://gcore.jsdelivr.net/npm/@ton/crypto@3/+esm",
-  "https://esm.run/@ton/crypto@3",
-  "https://cdn.skypack.dev/@ton/crypto@3",
-  "https://esm.sh/@ton/crypto@3.3.0?bundle"
-];
+/* ---- encryption ---- */
+var enc=new TextEncoder(),dec=new TextDecoder();
+function b64(u){var s="";for(var i=0;i<u.length;i++)s+=String.fromCharCode(u[i]);return btoa(s)}
+function unb64(s){var r=atob(s),u=new Uint8Array(r.length);for(var i=0;i<r.length;i++)u[i]=r.charCodeAt(i);return u}
+async function dk(p,salt){var m=await crypto.subtle.importKey("raw",enc.encode(p),"PBKDF2",false,["deriveKey"]);return crypto.subtle.deriveKey({name:"PBKDF2",salt:salt,iterations:150000,hash:"SHA-256"},m,{name:"AES-GCM",length:256},false,["encrypt","decrypt"])}
+async function encr(t,p){var s=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),k=await dk(p,s);var c=new Uint8Array(await crypto.subtle.encrypt({name:"AES-GCM",iv:iv},k,enc.encode(t)));return JSON.stringify({s:b64(s),i:b64(iv),c:b64(c)})}
+async function decr(bl,p){var o=JSON.parse(bl),k=await dk(p,unb64(o.s));return dec.decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:unb64(o.i)},k,unb64(o.c)))}
 
-async function tryImport(urls, check, label, log) {
-  for (var i = 0; i < urls.length; i++) {
-    try {
-      setStatus("Loading " + label + " (" + (i + 1) + "/" + urls.length + ")…\n" + log.join("\n"));
-      var m = await import(urls[i]);
-      if (!check(m)) throw new Error("export missing");
-      log.push("OK  " + label + ": " + urls[i]);
-      return m;
-    } catch (e) {
-      log.push("FAIL " + label + " #" + (i + 1) + " " + urls[i].replace("https://", "") + " -> " + ((e && e.message) ? e.message.slice(0, 60) : e));
-    }
-  }
-  return null;
-}
+/* ---- key derivation ---- */
+function toBuf(u){return window.Buffer?window.Buffer.from(u):u}
+async function hm(k,d){var key=await crypto.subtle.importKey("raw",k,{name:"HMAC",hash:"SHA-512"},false,["sign"]);return new Uint8Array(await crypto.subtle.sign("HMAC",key,d))}
+async function bipKp(w){var m=await crypto.subtle.importKey("raw",enc.encode(w.join(" ").normalize("NFKD")),"PBKDF2",false,["deriveBits"]);
+ var seed=new Uint8Array(await crypto.subtle.deriveBits({name:"PBKDF2",salt:enc.encode("mnemonic"),iterations:2048,hash:"SHA-512"},m,512));
+ var I=await hm(enc.encode("ed25519 seed"),seed),k=I.slice(0,32),c=I.slice(32),path=[44,607,0];
+ for(var i=0;i<3;i++){var x=(path[i]|0x80000000)>>>0,d=new Uint8Array(37);d.set(k,1);d[33]=x>>>24&255;d[34]=x>>>16&255;d[35]=x>>>8&255;d[36]=x&255;I=await hm(c,d);k=I.slice(0,32);c=I.slice(32)}
+ return CR.keyPairFromSeed(toBuf(k))}
+var CANDS=[{id:"ton-v5",d:"ton",v:"V5R1"},{id:"bip-v5",d:"bip",v:"V5R1"},{id:"ton-v4",d:"ton",v:"V4R2"},{id:"bip-v4",d:"bip",v:"V4R2"}];
+async function build(c,w){var kp=c.d==="ton"?await CR.mnemonicToPrivateKey(w):await bipKp(w);
+ var wl=c.v==="V5R1"?TON.WalletContractV5R1.create({workchain:0,publicKey:kp.publicKey}):TON.WalletContractV4.create({workchain:0,publicKey:kp.publicKey});
+ return{id:c.id,kp:kp,wallet:wl,addr:wl.address.toString({bounceable:false,urlSafe:true}),label:c.v+" / "+(c.d==="ton"?"TON-standard":"BIP39")}}
 
-async function loadLibs() {
-  var log = [];
-  try {
-    if (!window.Buffer) {
-      var b = await import("https://esm.sh/buffer@6.0.3");
-      window.Buffer = b.Buffer || (b.default && b.default.Buffer);
-    }
-  } catch (e) { log.push("buffer polyfill skipped"); }
+/* ---- helpers ---- */
+function show(id){["setup","unlock","main"].forEach(function(x){$(x).style.display=x===id?"block":"none"})}
+function setMsg(id,t,ok){var e=$(id);e.textContent=t;e.className="msg "+(ok?"ok":"err")}
+function short(a){return a&&a.length>10?a.slice(0,4)+"…"+a.slice(-4):a}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function sleep(ms){return new Promise(function(r){setTimeout(r,ms)})}
+function buzz(){try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}}
+async function api(p){var r=await fetch(API+p+(p.indexOf("?")>-1?"&":"?")+"api_key="+API_KEY),t=await r.text(),j;try{j=JSON.parse(t)}catch(e){throw new Error("HTTP "+r.status+" "+t.slice(0,80))}if(!j.ok)throw new Error((j.error||"API error")+" (HTTP "+r.status+")");return j.result}
 
-  TON = await tryImport(TON_URLS, function (m) { return m.WalletContractV5R1 && m.WalletContractV4 && m.TonClient; }, "ton", log);
-  CRYPTO = TON && await tryImport(CRYPTO_URLS, function (m) { return m.mnemonicToPrivateKey && m.keyPairFromSeed; }, "crypto", log);
+/* ---- wallet load ---- */
+async function loadWallet(w){await libsReady;words=w;setStatus("Detecting your wallet…");
+ var saved=localStorage.getItem(CHOICE),chosen=null,list=[],notes=[];
+ if(saved){var cf=CANDS.filter(function(c){return c.id===saved})[0];if(cf)chosen=await build(cf,words)}
+ if(!chosen){for(var i=0;i<CANDS.length;i++){var cd=await build(CANDS[i],words);list.push(cd);
+   try{var inf=await api("/getAddressInformation?address="+cd.addr),b=BigInt(inf.balance||"0");notes.push(cd.label+"\n"+cd.addr+"\nstate: "+inf.state+" | balance: "+TON.fromNano(b));if(inf.state!=="uninitialized"||b>0n){chosen=cd;break}}catch(e){notes.push(cd.label+"\n"+cd.addr+"\nAPI error: "+(e.message||e))}
+   await sleep(300)}
+  if(chosen){localStorage.setItem(CHOICE,chosen.id);setStatus("","good")}
+  else{chosen=list[0];setStatus("No active wallet found for these words. Compare with your real wallet address:\n\n"+notes.join("\n\n"),"bad")}
+ }else setStatus("","good");
+ kp0=chosen.kp;wallet=chosen.wallet;address=chosen.addr;
+ $("cardAddr").textContent=address;$("recvAddr").textContent=address;show("main");refresh()}
 
-  if (!TON || !CRYPTO) {
-    setStatus("Could not load libraries. Turn on VPN and reload.\n\n" + log.join("\n"), "bad");
-    throw new Error("libs failed");
-  }
-  client = new TON.TonClient({ endpoint: API + "/jsonRPC", apiKey: API_KEY });
-  setStatus("", "good");
-}
-var libsReady = loadLibs();
-libsReady.catch(function () {});
+async function refresh(){var rb=$("refreshBtn");rb.style.opacity=.4;
+ try{balNano=BigInt(await api("/getAddressBalance?address="+address));var t=TON.fromNano(balNano);$("balN").textContent=parseFloat(t).toString();
+  fetch("https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=usd").then(function(r){return r.json()}).then(function(p){price=p["the-open-network"].usd;$("usd").textContent="$"+(parseFloat(t)*price).toFixed(2);upd()}).catch(function(){})}
+ catch(e){setStatus("Balance error: "+(e.message||e),"bad")}
+ await sleep(400);
+ try{renderTx(await api("/getTransactions?address="+address+"&limit=20"))}catch(e){$("txList").innerHTML='<div class="empty">Could not load transactions</div>';setStatus("Transactions error: "+(e.message||e),"bad")}
+ rb.style.opacity=1}
+function fd(u){return new Date(u*1000).toLocaleString("en",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit",hour12:false})}
+function renderTx(l){var it=[];l.forEach(function(tx){var i=tx.in_msg;if(i&&i.source)it.push({d:"in",a:i.source,v:i.value,m:i.message,t:tx.utime});(tx.out_msgs||[]).forEach(function(o){if(o.destination)it.push({d:"out",a:o.destination,v:o.value,m:o.message,t:tx.utime})})});
+ if(!it.length){$("txList").innerHTML='<div class="empty">No transactions yet</div>';return}
+ $("txList").innerHTML=it.map(function(x){var n=x.d==="in";return'<div class="tx"><div class="ava '+(n?"in":"")+'">'+(n?"↓":"↑")+'</div><div class="m"><div class="t1">'+esc(short(x.a))+'</div><div class="t2">'+(n?"Incoming":"Outgoing")+' transfer</div><div class="t3">'+fd(x.t)+(x.m?" · "+esc(x.m):"")+'</div></div><div class="amt '+(n?"in":"")+'">'+(n?"+":"−")+parseFloat(TON.fromNano(BigInt(x.v)))+' 💎</div></div>'}).join("")}
 
-/* ---------- crypto helpers ---------- */
-var enc = new TextEncoder(), dec = new TextDecoder();
-function b64(u) { var s = ""; for (var i = 0; i < u.length; i++) s += String.fromCharCode(u[i]); return btoa(s); }
-function unb64(s) { var r = atob(s), u = new Uint8Array(r.length); for (var i = 0; i < r.length; i++) u[i] = r.charCodeAt(i); return u; }
-async function deriveKey(pass, salt) {
-  var m = await crypto.subtle.importKey("raw", enc.encode(pass), "PBKDF2", false, ["deriveKey"]);
-  return crypto.subtle.deriveKey({ name: "PBKDF2", salt: salt, iterations: 150000, hash: "SHA-256" }, m, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
-}
-async function encrypt(text, pass) {
-  var salt = crypto.getRandomValues(new Uint8Array(16));
-  var iv = crypto.getRandomValues(new Uint8Array(12));
-  var k = await deriveKey(pass, salt);
-  var ct = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, k, enc.encode(text)));
-  return JSON.stringify({ s: b64(salt), i: b64(iv), c: b64(ct) });
-}
-async function decrypt(blob, pass) {
-  var o = JSON.parse(blob);
-  var k = await deriveKey(pass, unb64(o.s));
-  var pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: unb64(o.i) }, k, unb64(o.c));
-  return dec.decode(pt);
-}
+/* ---- menu & sheets ---- */
+$("menuBtn").onclick=function(){$("menuBg").classList.add("show")};
+$("menuBg").onclick=function(e){if(e.target.id==="menuBg")$("menuBg").classList.remove("show")};
+document.querySelectorAll("[data-m]").forEach(function(b){b.onclick=function(){$("menuBg").classList.remove("show");var m=b.dataset.m;
+ if(m==="lock"){words=null;wallet=null;kp0=null;show("unlock")}
+ else if(m==="keys")toast("Your words are stored encrypted on this device only")
+ else if(m==="cur")toast("Currency: USD")
+ else if(m==="apps")toast("STON.fi is connected")
+ else toast("Non-custodial TON wallet: only you hold the keys")}});
+$("addBtn").onclick=$("qrBtn").onclick=function(){$("recvBg").classList.add("show")};
+$("recvClose").onclick=function(){$("recvBg").classList.remove("show")};
+$("recvBg").onclick=function(e){if(e.target.id==="recvBg")$("recvBg").classList.remove("show")};
+$("copyBtn").onclick=async function(){try{await navigator.clipboard.writeText(address);toast("Address copied")}catch(e){prompt("Copy address:",address)}};
+$("refreshBtn").onclick=refresh;
 
-/* ---------- key derivation ---------- */
-function toBuf(u8) { return window.Buffer ? window.Buffer.from(u8) : u8; }
+/* ---- send screen ---- */
+var keys=["1","2","3","4","5","6","7","8","9",".","0","⌫"];
+$("keys").innerHTML=keys.map(function(k){return'<button class="key" data-k="'+k+'">'+k+'</button>'}).join("")+'<button class="btn done" id="doneBtn">Done</button>';
+function kpShow(s){$("kp").classList.toggle("show",s);$("sendPage").classList.toggle("kp",s)}
+function openSend(){amt="0";wasBad=false;$("toAddr").value="";$("memo").value="";recip();upd();$("balInfo").textContent="Balance: "+parseFloat(TON.fromNano(balNano))+" TON";$("sendPage").classList.add("show");setTimeout(function(){kpShow(true)},250)}
+function closeSend(){kpShow(false);$("sendPage").classList.remove("show")}
+$("sendBtn").onclick=openSend;$("backBtn").onclick=closeSend;$("doneBtn").onclick=function(){kpShow(false)};
+$("amtBox").onclick=function(){kpShow(true)};
+$("toAddr").onfocus=function(){kpShow(false)};$("memo").onfocus=function(){kpShow(false)};
+function recip(){var a=$("toAddr").value.trim(),ok=false;try{TON.Address.parseFriendly(a);ok=true}catch(e){try{TON.Address.parse(a);ok=true}catch(e2){}}
+ $("rAva").textContent=ok?a.slice(0,2).toUpperCase():"?";$("rName").textContent=ok?"Recipient":"Recipient";$("rAddr").textContent=ok?short(a):"Enter address below";return ok}
+$("toAddr").oninput=function(){recip();upd()};
+function amtNano(){try{return TON.toNano(amt.replace(/\.$/,"")||"0")}catch(e){return 0n}}
+function upd(){var v=$("amtV");v.textContent=amt;v.classList.remove("pop");void v.offsetWidth;v.classList.add("pop");
+ var n=parseFloat(amt)||0;$("conv").textContent="= $"+(n*price).toFixed(2);
+ var nn=amtNano(),bad=nn>0n&&nn+TON.toNano(FEE)>balNano;$("warn").classList.toggle("show",bad);
+ if(bad&&!wasBad){var b=$("amtBox");b.classList.remove("shake");void b.offsetWidth;b.classList.add("shake");buzz()}wasBad=bad;
+ var g=$("goBtn"),ok=nn>0n&&!bad&&recip();g.disabled=!ok;g.textContent=n>0?"Send "+amt.replace(/\.$/,"")+" TON":"Continue"}
+$("keys").onclick=function(e){var b=e.target.closest(".key");if(!b)return;buzz();var k=b.dataset.k;
+ if(k==="⌫")amt=amt.length>1?amt.slice(0,-1):"0";
+ else if(k==="."){if(amt.indexOf(".")<0)amt+="."}
+ else{if(amt==="0")amt=k;else if(amt.length<12&&!(amt.indexOf(".")>-1&&amt.split(".")[1].length>=9))amt+=k}
+ upd()};
 
-async function hmac512(keyBytes, data) {
-  var k = await crypto.subtle.importKey("raw", keyBytes, { name: "HMAC", hash: "SHA-512" }, false, ["sign"]);
-  return new Uint8Array(await crypto.subtle.sign("HMAC", k, data));
-}
+$("goBtn").onclick=async function(){var g=$("goBtn"),to=$("toAddr").value.trim(),memo=$("memo").value.trim(),dest,bounce=false;
+ try{try{var p=TON.Address.parseFriendly(to);dest=p.address;bounce=p.isBounceable}catch(e){dest=TON.Address.parse(to)}}catch(e){return toast("Invalid address")}
+ g.disabled=true;g.innerHTML='<span class="sp"></span>';kpShow(false);
+ try{var c=client.open(wallet),seqno=await c.getSeqno();
+  await c.sendTransfer({seqno:seqno,secretKey:kp0.secretKey,sendMode:TON.SendMode.PAY_GAS_SEPARATELY+TON.SendMode.IGNORE_ERRORS,messages:[TON.internal({to:dest,value:amtNano(),bounce:bounce,body:memo||undefined})]});
+  toast("✅ Sent! It will appear in a few seconds");closeSend();setTimeout(refresh,3000);setTimeout(refresh,10000)}
+ catch(e){toast("Error: "+(e.message||e));setStatus("Send error: "+(e.message||e),"bad");g.disabled=false;upd()}};
 
-// BIP39 seed + SLIP-0010 ed25519, path m/44'/607'/0' (used by 12-word wallets)
-async function bip39Keypair(wordsArr) {
-  var phrase = wordsArr.join(" ").normalize("NFKD");
-  var m = await crypto.subtle.importKey("raw", enc.encode(phrase), "PBKDF2", false, ["deriveBits"]);
-  var seed = new Uint8Array(await crypto.subtle.deriveBits(
-    { name: "PBKDF2", salt: enc.encode("mnemonic"), iterations: 2048, hash: "SHA-512" }, m, 512));
-  var I = await hmac512(enc.encode("ed25519 seed"), seed);
-  var k = I.slice(0, 32), c = I.slice(32);
-  var path = [44, 607, 0];
-  for (var i = 0; i < path.length; i++) {
-    var idx = (path[i] | 0x80000000) >>> 0;
-    var data = new Uint8Array(37);
-    data[0] = 0; data.set(k, 1);
-    data[33] = (idx >>> 24) & 255; data[34] = (idx >>> 16) & 255; data[35] = (idx >>> 8) & 255; data[36] = idx & 255;
-    I = await hmac512(c, data);
-    k = I.slice(0, 32); c = I.slice(32);
-  }
-  return CRYPTO.keyPairFromSeed(toBuf(k));
-}
+/* ---- import / unlock ---- */
+$("importBtn").onclick=async function(){var w=$("words").value.trim().toLowerCase().split(/\s+/).filter(Boolean),p1=$("pass1").value,p2=$("pass2").value;
+ if(w.length!==12&&w.length!==24)return setMsg("setupMsg","Enter exactly 12 or 24 words",false);
+ if(p1.length<4)return setMsg("setupMsg","Passcode must be at least 4 characters",false);
+ if(p1!==p2)return setMsg("setupMsg","Passcodes don't match",false);
+ setMsg("setupMsg","Please wait…",true);
+ try{await libsReady;localStorage.removeItem(CHOICE);localStorage.setItem(KEY,await encr(w.join(" "),p1));$("words").value="";$("pass1").value="";$("pass2").value="";await loadWallet(w)}catch(e){setMsg("setupMsg","Error: "+(e.message||e),false)}};
+$("unlockBtn").onclick=async function(){setMsg("unlockMsg","Please wait…",true);var t;
+ try{t=await decr(localStorage.getItem(KEY),$("unlockPass").value)}catch(e){return setMsg("unlockMsg","Wrong passcode",false)}
+ try{$("unlockPass").value="";$("unlockMsg").textContent="";await loadWallet(t.split(" "))}catch(e){setMsg("unlockMsg","Error: "+(e.message||e),false)}};
+$("unlockPass").addEventListener("keydown",function(e){if(e.key==="Enter")$("unlockBtn").click()});
+$("forgetBtn").onclick=function(){if(confirm("Remove this wallet from this device? Make sure you saved your secret words!")){localStorage.removeItem(KEY);localStorage.removeItem(CHOICE);location.reload()}};
 
-var CANDIDATES = [
-  { id: "ton-v5", derive: "ton", ver: "V5R1" },
-  { id: "bip-v5", derive: "bip", ver: "V5R1" },
-  { id: "ton-v4", derive: "ton", ver: "V4R2" },
-  { id: "bip-v4", derive: "bip", ver: "V4R2" }
-];
-
-async function buildCandidate(c, wordsArr) {
-  var kp = c.derive === "ton" ? await CRYPTO.mnemonicToPrivateKey(wordsArr) : await bip39Keypair(wordsArr);
-  var w = c.ver === "V5R1"
-    ? TON.WalletContractV5R1.create({ workchain: 0, publicKey: kp.publicKey })
-    : TON.WalletContractV4.create({ workchain: 0, publicKey: kp.publicKey });
-  return { id: c.id, kp: kp, wallet: w, addr: w.address.toString({ bounceable: false, urlSafe: true }), label: c.ver + " / " + (c.derive === "ton" ? "TON-standard" : "BIP39") };
-}
-
-/* ---------- screens ---------- */
-function show(id) {
-  ["setup", "unlock", "main"].forEach(function (x) { $(x).style.display = x === id ? "block" : "none"; });
-}
-function openSheet(id) { $(id).classList.add("show"); }
-function closeSheet(id) { $(id).classList.remove("show"); }
-document.querySelectorAll("[data-close]").forEach(function (b) { b.onclick = function () { closeSheet(b.dataset.close); }; });
-
-function setMsg(id, text, ok) { var e = $(id); e.textContent = text; e.className = "msg " + (ok ? "ok" : "err"); }
-function short(a) { return a && a.length > 10 ? a.slice(0, 4) + "…" + a.slice(-4) : a; }
-
-/* ---------- API ---------- */
-async function getJson(path) {
-  var sep = path.indexOf("?") > -1 ? "&" : "?";
-  var r = await fetch(API + path + sep + "api_key=" + API_KEY);
-  var txt = await r.text();
-  var j;
-  try { j = JSON.parse(txt); } catch (e) { throw new Error("HTTP " + r.status + " " + txt.slice(0, 80)); }
-  if (!j.ok) throw new Error((j.error || "API error") + " (HTTP " + r.status + ")");
-  return j.result;
-}
-function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
-
-/* ---------- wallet ---------- */
-async function loadWallet(w) {
-  await libsReady;
-  words = w;
-  setStatus("Detecting your wallet…");
-
-  var saved = localStorage.getItem(CHOICE_KEY);
-  var list = [];
-  var chosen = null;
-
-  if (saved) {
-    var cfg = CANDIDATES.filter(function (c) { return c.id === saved; })[0];
-    if (cfg) chosen = await buildCandidate(cfg, words);
-  }
-
-  if (!chosen) {
-    var notes = [];
-    for (var i = 0; i < CANDIDATES.length; i++) {
-      var cand = await buildCandidate(CANDIDATES[i], words);
-      list.push(cand);
-      try {
-        var info = await getJson("/getAddressInformation?address=" + cand.addr);
-        var bal = BigInt(info.balance || "0");
-        notes.push(cand.label + "\n" + cand.addr + "\nstate: " + info.state + " | balance: " + TON.fromNano(bal));
-        if (info.state !== "uninitialized" || bal > 0n) { chosen = cand; break; }
-      } catch (e) {
-        notes.push(cand.label + "\n" + cand.addr + "\nAPI error: " + (e.message || e));
-      }
-      await sleep(300);
-    }
-    if (chosen) {
-      localStorage.setItem(CHOICE_KEY, chosen.id);
-      setStatus("", "good");
-    } else {
-      chosen = list[0];
-      setStatus("No active wallet found for these words. Compare these addresses with your real wallet address:\n\n" + notes.join("\n\n"), "bad");
-    }
-  } else {
-    setStatus("", "good");
-  }
-
-  currentKp = chosen.kp;
-  wallet = chosen.wallet;
-  address = chosen.addr;
-  $("cardAddr").textContent = address;
-  $("recvAddr").textContent = address;
-  $("cardName").textContent = "MY WALLET · " + chosen.label.split(" / ")[0];
-  show("main");
-  refresh();
-}
-
-async function refresh() {
-  $("refreshBtn").style.opacity = .4;
-  try {
-    var bal = await getJson("/getAddressBalance?address=" + address);
-    balanceNano = BigInt(bal);
-    var t = TON.fromNano(balanceNano);
-    var parts = t.split(".");
-    $("balInt").textContent = parts[0];
-    $("balDec").textContent = parts[1] ? "." + parts[1].slice(0, 2) : "";
-    fetch("https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=usd")
-      .then(function (r) { return r.json(); }).then(function (p) {
-        var price = p["the-open-network"].usd;
-        $("usd").textContent = "$" + (parseFloat(t) * price).toFixed(2);
-      }).catch(function () {});
-  } catch (e) { setStatus("Balance error: " + (e.message || e), "bad"); }
-  await sleep(400);
-  try { renderTx(await getJson("/getTransactions?address=" + address + "&limit=20")); }
-  catch (e) {
-    $("txList").innerHTML = '<div class="empty">Could not load transactions</div>';
-    setStatus("Transactions error: " + (e.message || e), "bad");
-  }
-  $("refreshBtn").style.opacity = 1;
-}
-
-function fmtDate(u) {
-  return new Date(u * 1000).toLocaleString("en", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false });
-}
-function fmtAmt(v) { return parseFloat(TON.fromNano(BigInt(v))).toString(); }
-function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
-
-function renderTx(list) {
-  var items = [];
-  list.forEach(function (tx) {
-    var inm = tx.in_msg;
-    if (inm && inm.source) items.push({ dir: "in", addr: inm.source, val: inm.value, memo: inm.message, time: tx.utime });
-    (tx.out_msgs || []).forEach(function (o) {
-      if (o.destination) items.push({ dir: "out", addr: o.destination, val: o.value, memo: o.message, time: tx.utime });
-    });
-  });
-  if (!items.length) { $("txList").innerHTML = '<div class="empty">No transactions yet</div>'; return; }
-  $("txList").innerHTML = items.map(function (x) {
-    return '<div class="tx">' +
-      '<div class="ava">' + (x.dir === "in" ? "↓" : "↑") + '</div>' +
-      '<div class="mid">' +
-        '<div class="t1">' + esc(short(x.addr)) + '</div>' +
-        '<div class="t2">' + (x.dir === "in" ? "Incoming transfer" : "Outgoing transfer") + '</div>' +
-        '<div class="t3">' + fmtDate(x.time) + (x.memo ? " · " + esc(x.memo) : "") + '</div>' +
-      '</div>' +
-      '<div class="amt ' + (x.dir === "in" ? "in" : "") + '">' + (x.dir === "in" ? "+" : "−") + fmtAmt(x.val) + ' 💎</div>' +
-    '</div>';
-  }).join("");
-}
-
-/* ---------- send ---------- */
-async function doSend() {
-  var to = $("toAddr").value.trim();
-  var amt = $("amount").value.trim();
-  var memo = $("memo").value.trim();
-  if (!to) return setMsg("sendMsg", "Enter recipient address", false);
-  if (!amt || Number(amt) <= 0) return setMsg("sendMsg", "Enter a valid amount", false);
-
-  var dest, bounce = false;
-  try {
-    try { var p = TON.Address.parseFriendly(to); dest = p.address; bounce = p.isBounceable; }
-    catch (e1) { dest = TON.Address.parse(to); }
-  } catch (e2) { return setMsg("sendMsg", "Invalid address", false); }
-
-  var value;
-  try { value = TON.toNano(amt); } catch (e3) { return setMsg("sendMsg", "Invalid amount", false); }
-  if (value + TON.toNano("0.01") > balanceNano) return setMsg("sendMsg", "Insufficient balance (keep a little for fees)", false);
-
-  $("confirmSend").disabled = true;
-  setMsg("sendMsg", "Sending…", true);
-  try {
-    var contract = client.open(wallet);
-    var seqno = await contract.getSeqno();
-    await contract.sendTransfer({
-      seqno: seqno,
-      secretKey: currentKp.secretKey,
-      sendMode: TON.SendMode.PAY_GAS_SEPARATELY + TON.SendMode.IGNORE_ERRORS,
-      messages: [TON.internal({ to: dest, value: value, bounce: bounce, body: memo || undefined })]
-    });
-    setMsg("sendMsg", "✅ Sent! It will show up in a few seconds.", true);
-    $("toAddr").value = ""; $("amount").value = ""; $("memo").value = "";
-    setTimeout(function () { closeSheet("sendBg"); $("sendMsg").textContent = ""; refresh(); }, 2500);
-    setTimeout(refresh, 9000);
-  } catch (e) {
-    setMsg("sendMsg", "Error: " + (e.message || e), false);
-    setStatus("Send error: " + (e.message || e), "bad");
-  }
-  $("confirmSend").disabled = false;
-}
-
-/* ---------- events ---------- */
-$("importBtn").onclick = async function () {
-  var w = $("words").value.trim().toLowerCase().split(/\s+/).filter(Boolean);
-  var p1 = $("pass1").value, p2 = $("pass2").value;
-  if (w.length !== 12 && w.length !== 24) return setMsg("setupMsg", "Enter exactly 12 or 24 words", false);
-  if (p1.length < 4) return setMsg("setupMsg", "Passcode must be at least 4 characters", false);
-  if (p1 !== p2) return setMsg("setupMsg", "Passcodes don't match", false);
-  setMsg("setupMsg", "Please wait…", true);
-  try {
-    await libsReady;
-    localStorage.removeItem(CHOICE_KEY);
-    localStorage.setItem(KEY, await encrypt(w.join(" "), p1));
-    $("words").value = ""; $("pass1").value = ""; $("pass2").value = "";
-    await loadWallet(w);
-  } catch (e) { setMsg("setupMsg", "Error: " + (e.message || e), false); }
-};
-
-$("unlockBtn").onclick = async function () {
-  setMsg("unlockMsg", "Please wait…", true);
-  var txt;
-  try { txt = await decrypt(localStorage.getItem(KEY), $("unlockPass").value); }
-  catch (e) { return setMsg("unlockMsg", "Wrong passcode", false); }
-  try {
-    $("unlockPass").value = ""; $("unlockMsg").textContent = "";
-    await loadWallet(txt.split(" "));
-  } catch (e) { setMsg("unlockMsg", "Error: " + (e.message || e), false); }
-};
-$("unlockPass").addEventListener("keydown", function (e) { if (e.key === "Enter") $("unlockBtn").click(); });
-
-$("forgetBtn").onclick = function () {
-  if (confirm("Remove this wallet from this device? Make sure you have your secret words saved!")) {
-    localStorage.removeItem(KEY); localStorage.removeItem(CHOICE_KEY); location.reload();
-  }
-};
-$("lockBtn").onclick = function () { words = null; wallet = null; currentKp = null; show("unlock"); };
-$("refreshBtn").onclick = refresh;
-$("addBtn").onclick = function () { openSheet("recvBg"); };
-$("qrBtn").onclick = function () { openSheet("recvBg"); };
-$("sendBtn").onclick = function () { $("sendMsg").textContent = ""; openSheet("sendBg"); };
-$("confirmSend").onclick = doSend;
-$("copyBtn").onclick = async function () {
-  try { await navigator.clipboard.writeText(address); $("copyBtn").textContent = "Copied ✓"; }
-  catch (e) { prompt("Copy address:", address); }
-  setTimeout(function () { $("copyBtn").textContent = "Copy address"; }, 1500);
-};
-$("maxLink").onclick = function (e) {
-  e.preventDefault();
-  var m = balanceNano - TON.toNano("0.01");
-  $("amount").value = m > 0n ? TON.fromNano(m) : "0";
-};
-
-/* ---------- start ---------- */
-show(localStorage.getItem(KEY) ? "unlock" : "setup");
+show(localStorage.getItem(KEY)?"unlock":"setup");
 </script>
 </body>
 </html>
