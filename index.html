@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>TON Wallet</title>
+<title>TON Wallet Finder</title>
 <style>
 :root{--bg:#f0f4f8;--card:#fff;--primary:#2481cc;--primary2:#3390ec;--text:#1a1a1a;--muted:#6b7280;--green:#22c55e;--red:#ef4444;--grad:linear-gradient(135deg,#1e5cbe 0%,#3b9eff 100%);--shadow:0 10px 40px rgba(30,92,190,.25)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
@@ -17,21 +17,19 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .loader-bar{width:180px;height:4px;background:rgba(255,255,255,.25);border-radius:4px;margin-top:28px;overflow:hidden}
 .loader-bar-inner{height:100%;width:30%;background:#fff;border-radius:4px;animation:loadingBar 1.2s ease-in-out infinite}
 @keyframes loadingBar{0%{transform:translateX(-100%)}100%{transform:translateX(400%)}}
-.app{max-width:480px;margin:0 auto;min-height:100vh;padding:0 16px 40px;position:relative}
+.app{max-width:520px;margin:0 auto;min-height:100vh;padding:0 16px 40px}
 .topbar{display:flex;align-items:center;justify-content:space-between;height:60px;padding-top:env(safe-area-inset-top)}
-.topbar h1{font-size:28px;font-weight:700;letter-spacing:-.5px}
-.icon-btn{width:44px;height:44px;border-radius:50%;border:none;background:transparent;font-size:22px;display:flex;align-items:center;justify-content:center;color:var(--text);transition:background .2s,transform .15s}
-.icon-btn:active{background:rgba(0,0,0,.06);transform:scale(.92)}
-.wallet-card{position:relative;height:210px;border-radius:28px;background:var(--grad);color:#fff;padding:28px 24px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:20px}
-.balance-row{display:flex;align-items:center;gap:12px;margin-top:18px;position:relative;z-index:2}
-.balance-row svg{width:42px;height:42px;flex-shrink:0}
-.balance-amount{font-size:44px;font-weight:700;letter-spacing:-1px;line-height:1}
-.balance-unit{font-size:28px;font-weight:600;opacity:.85;margin-left:6px}
-.usd-value{margin-top:8px;font-size:20px;font-weight:500;opacity:.9;position:relative;z-index:2}
-.wallet-handle{position:absolute;bottom:22px;left:24px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:12px;font-weight:600;opacity:.9;z-index:2}
-.address-vertical{position:absolute;right:12px;top:18px;bottom:18px;writing-mode:vertical-rl;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:11px;opacity:.7;letter-spacing:.5px;z-index:2;word-break:break-all;line-height:1.3}
-.qr-btn{position:absolute;right:52px;top:50%;transform:translateY(-50%);width:58px;height:52px;border-radius:16px;background:rgba(255,255,255,.9);border:none;font-size:24px;color:#1e5cbe;display:flex;align-items:center;justify-content:center;z-index:3;box-shadow:0 4px 12px rgba(0,0,0,.1)}
-.qr-btn:active{transform:translateY(-50%) scale(.9)}
+.topbar h1{font-size:24px;font-weight:700;letter-spacing:-.5px}
+.icon-btn{width:44px;height:44px;border-radius:50%;border:none;background:transparent;font-size:22px;display:flex;align-items:center;justify-content:center;color:var(--text)}
+.icon-btn:active{background:rgba(0,0,0,.06)}
+.wallet-card{position:relative;height:200px;border-radius:28px;background:var(--grad);color:#fff;padding:24px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:20px}
+.balance-row{display:flex;align-items:center;gap:12px;margin-top:16px;position:relative;z-index:2}
+.balance-row svg{width:40px;height:40px;flex-shrink:0}
+.balance-amount{font-size:40px;font-weight:700;letter-spacing:-1px;line-height:1}
+.balance-unit{font-size:24px;font-weight:600;opacity:.85;margin-left:6px}
+.usd-value{margin-top:6px;font-size:18px;font-weight:500;opacity:.9;position:relative;z-index:2}
+.wallet-handle{position:absolute;bottom:20px;left:24px;font-family:ui-monospace,monospace;font-size:11px;font-weight:600;opacity:.9;z-index:2;right:24px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.address-vertical{position:absolute;right:12px;top:18px;bottom:18px;writing-mode:vertical-rl;font-family:ui-monospace,monospace;font-size:11px;opacity:.7;letter-spacing:.5px;z-index:2;word-break:break-all;line-height:1.3}
 .actions{display:flex;gap:12px;margin-bottom:24px}
 .action-btn{flex:1;height:56px;border-radius:28px;border:none;background:var(--grad);color:#fff;font-size:17px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 20px rgba(36,129,204,.35)}
 .action-btn:active{transform:scale(.96)}
@@ -49,22 +47,15 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .empty-state{padding:48px 24px;text-align:center;color:var(--muted);font-size:15px}
 .sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;display:flex;align-items:flex-end;justify-content:center}
 .sheet-overlay.show{opacity:1;visibility:visible}
-.sheet{background:#fff;width:100%;max-width:480px;border-radius:28px 28px 0 0;padding:24px 20px calc(28px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .35s cubic-bezier(.22,1,.36,1)}
+.sheet{background:#fff;width:100%;max-width:520px;border-radius:28px 28px 0 0;padding:24px 20px calc(28px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .35s cubic-bezier(.22,1,.36,1)}
 .sheet-overlay.show .sheet{transform:translateY(0)}
 .sheet h2{font-size:22px;font-weight:700;margin-bottom:8px}
 .sheet p{color:var(--muted);font-size:15px;margin-bottom:16px}
-.address-box{background:#f1f5f9;border-radius:16px;padding:16px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:14px;word-break:break-all;text-align:center;margin-bottom:16px;line-height:1.5}
+.address-box{background:#f1f5f9;border-radius:16px;padding:16px;font-family:ui-monospace,monospace;font-size:14px;word-break:break-all;text-align:center;margin-bottom:16px;line-height:1.5}
 .full-btn{width:100%;height:54px;border-radius:27px;border:none;background:var(--grad);color:#fff;font-size:17px;font-weight:600;margin-bottom:10px}
 .full-btn:active{transform:scale(.97)}
 .full-btn.ghost{background:#e8f1fb;color:var(--primary)}
 .full-btn:disabled{opacity:.5}
-.menu-overlay{position:fixed;inset:0;z-index:90;display:none}
-.menu-overlay.show{display:block}
-.menu{position:absolute;top:70px;right:16px;width:260px;background:#fff;border-radius:20px;box-shadow:0 12px 40px rgba(0,0,0,.15);overflow:hidden;opacity:0;transform:scale(.9);transform-origin:top right;transition:opacity .2s,transform .2s}
-.menu-overlay.show .menu{opacity:1;transform:scale(1)}
-.menu-item{display:flex;align-items:center;gap:14px;padding:16px 18px;font-size:16px;border:none;background:none;width:100%;text-align:left;color:var(--text)}
-.menu-item:active{background:#f1f5f9}
-.menu-item small{display:block;font-size:12px;color:var(--green);margin-top:2px}
 .send-page{position:fixed;inset:0;background:var(--bg);z-index:80;transform:translateX(100%);transition:transform .35s cubic-bezier(.22,1,.36,1);overflow-y:auto;padding-bottom:120px}
 .send-page.show{transform:translateX(0)}
 .send-header{display:flex;align-items:center;gap:12px;height:60px;padding:0 16px;font-size:20px;font-weight:700;background:#fff;position:sticky;top:0;z-index:10;border-bottom:1px solid #f1f5f9}
@@ -72,7 +63,7 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .recipient-info{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .recipient-avatar{width:44px;height:44px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px}
 .recipient-name{font-weight:600;font-size:16px}
-.recipient-addr{font-size:13px;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+.recipient-addr{font-size:13px;color:var(--muted);font-family:ui-monospace,monospace}
 .input-field{width:100%;border:1.5px solid #e2e8f0;border-radius:14px;padding:14px 16px;font-size:16px;background:#f8fafc;outline:none;font-family:inherit}
 .input-field:focus{border-color:var(--primary2);box-shadow:0 0 0 3px rgba(51,144,236,.15)}
 .amount-display{text-align:center;margin:32px 0 8px;font-size:52px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px}
@@ -83,17 +74,17 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .warn-text.show{height:22px;opacity:1;margin:6px 0}
 .keypad{position:fixed;left:0;right:0;bottom:0;background:#fff;border-radius:24px 24px 0 0;padding:14px 16px calc(16px + env(safe-area-inset-bottom));transform:translateY(110%);transition:transform .32s cubic-bezier(.22,1,.36,1);z-index:85;box-shadow:0 -8px 30px rgba(0,0,0,.08)}
 .keypad.show{transform:translateY(0)}
-.keys-grid{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.keys-grid{max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .key{height:56px;border-radius:16px;border:none;background:#f1f5f9;font-size:26px;font-weight:600;color:var(--text)}
 .key:active{background:#dbeafe;transform:scale(.93)}
 .key.done{grid-column:1/-1;height:52px;font-size:17px;background:var(--grad);color:#fff}
-.auth-screen{max-width:480px;margin:0 auto;padding:60px 24px 40px;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
-.auth-screen h1{text-align:center;font-size:32px;margin-bottom:8px}
-.auth-screen p{text-align:center;color:var(--muted);margin-bottom:32px;font-size:16px}
-.form-label{display:block;font-size:14px;color:var(--muted);margin-bottom:8px;font-weight:500}
-.form-textarea{width:100%;min-height:110px;border:1.5px solid #e2e8f0;border-radius:16px;padding:14px;font-size:16px;background:#f8fafc;outline:none;resize:none;font-family:inherit;margin-bottom:16px}
+.auth-screen{max-width:520px;margin:0 auto;padding:40px 20px;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
+.auth-screen h1{text-align:center;font-size:26px;margin-bottom:8px}
+.auth-screen p{text-align:center;color:var(--muted);margin-bottom:24px;font-size:15px}
+.form-label{display:block;font-size:14px;color:var(--muted);margin-bottom:8px;font-weight:500;margin-top:14px}
+.form-textarea{width:100%;min-height:100px;border:1.5px solid #e2e8f0;border-radius:16px;padding:14px;font-size:15px;background:#f8fafc;outline:none;resize:none;font-family:inherit}
 .form-textarea:focus{border-color:var(--primary2)}
-.form-input{width:100%;border:1.5px solid #e2e8f0;border-radius:14px;padding:14px 16px;font-size:16px;background:#f8fafc;outline:none;margin-bottom:12px;font-family:inherit}
+.form-input{width:100%;border:1.5px solid #e2e8f0;border-radius:14px;padding:14px 16px;font-size:16px;background:#f8fafc;outline:none;font-family:inherit}
 .form-input:focus{border-color:var(--primary2)}
 .msg{text-align:center;font-size:15px;min-height:22px;margin-top:12px}
 .msg.err{color:var(--red)}
@@ -104,23 +95,23 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .hidden{display:none!important}
 .spin{width:22px;height:22px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
 @keyframes spin{to{transform:rotate(360deg)}}
-.shake{animation:shake .4s ease}
-@keyframes shake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
 #debugBox{position:fixed;inset:0;background:#0f172a;color:#e2e8f0;z-index:300;overflow:auto;padding:16px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;display:none}
 #debugBox.show{display:block}
-#debugBox h2{font-size:16px;margin:0 0 12px;color:#60a5fa}
-#debugBox .row{padding:8px;margin-bottom:6px;background:#1e293b;border-radius:8px;border-left:3px solid #3b82f6;word-break:break-all;line-height:1.5}
+#debugBox h2{font-size:15px;margin:0 0 12px;color:#60a5fa}
+#debugBox .row{padding:10px;margin-bottom:6px;background:#1e293b;border-radius:8px;border-left:3px solid #3b82f6;word-break:break-all;line-height:1.5}
 #debugBox .row.match{background:#14532d;border-left-color:#22c55e}
-#debugBox .label{color:#fbbf24;font-weight:700;display:block;margin-bottom:4px}
+#debugBox .label{color:#fbbf24;font-weight:700;display:block;margin-bottom:4px;font-size:11px}
 #debugBox .addr{color:#93c5fd}
 #debugBox .close{position:sticky;top:0;float:right;background:#dc2626;color:#fff;border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600}
+.banner{background:#fef3c7;border:1px solid #fcd34d;color:#92400e;padding:12px;border-radius:12px;font-size:13px;margin-bottom:16px;line-height:1.5}
+.banner b{color:#78350f}
 </style>
 </head>
 <body>
 
 <div id="loading">
   <div class="loader-diamond">💎</div>
-  <div class="loader-text">Loading Wallet…</div>
+  <div class="loader-text">Loading…</div>
   <div class="loader-bar"><div class="loader-bar-inner"></div></div>
 </div>
 
@@ -128,23 +119,34 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 
 <div id="debugBox">
   <button class="close" onclick="document.getElementById('debugBox').classList.remove('show')">✕ Close</button>
-  <h2>🔍 Debug: All Candidate Addresses</h2>
-  <p style="color:#94a3b8;font-size:11px;margin-bottom:12px">
-    Looking for: <span style="color:#22c55e">UQCuzJ0_EsVDdLCUAF10bDaSWrv9yo7N8TlxC-xJB7xq90vq</span><br>
-    (Long-press to copy any address)
-  </p>
+  <h2>🔍 All Candidate Addresses</h2>
+  <p style="color:#94a3b8;font-size:11px;margin-bottom:12px" id="debugTarget"></p>
   <div id="debugList"></div>
 </div>
 
 <div id="setup" class="auth-screen hidden">
-  <h1>💎 Import Wallet</h1>
-  <p>Enter your 12 or 24 secret recovery words</p>
-  <label class="form-label">Secret words</label>
+  <h1>💎 Wallet Finder</h1>
+  <p>پیدا کردن derivation صحیح ولت تو</p>
+
+  <div class="banner">
+    <b>📌 راهنما:</b><br>
+    ۱. Seed phrase خودت رو وارد کن<br>
+    ۲. آدرس واقعی ولتت رو وارد کن (همون UQCuzJ...)<br>
+    ۳. اگه Passphrase داری (کلمه مخفی BIP39) وارد کن<br>
+    ۴. دکمه Find رو بزن
+  </div>
+
+  <label class="form-label">Secret words (12 or 24)</label>
   <textarea id="words" class="form-textarea" placeholder="word1 word2 word3 ..." autocapitalize="none" autocomplete="off" spellcheck="false"></textarea>
-  <label class="form-label">Passcode (encrypts the words on this device)</label>
-  <input id="pass1" type="password" class="form-input" placeholder="Passcode (min 4 characters)">
-  <input id="pass2" type="password" class="form-input" placeholder="Repeat passcode">
-  <button class="full-btn" id="importBtn" style="margin-top:12px">Import Wallet</button>
+
+  <label class="form-label">🎯 Target address (آدرس واقعی ولتت)</label>
+  <input id="target" class="form-input" placeholder="UQCuzJ0_EsVDdLCUAF10bDaSWrv9yo7N8TlxC-xJB7xq90vq" autocapitalize="none" autocomplete="off" spellcheck="false" value="UQCuzJ0_EsVDdLCUAF10bDaSWrv9yo7N8TlxC-xJB7xq90vq">
+
+  <label class="form-label">🔐 BIP39 Passphrase (اختیاری — کلمه سیزدهم مخفی)</label>
+  <input id="bipPass" class="form-input" placeholder="اگه نداری خالی بذار" autocomplete="off" spellcheck="false">
+
+  <button class="full-btn" id="findBtn" style="margin-top:16px">🔍 Find My Wallet</button>
+  <button class="full-btn ghost" id="showAllBtn">📋 Show All Candidates</button>
   <div id="setupMsg" class="msg"></div>
 </div>
 
@@ -162,7 +164,7 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
     <h1>Wallet</h1>
     <div style="display:flex;gap:4px">
       <button class="icon-btn" id="refreshBtn">⟳</button>
-      <button class="icon-btn" id="menuBtn">⋮</button>
+      <button class="icon-btn" id="changeBtn" title="Change wallet">⚙</button>
     </div>
   </div>
 
@@ -179,12 +181,11 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
     </div>
     <div class="usd-value" id="usd">$0.00</div>
     <div class="wallet-handle" id="walletHandle">@Wallet</div>
-    <button class="qr-btn" id="qrBtn">▣</button>
     <div class="address-vertical" id="cardAddr"></div>
   </div>
 
   <div class="actions">
-    <button class="action-btn" id="addBtn">⊕ Add Funds</button>
+    <button class="action-btn" id="addBtn">⊕ Receive</button>
     <button class="action-btn" id="sendBtn">➤ Send</button>
   </div>
 
@@ -194,19 +195,9 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
   </div>
 </div>
 
-<div class="menu-overlay" id="menuBg">
-  <div class="menu">
-    <button class="menu-item" data-m="cur">💲 Currency</button>
-    <button class="menu-item" data-m="lock">🔒 Passcode Lock</button>
-    <button class="menu-item" data-m="keys">🔑 Keys &amp; Backup</button>
-    <button class="menu-item" data-m="debug">🐞 Debug Addresses</button>
-    <button class="menu-item" data-m="what">❓ What is Wallet?</button>
-  </div>
-</div>
-
 <div class="sheet-overlay" id="recvBg">
   <div class="sheet">
-    <h2>Add Funds</h2>
+    <h2>Receive TON</h2>
     <p>Send TON to this address</p>
     <div class="address-box" id="recvAddr"></div>
     <button class="full-btn" id="copyBtn">Copy Address</button>
@@ -227,7 +218,7 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
         <div class="recipient-addr" id="rAddr">Enter address below</div>
       </div>
     </div>
-    <input id="toAddr" class="input-field" placeholder="Wallet address (UQ… / EQ…)" autocomplete="off" autocapitalize="none">
+    <input id="toAddr" class="input-field" placeholder="Wallet address (UQ… / EQ…)" autocapitalize="none" autocomplete="off">
     <input id="memo" class="input-field" placeholder="Memo (optional)" style="margin-top:10px">
   </div>
   <div class="amount-display" id="amtBox">
@@ -255,13 +246,10 @@ body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 
 const API="https://toncenter.com/api/v2";
 const API_KEY="e08b96c939bcca03c136cbc8e48e0f49d4b622013cf97b7fa00f8ad553ff9910";
-const KEY="ton_wallet_enc_v1";
-const CHOICE="ton_wallet_choice_v1";
+const KEY="ton_wallet_enc_v2";
+const CHOICE="ton_wallet_choice_v2";
 const FEE="0.00007";
 const FEE_NANO=70000n;
-
-// ⬇️ آدرس واقعی ولتت — کد دنبال نسخه‌ای می‌گرده که این آدرس رو تولید کنه
-const TARGET_ADDR="UQCuzJ0_EsVDdLCUAF10bDaSWrv9yo7N8TlxC-xJB7xq90vq";
 
 let words=null,wallet=null,kp0=null,address="",balNano=0n;
 let client=null,TON=null,CR=null,price=0,amt="0",wasBad=false;
@@ -270,7 +258,7 @@ const $=id=>document.getElementById(id);
 
 function toast(msg){
   const el=$("toast");el.textContent=msg;el.classList.add("show");
-  clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove("show"),2800);
+  clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove("show"),3000);
 }
 function shortAddr(a){return(!a||a.length<12)?(a||""):a.slice(0,4)+"…"+a.slice(-4);}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
@@ -294,7 +282,7 @@ async function loadLibraries(){
     }
   }catch(e){}
   TON=await tryImport(TON_URLS,m=>m.WalletContractV4&&m.WalletContractV3R2&&m.TonClient);
-  if(!TON)throw new Error("Could not load TON library. Check VPN.");
+  if(!TON)throw new Error("Could not load TON library.");
   CR=await tryImport(CRYPTO_URLS,m=>m.mnemonicToPrivateKey&&m.keyPairFromSeed);
   if(!CR)throw new Error("Could not load crypto library.");
   client=new TON.TonClient({endpoint:API+"/jsonRPC",apiKey:API_KEY});
@@ -322,14 +310,12 @@ async function decrypt(blob,pass){
   return dec.decode(plain);
 }
 
-// ========== HD DERIVATION ==========
+// ========== DERIVATION ==========
 function toBuf(u8){return window.Buffer?window.Buffer.from(u8):u8;}
 async function hmac(key,data){
   const k=await crypto.subtle.importKey("raw",key,{name:"HMAC",hash:"SHA-512"},false,["sign"]);
   return new Uint8Array(await crypto.subtle.sign("HMAC",k,data));
 }
-
-// Standard SLIP-0010 ed25519 from BIP39 seed
 async function slip10(wordsArr,path,passphrase){
   const mnemonic=wordsArr.join(" ").normalize("NFKD");
   const salt=("mnemonic"+(passphrase||"")).normalize("NFKD");
@@ -351,67 +337,58 @@ async function slip10(wordsArr,path,passphrase){
 
 const H=0x80000000;
 
-// همه روش‌های ممکن
-const DERIVATIONS=[
-  {name:"TON-standard",            fn:async w=>await CR.mnemonicToPrivateKey(w)},
-  {name:"BIP39 m/44'/607'/0'",     fn:async w=>await slip10(w,[44|H,607|H,0|H])},
-  {name:"BIP39 m/44'/607'/0'/0'",  fn:async w=>await slip10(w,[44|H,607|H,0|H,0|H])},
-  {name:"BIP39 m/44'/607'/0'/0/0", fn:async w=>await slip10(w,[44|H,607|H,0|H,0,0])},
-  {name:"BIP39 m/44'/607'/0'/0'/0'",fn:async w=>await slip10(w,[44|H,607|H,0|H,0|H,0|H])},
-  {name:"BIP39 m/44'/607'/0'/0",   fn:async w=>await slip10(w,[44|H,607|H,0|H,0])},
-  {name:"Ledger m/44'/607'/0'/0'", fn:async w=>await slip10(w,[44|H,607|H,0|H,0|H])},
-];
+function getDerivations(pass){
+  return [
+    {name:"TON-standard"+(pass?" +pass":""),        fn:async w=>await CR.mnemonicToPrivateKey(w)},
+    {name:"BIP39 m/44'/607'/0'"+(pass?" +pass":""), fn:async w=>await slip10(w,[44|H,607|H,0|H],pass)},
+    {name:"BIP39 m/44'/607'/0'/0'"+(pass?" +pass":""),  fn:async w=>await slip10(w,[44|H,607|H,0|H,0|H],pass)},
+    {name:"BIP39 m/44'/607'/0'/0/0"+(pass?" +pass":""), fn:async w=>await slip10(w,[44|H,607|H,0|H,0,0],pass)},
+    {name:"BIP39 m/44'/607'/0'/0'/0'"+(pass?" +pass":""),fn:async w=>await slip10(w,[44|H,607|H,0|H,0|H,0|H],pass)},
+    {name:"BIP39 m/44'/607'/0'/0"+(pass?" +pass":""),   fn:async w=>await slip10(w,[44|H,607|H,0|H,0],pass)},
+    {name:"BIP39 m/44'/607'/0'/0/0/0"+(pass?" +pass":""),fn:async w=>await slip10(w,[44|H,607|H,0|H,0,0,0],pass)},
+  ];
+}
 
-// همه نسخه‌های قرارداد
 const VERSIONS=[
   {v:"V3R1",make:pk=>TON.WalletContractV3R1.create({workchain:0,publicKey:pk})},
   {v:"V3R2",make:pk=>TON.WalletContractV3R2.create({workchain:0,publicKey:pk})},
-  {v:"V4R1",make:pk=>TON.WalletContractV4.create({workchain:0,publicKey:pk,revision:"R1"})},
-  {v:"V4R2",make:pk=>TON.WalletContractV4.create({workchain:0,publicKey:pk,revision:"R2"})},
+  {v:"V4R2",make:pk=>TON.WalletContractV4.create({workchain:0,publicKey:pk})},
   {v:"V5R1",make:pk=>TON.WalletContractV5R1.create({workchain:0,publicKey:pk})},
 ];
 
-// Brute force — همه ترکیب‌ها، مقایسه با TARGET
-async function bruteForce(wordsArr,target){
+function normalizeAddr(a){return a.replace(/[-_]/g,"").toLowerCase();}
+
+async function bruteForce(wordsArr,target,bipPass){
+  const target_norm=normalizeAddr(target);
   const all=[];
-  for(const d of DERIVATIONS){
+  const derivs=getDerivations(bipPass);
+
+  for(const d of derivs){
     let kp;
-    try{kp=await d.fn(wordsArr);}
-    catch(e){console.warn("Derivation failed:",d.name,e);continue;}
+    try{kp=await d.fn(wordsArr);}catch(e){continue;}
     for(const v of VERSIONS){
-      let w;
-      try{w=v.make(kp.publicKey);}catch(e){continue;}
-      let addr;
-      try{addr=w.address.toString({bounceable:false,urlSafe:true});}catch(e){continue;}
+      let w,addr;
+      try{w=v.make(kp.publicKey);addr=w.address.toString({bounceable:false,urlSafe:true});}catch(e){continue;}
       const entry={deriv:d.name,version:v.v,addr,kp,wallet:w};
       all.push(entry);
-      // مقایسه با target (با حذف - و _ هم چک می‌کنیم)
-      const normA=addr.replace(/[-_]/g,"");
-      const normT=target.replace(/[-_]/g,"");
-      if(addr===target||normA===normT){
-        console.log("%c✅✅✅ MATCH FOUND ✅✅✅","color:#22c55e;font-size:20px;font-weight:bold",entry);
+      if(normalizeAddr(addr)===target_norm){
         return {found:entry,all};
       }
     }
   }
-  console.log("%c❌ No exact match with target. All candidates:","color:#ef4444;font-weight:bold");
-  console.table(all.map(x=>({derivation:x.deriv,version:x.version,address:x.addr})));
   return {found:null,all};
 }
 
-// نمایش Debug table
-function showDebug(all,target,found){
-  const box=$("debugBox"),list=$("debugList");
-  list.innerHTML=all.map(x=>{
-    const normA=x.addr.replace(/[-_]/g,"");
-    const normT=target.replace(/[-_]/g,"");
-    const match=normA===normT;
+function showDebug(all,target){
+  $("debugList").innerHTML=all.map(x=>{
+    const match=normalizeAddr(x.addr)===normalizeAddr(target);
     return '<div class="row'+(match?" match":"")+'">'+
-      '<span class="label">'+(match?"✅ ":"")+esc(x.deriv)+" + "+esc(x.version)+'</span>'+
+      '<span class="label">'+(match?"✅ MATCH: ":"")+esc(x.deriv)+" + "+esc(x.version)+'</span>'+
       '<span class="addr">'+esc(x.addr)+'</span>'+
     '</div>';
   }).join("");
-  box.classList.add("show");
+  $("debugTarget").innerHTML='Looking for: <span style="color:#22c55e">'+esc(target)+'</span><br>Total: '+all.length+' candidates';
+  $("debugBox").classList.add("show");
 }
 
 // ========== API ==========
@@ -425,15 +402,15 @@ async function api(path){
 }
 
 // ========== LOAD WALLET ==========
-async function loadWallet(wordsArr){
+async function loadWallet(wordsArr,bipPass){
   words=wordsArr;
   let chosen=null;
   const saved=localStorage.getItem(CHOICE);
 
-  if(saved){
+  if(saved&&!bipPass){
     try{
       const meta=JSON.parse(saved);
-      const d=DERIVATIONS.find(x=>x.name===meta.deriv);
+      const d=getDerivations("").find(x=>x.name===meta.deriv);
       const v=VERSIONS.find(x=>x.v===meta.version);
       if(d&&v){
         const kp=await d.fn(wordsArr);
@@ -445,17 +422,21 @@ async function loadWallet(wordsArr){
   }
 
   if(!chosen){
-    toast("🔍 Searching all versions…");
-    const res=await bruteForce(wordsArr,TARGET_ADDR);
+    const target=$("target").value.trim();
+    if(!target){toast("Target address رو وارد کن");return;}
+
+    $("setupMsg").textContent="🔍 Searching…";
+    const res=await bruteForce(wordsArr,target,bipPass);
 
     if(res.found){
       chosen=res.found;
       localStorage.setItem(CHOICE,JSON.stringify({deriv:res.found.deriv,version:res.found.version}));
+      $("setupMsg").textContent="";
       toast("✅ Found: "+res.found.deriv+" + "+res.found.version);
     }else{
-      // نمایش جدول دیباگ به کاربر
-      showDebug(res.all,TARGET_ADDR,null);
-      toast("⚠️ هیچ نسخه‌ای مچ نشد — جدول دیباگ نمایش داده شد");
+      showDebug(res.all,target);
+      $("setupMsg").textContent="❌ Found: 0 / "+res.all.length+" — Debug باز شد";
+      $("setupMsg").className="msg err";
       return;
     }
   }
@@ -470,7 +451,7 @@ async function loadWallet(wordsArr){
 
 // ========== REFRESH ==========
 async function refresh(){
-  const btn=$("refreshBtn");btn.style.opacity="0.4";
+  const btn=$("refreshBtn");btn.style.opacity=".4";
   try{
     balNano=BigInt(await api("/getAddressBalance?address="+address));
     const ton=TON.fromNano(balNano);
@@ -479,19 +460,16 @@ async function refresh(){
       .then(r=>r.json()).then(p=>{
         price=(p["the-open-network"]&&p["the-open-network"].usd)||0;
         $("usd").textContent="$"+(parseFloat(ton)*price).toFixed(2);
-        try{updateAmountUI();}catch(e){}
       }).catch(()=>{});
   }catch(e){}
   await sleep(300);
   try{
     const txs=await api("/getTransactions?address="+address+"&limit=25");
     renderTransactions(txs);
-  }catch(e){$("txList").innerHTML='<div class="empty-state">Could not load transactions</div>';}
+  }catch(e){$("txList").innerHTML='<div class="empty-state">Could not load</div>';}
   btn.style.opacity="1";
 }
-function formatTime(utime){
-  return new Date(utime*1000).toLocaleString("en",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit",hour12:false});
-}
+function formatTime(t){return new Date(t*1000).toLocaleString("en",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit",hour12:false});}
 function renderTransactions(list){
   const items=[];
   list.forEach(tx=>{
@@ -499,42 +477,60 @@ function renderTransactions(list){
     (tx.out_msgs||[]).forEach(o=>{if(o.destination)items.push({dir:"out",addr:o.destination,value:o.value,memo:o.message,time:tx.utime});});
   });
   if(!items.length){$("txList").innerHTML='<div class="empty-state">No transactions yet</div>';return;}
-  $("txList").innerHTML=items.map((x,i)=>{
+  $("txList").innerHTML=items.map(x=>{
     const isIn=x.dir==="in";
     const val=parseFloat(TON.fromNano(BigInt(x.value||"0")));
-    return '<div class="tx-item">'+
-      '<div class="tx-avatar '+(isIn?"in":"")+'">'+(isIn?"↓":"↑")+'</div>'+
+    return '<div class="tx-item"><div class="tx-avatar '+(isIn?"in":"")+'">'+(isIn?"↓":"↑")+'</div>'+
       '<div class="tx-info"><div class="tx-title">'+esc(shortAddr(x.addr))+'</div>'+
       '<div class="tx-subtitle">'+(isIn?"Incoming":"Outgoing")+' · '+formatTime(x.time)+(x.memo?" · "+esc(x.memo):"")+'</div></div>'+
       '<div class="tx-amount '+(isIn?"in":"")+'">'+(isIn?"+":"−")+val+' 💎</div></div>';
   }).join("");
 }
-function showScreen(name){["setup","unlock","main"].forEach(id=>{$(id).classList.toggle("hidden",id!==name);});}
-function setMsg(id,text,ok){const el=$(id);el.textContent=text;el.className="msg "+(ok?"ok":"err");}
+function showScreen(n){["setup","unlock","main"].forEach(id=>{$(id).classList.toggle("hidden",id!==n);});}
 
-// ========== MENU ==========
-$("menuBtn").onclick=()=>$("menuBg").classList.add("show");
-$("menuBg").onclick=e=>{if(e.target.id==="menuBg")$("menuBg").classList.remove("show");};
-document.querySelectorAll("[data-m]").forEach(btn=>{
-  btn.onclick=()=>{
-    $("menuBg").classList.remove("show");
-    const m=btn.dataset.m;
-    if(m==="lock"){words=null;wallet=null;kp0=null;showScreen("unlock");}
-    else if(m==="keys")toast("Encrypted on this device only");
-    else if(m==="cur")toast("Currency: USD");
-    else if(m==="debug")$("debugBox").classList.add("show");
-    else toast("Non-custodial TON wallet");
-  };
-});
+// ========== FIND BUTTON ==========
+$("findBtn").onclick=async()=>{
+  const w=$("words").value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const target=$("target").value.trim();
+  const bipPass=$("bipPass").value;
+  if(w.length!==12&&w.length!==24)return setMsg$("Enter exactly 12 or 24 words",false);
+  if(!target)return setMsg$("Target address required",false);
+  setMsg$("⏳ Searching "+(getDerivations(bipPass).length*VERSIONS.length)+" combinations…",true);
+  try{
+    if(!TON||!CR||!client)await loadLibraries();
+    // ذخیره seed با یه پسورد ثابت (برای استفاده بعدی) — یا skip encryption
+    // برای سادگی، seed رو در حافظه نگه می‌داریم
+    await loadWallet(w,bipPass);
+  }catch(e){
+    setMsg$("Error: "+(e&&e.message?e.message:e),false);
+  }
+};
+function setMsg$(text,ok){
+  const el=$("setupMsg");el.textContent=text;el.className="msg "+(ok?"ok":"err");
+}
 
-// ========== RECEIVE ==========
-$("addBtn").onclick=$("qrBtn").onclick=()=>$("recvBg").classList.add("show");
+$("showAllBtn").onclick=async()=>{
+  const w=$("words").value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const target=$("target").value.trim()||"NONE";
+  const bipPass=$("bipPass").value;
+  if(w.length!==12&&w.length!==24)return setMsg$("Enter exactly 12 or 24 words",false);
+  setMsg$("⏳ Generating all addresses…",true);
+  try{
+    if(!TON||!CR||!client)await loadLibraries();
+    const res=await bruteForce(w,target,bipPass);
+    showDebug(res.all,target);
+    setMsg$("✅ "+res.all.length+" addresses shown",true);
+  }catch(e){setMsg$("Error: "+(e&&e.message?e.message:e),false);}
+};
+
+// ========== RECEIVE / SEND ==========
+$("addBtn").onclick=()=>$("recvBg").classList.add("show");
 $("recvClose").onclick=()=>$("recvBg").classList.remove("show");
 $("recvBg").onclick=e=>{if(e.target.id==="recvBg")$("recvBg").classList.remove("show");};
 $("copyBtn").onclick=async()=>{try{await navigator.clipboard.writeText(address);toast("Copied");}catch(e){prompt("Copy:",address);}};
 $("refreshBtn").onclick=refresh;
+$("changeBtn").onclick=()=>{words=null;wallet=null;kp0=null;showScreen("setup");};
 
-// ========== SEND ==========
 const keyLabels=["1","2","3","4","5","6","7","8","9",".","0","⌫"];
 $("keys").innerHTML=keyLabels.map(k=>'<button class="key" data-k="'+k+'">'+k+'</button>').join("")+'<button class="key done" id="doneBtn">Done</button>';
 function showKeypad(s){$("kp").classList.toggle("show",s);}
@@ -610,49 +606,15 @@ $("goBtn").onclick=async()=>{
   }
 };
 
-// ========== IMPORT/UNLOCK ==========
-$("importBtn").onclick=async()=>{
-  const w=$("words").value.trim().toLowerCase().split(/\s+/).filter(Boolean);
-  const p1=$("pass1").value,p2=$("pass2").value;
-  if(w.length!==12&&w.length!==24)return setMsg("setupMsg","Enter exactly 12 or 24 words",false);
-  if(p1.length<4)return setMsg("setupMsg","Passcode min 4 chars",false);
-  if(p1!==p2)return setMsg("setupMsg","Passcodes don't match",false);
-  setMsg("setupMsg","Please wait…",true);
-  try{
-    if(!TON||!CR||!client)await loadLibraries();
-    localStorage.removeItem(CHOICE);
-    localStorage.setItem(KEY,await encrypt(w.join(" "),p1));
-    $("words").value="";$("pass1").value="";$("pass2").value="";
-    await loadWallet(w);
-  }catch(e){setMsg("setupMsg","Error: "+(e&&e.message?e.message:e),false);}
-};
-$("unlockBtn").onclick=async()=>{
-  setMsg("unlockMsg","Please wait…",true);
-  try{
-    const plain=await decrypt(localStorage.getItem(KEY),$("unlockPass").value);
-    $("unlockPass").value="";$("unlockMsg").textContent="";
-    if(!TON||!CR||!client)await loadLibraries();
-    await loadWallet(plain.split(" "));
-  }catch(e){setMsg("unlockMsg","Wrong passcode",false);}
-};
-$("unlockPass").addEventListener("keydown",e=>{if(e.key==="Enter")$("unlockBtn").click();});
-$("forgetBtn").onclick=()=>{
-  if(confirm("Remove wallet from this device?\nMake sure you saved the seed!")){
-    localStorage.removeItem(KEY);localStorage.removeItem(CHOICE);location.reload();
-  }
-};
-
 // ========== BOOT ==========
 async function boot(){
   try{
     await loadLibraries();
     $("loading").classList.add("hide");
-    if(localStorage.getItem(KEY))showScreen("unlock");
-    else showScreen("setup");
+    showScreen("setup");
   }catch(e){
     $("loading").innerHTML='<div style="text-align:center;padding:40px;color:white">'+
       '<div style="font-size:48px;margin-bottom:16px">⚠️</div>'+
-      '<div style="font-size:18px;margin-bottom:12px">Failed to load</div>'+
       '<div style="opacity:.8;font-size:14px;max-width:280px;margin:0 auto 24px">'+esc(e.message)+'</div>'+
       '<button onclick="location.reload()" style="background:white;color:#1e5cbe;border:none;padding:12px 28px;border-radius:30px;font-size:16px;font-weight:600">Retry</button></div>';
   }
