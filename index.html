@@ -22,6 +22,7 @@ body{margin:0;background:#f1f1f4;font-family:-apple-system,Roboto,"Segoe UI",san
 .row{display:flex;gap:12px;margin:18px 0}
 .btn{flex:1;border:0;border-radius:30px;background:#5577f5;color:#fff;font-size:20px;font-weight:600;height:64px}
 .btn:active{opacity:.8}
+.btn:disabled{opacity:.5}
 .btn.full{width:100%;flex:none}
 .btn.ghost{background:#e4e7fb;color:#3a57d8}
 .list{background:#fff;border-radius:28px;padding:6px 0;overflow:hidden}
@@ -43,17 +44,21 @@ label{display:block;font-size:14px;color:#666;margin:12px 0 6px}
 input,textarea{width:100%;border:1.5px solid #dde1ea;border-radius:16px;padding:14px;font-size:17px;background:#f7f8fb;outline:none;font-family:inherit;color:#111}
 input:focus,textarea:focus{border-color:#5577f5}
 textarea{min-height:110px;resize:none;direction:ltr}
-.msg{margin-top:12px;font-size:15px;text-align:center;min-height:20px}
+.msg{margin-top:12px;font-size:15px;text-align:center;min-height:20px;word-break:break-word}
 .err{color:#d93636}.ok{color:#2bb04a}
 .center{max-width:480px;margin:0 auto;padding:60px 20px}
 .center h1{text-align:center}
 .center p{text-align:center;color:#666}
 .addr-box{word-break:break-all;background:#f1f3f9;border-radius:16px;padding:14px;font-family:monospace;font-size:15px;text-align:center}
-.mini{font-size:13px;color:#888;text-align:center;margin-top:14px}
 .link{background:none;border:0;color:#d93636;font-size:15px;margin-top:20px;width:100%}
+#libStatus{position:fixed;left:0;right:0;bottom:0;padding:8px 12px;font-size:13px;text-align:center;background:#fff3cd;color:#664d03;z-index:20;word-break:break-word}
+#libStatus.good{display:none}
+#libStatus.bad{background:#f8d7da;color:#842029}
 </style>
 </head>
 <body>
+
+<div id="libStatus">Loading libraries…</div>
 
 <!-- SETUP -->
 <div id="setup" class="center" style="display:none">
@@ -128,55 +133,101 @@ textarea{min-height:110px;resize:none;direction:ltr}
   <div id="sendMsg" class="msg"></div>
 </div></div>
 
-<script type="module">
-import { TonClient, WalletContractV5R1, internal, toNano, fromNano, Address, SendMode } from "https://esm.sh/@ton/ton@15.2.0";
-import { mnemonicToPrivateKey } from "https://esm.sh/@ton/crypto@3.3.0";
+<script>
+var $ = function (id) { return document.getElementById(id); };
+var API = "https://toncenter.com/api/v2";
+var KEY = "ton_wallet_enc_v1";
 
-const $ = id => document.getElementById(id);
-const API = "https://toncenter.com/api/v2";
-const client = new TonClient({ endpoint: API + "/jsonRPC" });
-const KEY = "ton_wallet_enc_v1";
+var words = null, wallet = null, address = "", balanceNano = 0n, client = null;
+var TON = null, CRYPTO = null;
 
-let words = null, wallet = null, address = "", balanceNano = 0n;
+/* ---------- show errors on screen ---------- */
+function setStatus(text, cls) {
+  var e = $("libStatus");
+  e.textContent = text;
+  e.className = cls || "";
+}
+window.addEventListener("error", function (e) { setStatus("Error: " + (e.message || e), "bad"); });
+window.addEventListener("unhandledrejection", function (e) {
+  setStatus("Error: " + (e.reason && e.reason.message ? e.reason.message : e.reason), "bad");
+});
+
+/* ---------- load TON libraries (with fallbacks) ---------- */
+var SETS = [
+  ["https://esm.sh/@ton/ton@15.2.0?bundle", "https://esm.sh/@ton/crypto@3.3.0?bundle"],
+  ["https://esm.sh/@ton/ton@15.2.0", "https://esm.sh/@ton/crypto@3.3.0"],
+  ["https://cdn.jsdelivr.net/npm/@ton/ton@15.2.0/+esm", "https://cdn.jsdelivr.net/npm/@ton/crypto@3.3.0/+esm"],
+  ["https://esm.sh/@ton/ton@15.1.0?bundle", "https://esm.sh/@ton/crypto@3.3.0?bundle"]
+];
+
+async function loadLibs() {
+  try {
+    if (!window.Buffer) {
+      var b = await import("https://esm.sh/buffer@6.0.3");
+      window.Buffer = b.Buffer || (b.default && b.default.Buffer);
+    }
+  } catch (e) { /* ignore, esm.sh usually polyfills it */ }
+
+  var lastErr = "";
+  for (var i = 0; i < SETS.length; i++) {
+    try {
+      setStatus("Loading libraries… (" + (i + 1) + "/" + SETS.length + ")");
+      var t = await import(SETS[i][0]);
+      var c = await import(SETS[i][1]);
+      if (!t.WalletContractV5R1) throw new Error("WalletContractV5R1 missing");
+      TON = t; CRYPTO = c;
+      client = new TON.TonClient({ endpoint: API + "/jsonRPC" });
+      setStatus("", "good");
+      return;
+    } catch (e) {
+      lastErr = (e && e.message) ? e.message : String(e);
+    }
+  }
+  setStatus("Could not load libraries: " + lastErr + " — check your internet / VPN and reload.", "bad");
+  throw new Error("libs failed");
+}
+var libsReady = loadLibs();
+libsReady.catch(function () {});
 
 /* ---------- crypto helpers ---------- */
-const enc = new TextEncoder(), dec = new TextDecoder();
-const b64 = u => btoa(String.fromCharCode(...u));
-const unb64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+var enc = new TextEncoder(), dec = new TextDecoder();
+function b64(u) { var s = ""; for (var i = 0; i < u.length; i++) s += String.fromCharCode(u[i]); return btoa(s); }
+function unb64(s) { var r = atob(s), u = new Uint8Array(r.length); for (var i = 0; i < r.length; i++) u[i] = r.charCodeAt(i); return u; }
 async function deriveKey(pass, salt) {
-  const m = await crypto.subtle.importKey("raw", enc.encode(pass), "PBKDF2", false, ["deriveKey"]);
-  return crypto.subtle.deriveKey({ name: "PBKDF2", salt, iterations: 150000, hash: "SHA-256" }, m, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
+  var m = await crypto.subtle.importKey("raw", enc.encode(pass), "PBKDF2", false, ["deriveKey"]);
+  return crypto.subtle.deriveKey({ name: "PBKDF2", salt: salt, iterations: 150000, hash: "SHA-256" }, m, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
 }
 async function encrypt(text, pass) {
-  const salt = crypto.getRandomValues(new Uint8Array(16));
-  const iv = crypto.getRandomValues(new Uint8Array(12));
-  const k = await deriveKey(pass, salt);
-  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, k, enc.encode(text)));
+  var salt = crypto.getRandomValues(new Uint8Array(16));
+  var iv = crypto.getRandomValues(new Uint8Array(12));
+  var k = await deriveKey(pass, salt);
+  var ct = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, k, enc.encode(text)));
   return JSON.stringify({ s: b64(salt), i: b64(iv), c: b64(ct) });
 }
 async function decrypt(blob, pass) {
-  const o = JSON.parse(blob);
-  const k = await deriveKey(pass, unb64(o.s));
-  const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: unb64(o.i) }, k, unb64(o.c));
+  var o = JSON.parse(blob);
+  var k = await deriveKey(pass, unb64(o.s));
+  var pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: unb64(o.i) }, k, unb64(o.c));
   return dec.decode(pt);
 }
 
 /* ---------- screens ---------- */
 function show(id) {
-  ["setup", "unlock", "main"].forEach(x => $(x).style.display = x === id ? "block" : "none");
+  ["setup", "unlock", "main"].forEach(function (x) { $(x).style.display = x === id ? "block" : "none"; });
 }
 function openSheet(id) { $(id).classList.add("show"); }
 function closeSheet(id) { $(id).classList.remove("show"); }
-document.querySelectorAll("[data-close]").forEach(b => b.onclick = () => closeSheet(b.dataset.close));
+document.querySelectorAll("[data-close]").forEach(function (b) { b.onclick = function () { closeSheet(b.dataset.close); }; });
 
-function setMsg(id, text, ok) { const e = $(id); e.textContent = text; e.className = "msg " + (ok ? "ok" : "err"); }
-const short = a => a && a.length > 10 ? a.slice(0, 4) + "…" + a.slice(-4) : a;
+function setMsg(id, text, ok) { var e = $(id); e.textContent = text; e.className = "msg " + (ok ? "ok" : "err"); }
+function short(a) { return a && a.length > 10 ? a.slice(0, 4) + "…" + a.slice(-4) : a; }
 
 /* ---------- wallet ---------- */
 async function loadWallet(w) {
+  await libsReady;
   words = w;
-  const kp = await mnemonicToPrivateKey(words);
-  wallet = WalletContractV5R1.create({ workchain: 0, publicKey: kp.publicKey });
+  var kp = await CRYPTO.mnemonicToPrivateKey(words);
+  wallet = TON.WalletContractV5R1.create({ workchain: 0, publicKey: kp.publicKey });
   address = wallet.address.toString({ bounceable: false, urlSafe: true });
   $("cardAddr").textContent = address;
   $("recvAddr").textContent = address;
@@ -185,30 +236,30 @@ async function loadWallet(w) {
 }
 
 async function getJson(url) {
-  const r = await fetch(url);
-  const j = await r.json();
+  var r = await fetch(url);
+  var j = await r.json();
   if (!j.ok) throw new Error(j.error || "API error");
   return j.result;
 }
-const sleep = ms => new Promise(r => setTimeout(r, ms));
+function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
 async function refresh() {
   $("refreshBtn").style.opacity = .4;
   try {
-    const bal = await getJson(`${API}/getAddressBalance?address=${address}`);
+    var bal = await getJson(API + "/getAddressBalance?address=" + address);
     balanceNano = BigInt(bal);
-    const t = fromNano(balanceNano);
-    const [i, d] = t.split(".");
-    $("balInt").textContent = i;
-    $("balDec").textContent = d ? "." + d.slice(0, 2) : "";
+    var t = TON.fromNano(balanceNano);
+    var parts = t.split(".");
+    $("balInt").textContent = parts[0];
+    $("balDec").textContent = parts[1] ? "." + parts[1].slice(0, 2) : "";
     fetch("https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=usd")
-      .then(r => r.json()).then(p => {
-        const price = p["the-open-network"].usd;
+      .then(function (r) { return r.json(); }).then(function (p) {
+        var price = p["the-open-network"].usd;
         $("usd").textContent = "$" + (parseFloat(t) * price).toFixed(2);
-      }).catch(() => {});
+      }).catch(function () {});
   } catch (e) { console.log(e); }
   await sleep(1100);
-  try { renderTx(await getJson(`${API}/getTransactions?address=${address}&limit=20`)); }
+  try { renderTx(await getJson(API + "/getTransactions?address=" + address + "&limit=20")); }
   catch (e) { $("txList").innerHTML = '<div class="empty">Could not load transactions</div>'; }
   $("refreshBtn").style.opacity = 1;
 }
@@ -216,66 +267,65 @@ async function refresh() {
 function fmtDate(u) {
   return new Date(u * 1000).toLocaleString("en", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false });
 }
-function fmtAmt(v) { return parseFloat(fromNano(BigInt(v))).toString(); }
-function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+function fmtAmt(v) { return parseFloat(TON.fromNano(BigInt(v))).toString(); }
+function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
 
 function renderTx(list) {
-  const items = [];
-  for (const tx of list) {
-    const inm = tx.in_msg;
-    if (inm && inm.source) {
-      items.push({ dir: "in", addr: inm.source, val: inm.value, memo: inm.message, time: tx.utime });
-    }
-    for (const o of (tx.out_msgs || [])) {
+  var items = [];
+  list.forEach(function (tx) {
+    var inm = tx.in_msg;
+    if (inm && inm.source) items.push({ dir: "in", addr: inm.source, val: inm.value, memo: inm.message, time: tx.utime });
+    (tx.out_msgs || []).forEach(function (o) {
       if (o.destination) items.push({ dir: "out", addr: o.destination, val: o.value, memo: o.message, time: tx.utime });
-    }
-  }
+    });
+  });
   if (!items.length) { $("txList").innerHTML = '<div class="empty">No transactions yet</div>'; return; }
-  $("txList").innerHTML = items.map(x => `
-    <div class="tx">
-      <div class="ava">${x.dir === "in" ? "↓" : "↑"}</div>
-      <div class="mid">
-        <div class="t1">${esc(short(x.addr))}</div>
-        <div class="t2">${x.dir === "in" ? "Incoming transfer" : "Outgoing transfer"}</div>
-        <div class="t3">${fmtDate(x.time)}${x.memo ? " · " + esc(x.memo) : ""}</div>
-      </div>
-      <div class="amt ${x.dir === "in" ? "in" : ""}">${x.dir === "in" ? "+" : "−"}${fmtAmt(x.val)} 💎</div>
-    </div>`).join("");
+  $("txList").innerHTML = items.map(function (x) {
+    return '<div class="tx">' +
+      '<div class="ava">' + (x.dir === "in" ? "↓" : "↑") + '</div>' +
+      '<div class="mid">' +
+        '<div class="t1">' + esc(short(x.addr)) + '</div>' +
+        '<div class="t2">' + (x.dir === "in" ? "Incoming transfer" : "Outgoing transfer") + '</div>' +
+        '<div class="t3">' + fmtDate(x.time) + (x.memo ? " · " + esc(x.memo) : "") + '</div>' +
+      '</div>' +
+      '<div class="amt ' + (x.dir === "in" ? "in" : "") + '">' + (x.dir === "in" ? "+" : "−") + fmtAmt(x.val) + ' 💎</div>' +
+    '</div>';
+  }).join("");
 }
 
 /* ---------- send ---------- */
 async function doSend() {
-  const to = $("toAddr").value.trim();
-  const amt = $("amount").value.trim();
-  const memo = $("memo").value.trim();
+  var to = $("toAddr").value.trim();
+  var amt = $("amount").value.trim();
+  var memo = $("memo").value.trim();
   if (!to) return setMsg("sendMsg", "Enter recipient address", false);
   if (!amt || Number(amt) <= 0) return setMsg("sendMsg", "Enter a valid amount", false);
 
-  let dest, bounce = false;
+  var dest, bounce = false;
   try {
-    try { const p = Address.parseFriendly(to); dest = p.address; bounce = p.isBounceable; }
-    catch { dest = Address.parse(to); }
-  } catch { return setMsg("sendMsg", "Invalid address", false); }
+    try { var p = TON.Address.parseFriendly(to); dest = p.address; bounce = p.isBounceable; }
+    catch (e1) { dest = TON.Address.parse(to); }
+  } catch (e2) { return setMsg("sendMsg", "Invalid address", false); }
 
-  let value;
-  try { value = toNano(amt); } catch { return setMsg("sendMsg", "Invalid amount", false); }
-  if (value + toNano("0.01") > balanceNano) return setMsg("sendMsg", "Insufficient balance (keep a little for fees)", false);
+  var value;
+  try { value = TON.toNano(amt); } catch (e3) { return setMsg("sendMsg", "Invalid amount", false); }
+  if (value + TON.toNano("0.01") > balanceNano) return setMsg("sendMsg", "Insufficient balance (keep a little for fees)", false);
 
   $("confirmSend").disabled = true;
   setMsg("sendMsg", "Sending…", true);
   try {
-    const kp = await mnemonicToPrivateKey(words);
-    const contract = client.open(wallet);
-    const seqno = await contract.getSeqno();
+    var kp = await CRYPTO.mnemonicToPrivateKey(words);
+    var contract = client.open(wallet);
+    var seqno = await contract.getSeqno();
     await contract.sendTransfer({
-      seqno,
+      seqno: seqno,
       secretKey: kp.secretKey,
-      sendMode: SendMode.PAY_GAS_SEPARATELY + SendMode.IGNORE_ERRORS,
-      messages: [internal({ to: dest, value, bounce, body: memo || undefined })]
+      sendMode: TON.SendMode.PAY_GAS_SEPARATELY + TON.SendMode.IGNORE_ERRORS,
+      messages: [TON.internal({ to: dest, value: value, bounce: bounce, body: memo || undefined })]
     });
     setMsg("sendMsg", "✅ Sent! It will show up in a few seconds.", true);
     $("toAddr").value = ""; $("amount").value = ""; $("memo").value = "";
-    setTimeout(() => { closeSheet("sendBg"); $("sendMsg").textContent = ""; refresh(); }, 2500);
+    setTimeout(function () { closeSheet("sendBg"); $("sendMsg").textContent = ""; refresh(); }, 2500);
     setTimeout(refresh, 9000);
   } catch (e) {
     setMsg("sendMsg", "Error: " + (e.message || e), false);
@@ -284,53 +334,56 @@ async function doSend() {
 }
 
 /* ---------- events ---------- */
-$("importBtn").onclick = async () => {
-  const w = $("words").value.trim().toLowerCase().split(/\s+/).filter(Boolean);
-  const p1 = $("pass1").value, p2 = $("pass2").value;
+$("importBtn").onclick = async function () {
+  var w = $("words").value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  var p1 = $("pass1").value, p2 = $("pass2").value;
   if (w.length !== 12 && w.length !== 24) return setMsg("setupMsg", "Enter exactly 12 or 24 words", false);
   if (p1.length < 4) return setMsg("setupMsg", "Passcode must be at least 4 characters", false);
   if (p1 !== p2) return setMsg("setupMsg", "Passcodes don't match", false);
   setMsg("setupMsg", "Please wait…", true);
   try {
+    await libsReady;
     localStorage.setItem(KEY, await encrypt(w.join(" "), p1));
     $("words").value = ""; $("pass1").value = ""; $("pass2").value = "";
     await loadWallet(w);
   } catch (e) { setMsg("setupMsg", "Error: " + (e.message || e), false); }
 };
 
-$("unlockBtn").onclick = async () => {
+$("unlockBtn").onclick = async function () {
   setMsg("unlockMsg", "Please wait…", true);
+  var txt;
+  try { txt = await decrypt(localStorage.getItem(KEY), $("unlockPass").value); }
+  catch (e) { return setMsg("unlockMsg", "Wrong passcode", false); }
   try {
-    const txt = await decrypt(localStorage.getItem(KEY), $("unlockPass").value);
     $("unlockPass").value = ""; $("unlockMsg").textContent = "";
     await loadWallet(txt.split(" "));
-  } catch { setMsg("unlockMsg", "Wrong passcode", false); }
+  } catch (e) { setMsg("unlockMsg", "Error: " + (e.message || e), false); }
 };
-$("unlockPass").addEventListener("keydown", e => { if (e.key === "Enter") $("unlockBtn").click(); });
+$("unlockPass").addEventListener("keydown", function (e) { if (e.key === "Enter") $("unlockBtn").click(); });
 
-$("forgetBtn").onclick = () => {
+$("forgetBtn").onclick = function () {
   if (confirm("Remove this wallet from this device? Make sure you have your secret words saved!")) {
     localStorage.removeItem(KEY); location.reload();
   }
 };
-$("lockBtn").onclick = () => { words = null; wallet = null; show("unlock"); };
+$("lockBtn").onclick = function () { words = null; wallet = null; show("unlock"); };
 $("refreshBtn").onclick = refresh;
-$("addBtn").onclick = () => openSheet("recvBg");
-$("qrBtn").onclick = () => openSheet("recvBg");
-$("sendBtn").onclick = () => { $("sendMsg").textContent = ""; openSheet("sendBg"); };
+$("addBtn").onclick = function () { openSheet("recvBg"); };
+$("qrBtn").onclick = function () { openSheet("recvBg"); };
+$("sendBtn").onclick = function () { $("sendMsg").textContent = ""; openSheet("sendBg"); };
 $("confirmSend").onclick = doSend;
-$("copyBtn").onclick = async () => {
+$("copyBtn").onclick = async function () {
   try { await navigator.clipboard.writeText(address); $("copyBtn").textContent = "Copied ✓"; }
-  catch { prompt("Copy address:", address); }
-  setTimeout(() => $("copyBtn").textContent = "Copy address", 1500);
+  catch (e) { prompt("Copy address:", address); }
+  setTimeout(function () { $("copyBtn").textContent = "Copy address"; }, 1500);
 };
-$("maxLink").onclick = e => {
+$("maxLink").onclick = function (e) {
   e.preventDefault();
-  const m = balanceNano - toNano("0.01");
-  $("amount").value = m > 0n ? fromNano(m) : "0";
+  var m = balanceNano - TON.toNano("0.01");
+  $("amount").value = m > 0n ? TON.fromNano(m) : "0";
 };
 
-/* ---------- start ---------- */
+/* ---------- start (shows immediately, before libraries load) ---------- */
 show(localStorage.getItem(KEY) ? "unlock" : "setup");
 </script>
 </body>
