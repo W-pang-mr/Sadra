@@ -8,85 +8,93 @@
 :root{--bg:#f4f6f9;--card:#fff;--b1:#2481cc;--b2:#3390ec;--tx:#222;--mut:#707579;--grn:#2eaf4f;--red:#ff4d4f;--grad:linear-gradient(135deg,#2481cc,#3390ec)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);font-family:Inter,Roboto,-apple-system,"Segoe UI",sans-serif;color:var(--tx);min-height:100vh}
-button{font-family:inherit;border:0;cursor:pointer;transition:transform .15s ease,opacity .15s ease,background .15s ease}
-button:active,.tx:active,.mi:active{transform:scale(.96)}
-.app{max-width:480px;margin:0 auto;padding:12px 16px 60px;animation:fade .4s ease}
-@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+button{font-family:inherit;border:0;cursor:pointer;transition:transform .18s cubic-bezier(.2,.8,.2,1),opacity .18s ease,background .2s ease,box-shadow .2s ease}
+button:active,.tx:active,.mi:active{transform:scale(.94)}
+.app{max-width:480px;margin:0 auto;padding:12px 16px 60px;animation:fadeIn .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .top{display:flex;align-items:center;justify-content:space-between;height:52px}
-.top h1{font-size:26px;margin:0;font-weight:700}
-.ib{background:none;font-size:22px;padding:8px 10px;color:var(--tx);border-radius:50%}
-.card{position:relative;height:200px;border-radius:28px;background:linear-gradient(135deg,#1e5cbe,#4ba3e3);color:#fff;padding:24px;overflow:hidden;box-shadow:0 12px 30px rgba(30,92,190,.3)}
+.top h1{font-size:26px;margin:0;font-weight:700;animation:slideDown .4s cubic-bezier(.2,.8,.2,1)}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+.ib{background:none;font-size:22px;padding:8px 10px;color:var(--tx);border-radius:50%;transition:transform .2s,background .2s}
+.ib:active{background:rgba(0,0,0,.06)}
+.card{position:relative;height:200px;border-radius:28px;background:linear-gradient(135deg,#1e5cbe,#4ba3e3);color:#fff;padding:24px;overflow:hidden;box-shadow:0 12px 30px rgba(30,92,190,.3);animation:cardIn .55s cubic-bezier(.2,.8,.2,1)}
+@keyframes cardIn{from{opacity:0;transform:scale(.92) translateY(20px)}to{opacity:1;transform:none}}
 .card:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 10%,rgba(255,255,255,.35),transparent 45%),repeating-radial-gradient(circle at 70% 60%,rgba(255,255,255,.07) 0 2px,transparent 2px 9px);pointer-events:none}
 .card:after{content:"";position:absolute;top:-50%;left:-60%;width:40%;height:200%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent);transform:rotate(20deg);animation:shine 5s ease-in-out infinite}
 @keyframes shine{0%,60%{left:-60%}100%{left:130%}}
-.bal{position:absolute;left:24px;top:52px;display:flex;align-items:center;gap:10px;font-size:42px;font-weight:700;z-index:1}
+.bal{position:absolute;left:24px;top:52px;display:flex;align-items:center;gap:10px;font-size:42px;font-weight:700;z-index:1;animation:balPop .5s .15s both}
+@keyframes balPop{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
 .bal small{font-size:30px;font-weight:600;color:#d3ebff}
-.usd{position:absolute;left:24px;top:112px;color:#d3ebff;font-size:20px;font-weight:600;z-index:1}
-.hd{position:absolute;left:24px;bottom:22px;font-family:monospace;font-weight:700;font-size:14px;z-index:1}
+.usd{position:absolute;left:24px;top:112px;color:#d3ebff;font-size:20px;font-weight:600;z-index:1;animation:fadeIn .5s .25s both}
+.hd{position:absolute;left:24px;bottom:22px;font-family:monospace;font-weight:700;font-size:14px;z-index:1;animation:fadeIn .5s .3s both}
 .addr{position:absolute;right:14px;top:16px;bottom:16px;writing-mode:vertical-rl;font-family:monospace;font-size:12px;opacity:.75;word-break:break-all;line-height:1.15;z-index:1}
-.qr{position:absolute;right:58px;top:50%;transform:translateY(-50%);width:60px;height:54px;border-radius:16px;background:rgba(255,255,255,.88);font-size:24px;z-index:1}
+.qr{position:absolute;right:58px;top:50%;transform:translateY(-50%);width:60px;height:54px;border-radius:16px;background:rgba(255,255,255,.88);font-size:24px;z-index:1;transition:transform .2s,background .2s}
+.qr:active{transform:translateY(-50%) scale(.9)}
 .row{display:flex;gap:12px;margin:16px 0}
-.btn{flex:1;border-radius:30px;background:var(--grad);color:#fff;font-size:18px;font-weight:600;height:58px;display:flex;align-items:center;justify-content:center;gap:8px}
-.btn.full{width:100%;flex:none}.btn:disabled{opacity:.45}
-.btn.ghost{background:#e5eefa;color:var(--b1)}
-.list{background:var(--card);border-radius:24px;padding:4px 0;overflow:hidden}
-.tx{display:flex;align-items:center;gap:14px;padding:13px 16px;border-bottom:1px solid #eef0f3;transition:background .2s,transform .15s}
+.btn{flex:1;border-radius:30px;background:var(--grad);color:#fff;font-size:18px;font-weight:600;height:58px;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 18px rgba(36,129,204,.35);animation:btnIn .5s .2s both}
+@keyframes btnIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.btn.full{width:100%;flex:none}.btn:disabled{opacity:.45;box-shadow:none}
+.btn.ghost{background:#e5eefa;color:var(--b1);box-shadow:none}
+.list{background:var(--card);border-radius:24px;padding:4px 0;overflow:hidden;animation:fadeIn .5s .3s both}
+.tx{display:flex;align-items:center;gap:14px;padding:13px 16px;border-bottom:1px solid #eef0f3;transition:background .2s,transform .15s;animation:txIn .4s both}
+@keyframes txIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
+.tx:nth-child(1){animation-delay:.05s}.tx:nth-child(2){animation-delay:.1s}.tx:nth-child(3){animation-delay:.15s}.tx:nth-child(4){animation-delay:.2s}.tx:nth-child(5){animation-delay:.25s}
 .tx:active{background:#eaf2fb}.tx:last-child{border:0}
-.ava{width:48px;height:48px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;flex:none}
+.ava{width:48px;height:48px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;flex:none;transition:transform .2s}
 .ava.in{background:linear-gradient(135deg,#2eaf4f,#52c96f)}
 .tx .m{flex:1;min-width:0}.t1{font-size:17px;font-weight:600}.t2{color:var(--mut);font-size:14px}.t3{color:var(--mut);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .amt{font-weight:700;font-size:17px}.amt.in{color:var(--grn)}
-.empty{padding:28px;text-align:center;color:var(--mut)}
-.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:flex-end;justify-content:center;z-index:50;opacity:0;pointer-events:none;transition:opacity .25s}
+.empty{padding:28px;text-align:center;color:var(--mut);animation:fadeIn .4s}
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:flex-end;justify-content:center;z-index:50;opacity:0;pointer-events:none;transition:opacity .28s}
 .sheet-bg.show{opacity:1;pointer-events:auto}
-.sheet{background:#fff;width:100%;max-width:480px;border-radius:26px 26px 0 0;padding:22px 20px 30px;transform:translateY(100%);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.sheet{background:#fff;width:100%;max-width:480px;border-radius:26px 26px 0 0;padding:22px 20px 30px;transform:translateY(100%);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
 .sheet-bg.show .sheet{transform:none}
 .sheet h2{margin:0 0 12px}
-.abox{word-break:break-all;background:var(--bg);border-radius:16px;padding:14px;font-family:monospace;font-size:14px;text-align:center}
+.abox{word-break:break-all;background:var(--bg);border-radius:16px;padding:14px;font-family:monospace;font-size:14px;text-align:center;animation:fadeIn .3s}
 #menuBg{position:fixed;inset:0;z-index:45;display:none}#menuBg.show{display:block}
-#menu{position:absolute;top:60px;right:14px;width:260px;background:#fff;border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,.18);overflow:hidden;opacity:0;transform:scale(.85);transform-origin:top right;transition:opacity .2s,transform .2s cubic-bezier(.2,.8,.2,1)}
+#menu{position:absolute;top:60px;right:14px;width:260px;background:#fff;border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,.18);overflow:hidden;opacity:0;transform:scale(.85);transform-origin:top right;transition:opacity .22s,transform .22s cubic-bezier(.2,.8,.2,1)}
 #menuBg.show #menu{opacity:1;transform:none}
 .mi{display:flex;align-items:center;gap:12px;padding:14px 16px;font-size:16px;border-bottom:1px solid #f0f2f5;transition:background .2s,transform .15s}
 .mi:active{background:#eaf2fb}.mi:last-child{border:0}.mi small{display:block;color:var(--grn);font-size:12px}
-.page{position:fixed;inset:0;background:var(--bg);transform:translateX(100%);transition:transform .32s cubic-bezier(.2,.8,.2,1);z-index:40;overflow:auto}
+.page{position:fixed;inset:0;background:var(--bg);transform:translateX(100%);transition:transform .34s cubic-bezier(.2,.8,.2,1);z-index:40;overflow:auto}
 .page.show{transform:none}.page.kp{padding-bottom:350px}
 .pin{max-width:480px;margin:0 auto;padding:8px 16px 30px}
 .hdr{display:flex;align-items:center;gap:10px;height:52px;font-size:20px;font-weight:700}
-.rec{background:#fff;border-radius:22px;padding:14px;margin-top:6px}
+.rec{background:#fff;border-radius:22px;padding:14px;margin-top:6px;animation:fadeIn .35s}
 .badge{display:flex;align-items:center;gap:12px;margin-bottom:10px}
 .badge .ava{width:44px;height:44px;font-size:16px;font-weight:700}
 .badge b{display:block}.badge span{color:var(--mut);font-size:13px;font-family:monospace}
-input{width:100%;border:1.5px solid #e2e6ea;border-radius:14px;padding:13px;font-size:16px;background:#f9fafb;outline:none;font-family:inherit;color:var(--tx);transition:border-color .2s}
-input:focus{border-color:var(--b2)}
+input{width:100%;border:1.5px solid #e2e6ea;border-radius:14px;padding:13px;font-size:16px;background:#f9fafb;outline:none;font-family:inherit;color:var(--tx);transition:border-color .2s,box-shadow .2s}
+input:focus{border-color:var(--b2);box-shadow:0 0 0 3px rgba(51,144,236,.15)}
 .amtbox{text-align:center;margin:26px 0 8px}
 .amtn{display:inline-flex;align-items:center;gap:10px;font-size:52px;font-weight:700;color:var(--tx)}
 .amtn small{font-size:24px;color:var(--mut);font-weight:600}
-.pop{animation:pop .18s ease}@keyframes pop{from{transform:scale(.92);opacity:.6}to{transform:none;opacity:1}}
+.pop{animation:pop .2s cubic-bezier(.2,.8,.2,1)}@keyframes pop{from{transform:scale(.9);opacity:.7}to{transform:none;opacity:1}}
 .shake{animation:shake .4s ease}@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
 .conv{text-align:center;color:var(--mut);font-size:17px;transition:opacity .2s}
 .info{text-align:center;color:var(--mut);font-size:14px;margin:8px 0 4px}
 .warn{text-align:center;color:var(--red);font-size:14px;font-weight:600;height:0;overflow:hidden;opacity:0;transition:all .25s}
 .warn.show{height:22px;opacity:1;margin:6px 0}
-#kp{position:fixed;left:0;right:0;bottom:0;background:#fff;border-radius:24px 24px 0 0;padding:12px 14px calc(14px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);z-index:60;box-shadow:0 -8px 30px rgba(0,0,0,.08)}
+#kp{position:fixed;left:0;right:0;bottom:0;background:#fff;border-radius:24px 24px 0 0;padding:12px 14px calc(14px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .32s cubic-bezier(.2,.8,.2,1);z-index:60;box-shadow:0 -8px 30px rgba(0,0,0,.08)}
 #kp.show{transform:none}
 .keys{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.key{height:56px;border-radius:16px;background:#f4f6f9;font-size:26px;font-weight:600;color:var(--tx)}
-.key:active{background:#d9e8f7;transform:scale(.96)}
+.key{height:56px;border-radius:16px;background:#f4f6f9;font-size:26px;font-weight:600;color:var(--tx);transition:transform .15s,background .15s}
+.key:active{background:#d9e8f7;transform:scale(.93)}
 .done{grid-column:1/-1;height:54px;font-size:18px}
 label{display:block;font-size:14px;color:var(--mut);margin:12px 0 6px}
-textarea{width:100%;min-height:100px;border:1.5px solid #e2e6ea;border-radius:14px;padding:13px;font-size:16px;background:#f9fafb;outline:none;font-family:inherit;resize:none}
-.center{max-width:480px;margin:0 auto;padding:56px 20px 120px}.center h1{text-align:center}.center p{text-align:center;color:var(--mut)}
+textarea{width:100%;min-height:100px;border:1.5px solid #e2e6ea;border-radius:14px;padding:13px;font-size:16px;background:#f9fafb;outline:none;font-family:inherit;resize:none;transition:border-color .2s}
+textarea:focus{border-color:var(--b2)}
+.center{max-width:480px;margin:0 auto;padding:56px 20px 120px;animation:fadeIn .45s}.center h1{text-align:center}.center p{text-align:center;color:var(--mut)}
 .msg{margin-top:12px;font-size:15px;text-align:center;min-height:20px;word-break:break-word}.err{color:var(--red)}.ok{color:var(--grn)}
 .link{background:none;color:var(--red);font-size:15px;margin-top:18px;width:100%}
 .sp{width:20px;height:20px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
-#toast{position:fixed;left:50%;bottom:90px;transform:translate(-50%,20px);background:rgba(34,34,34,.92);color:#fff;padding:12px 20px;border-radius:24px;font-size:15px;opacity:0;transition:all .25s;z-index:90;pointer-events:none;max-width:90%;text-align:center}
+#toast{position:fixed;left:50%;bottom:90px;transform:translate(-50%,24px);background:rgba(34,34,34,.92);color:#fff;padding:12px 20px;border-radius:24px;font-size:15px;opacity:0;transition:all .28s cubic-bezier(.2,.8,.2,1);z-index:90;pointer-events:none;max-width:90%;text-align:center}
 #toast.show{opacity:1;transform:translate(-50%,0)}
-#libStatus{position:fixed;left:0;right:0;bottom:0;padding:8px 12px;font-size:12px;text-align:left;direction:ltr;background:#fff3cd;color:#664d03;z-index:95;word-break:break-word;max-height:38vh;overflow:auto;white-space:pre-wrap}
-#libStatus.good{display:none}#libStatus.bad{background:#f8d7da;color:#842029}
+#libStatus{display:none!important}
 </style>
 </head>
 <body>
-<div id="libStatus">Loading libraries…</div>
+<div id="libStatus"></div>
 <div id="toast"></div>
 
 <div id="setup" class="center" style="display:none">
@@ -145,7 +153,7 @@ textarea{width:100%;min-height:100px;border:1.5px solid #e2e6ea;border-radius:14
   <div class="conv" id="conv">= $0.00</div>
   <div class="warn" id="warn">Insufficient funds</div>
   <div class="info" id="balInfo">Balance: 0 TON</div>
-  <div class="info">Network fee: ~0.005 TON</div>
+  <div class="info">Network fee: \~0.005 TON</div>
   <div style="height:14px"></div>
   <button class="btn full" id="goBtn" disabled>Continue</button>
 </div></div>
@@ -158,21 +166,21 @@ var API="https://toncenter.com/api/v2",API_KEY="e08b96c939bcca03c136cbc8e48e0f49
 var KEY="ton_wallet_enc_v1",CHOICE="ton_wallet_choice_v1",FEE="0.01";
 var words=null,wallet=null,kp0=null,address="",balNano=0n,client=null,TON=null,CR=null,price=0,amt="0",wasBad=false;
 
-function setStatus(t,c){var e=$("libStatus");e.textContent=t;e.className=c||""}
+function setStatus(t,c){/* status banner removed */}
 function toast(t){var e=$("toast");e.textContent=t;e.className="show";clearTimeout(toast.t);toast.t=setTimeout(function(){e.className=""},2200)}
-window.addEventListener("error",function(e){if(!e.message||/^Script error/.test(e.message))return;setStatus("Error: "+e.message,"bad")});
-window.addEventListener("unhandledrejection",function(e){setStatus("Error: "+(e.reason&&e.reason.message?e.reason.message:e.reason),"bad")});
+window.addEventListener("error",function(e){if(!e.message||/^Script error/.test(e.message))return});
+window.addEventListener("unhandledrejection",function(e){});
 
 /* ---- libraries ---- */
 var TU=["https://esm.sh/@ton/ton@15","https://esm.sh/@ton/ton@15.2.0","https://cdn.jsdelivr.net/npm/@ton/ton@15/+esm","https://fastly.jsdelivr.net/npm/@ton/ton@15/+esm","https://esm.run/@ton/ton@15"];
 var CU=["https://esm.sh/@ton/crypto@3","https://esm.sh/@ton/crypto@3.3.0","https://cdn.jsdelivr.net/npm/@ton/crypto@3/+esm","https://fastly.jsdelivr.net/npm/@ton/crypto@3/+esm","https://esm.run/@ton/crypto@3"];
-async function tryImp(urls,ok,lb,log){for(var i=0;i<urls.length;i++){try{setStatus("Loading "+lb+" ("+(i+1)+"/"+urls.length+")…\n"+log.join("\n"));var m=await import(urls[i]);if(!ok(m))throw new Error("export missing");return m}catch(e){log.push("FAIL "+urls[i].replace("https://","")+" -> "+(e&&e.message?e.message.slice(0,50):e))}}return null}
+async function tryImp(urls,ok,lb,log){for(var i=0;i<urls.length;i++){try{var m=await import(urls[i]);if(!ok(m))throw new Error("export missing");return m}catch(e){log.push("FAIL "+urls[i].replace("https://","")+" -> "+(e&&e.message?e.message.slice(0,50):e))}}return null}
 async function loadLibs(){var log=[];
  try{if(!window.Buffer){var b=await import("https://esm.sh/buffer@6.0.3");window.Buffer=b.Buffer||(b.default&&b.default.Buffer)}}catch(e){}
  TON=await tryImp(TU,function(m){return m.WalletContractV5R1&&m.WalletContractV4&&m.TonClient},"ton",log);
  CR=TON&&await tryImp(CU,function(m){return m.mnemonicToPrivateKey&&m.keyPairFromSeed},"crypto",log);
- if(!TON||!CR){setStatus("Could not load libraries. Turn on VPN and reload.\n\n"+log.join("\n"),"bad");throw new Error("libs failed")}
- client=new TON.TonClient({endpoint:API+"/jsonRPC",apiKey:API_KEY});setStatus("","good")}
+ if(!TON||!CR){throw new Error("libs failed")}
+ client=new TON.TonClient({endpoint:API+"/jsonRPC",apiKey:API_KEY})}
 var libsReady=loadLibs();libsReady.catch(function(){});
 
 /* ---- encryption ---- */
@@ -206,24 +214,24 @@ function buzz(){try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}}
 async function api(p){var r=await fetch(API+p+(p.indexOf("?")>-1?"&":"?")+"api_key="+API_KEY),t=await r.text(),j;try{j=JSON.parse(t)}catch(e){throw new Error("HTTP "+r.status+" "+t.slice(0,80))}if(!j.ok)throw new Error((j.error||"API error")+" (HTTP "+r.status+")");return j.result}
 
 /* ---- wallet load ---- */
-async function loadWallet(w){await libsReady;words=w;setStatus("Detecting your wallet…");
+async function loadWallet(w){await libsReady;words=w;
  var saved=localStorage.getItem(CHOICE),chosen=null,list=[],notes=[];
  if(saved){var cf=CANDS.filter(function(c){return c.id===saved})[0];if(cf)chosen=await build(cf,words)}
  if(!chosen){for(var i=0;i<CANDS.length;i++){var cd=await build(CANDS[i],words);list.push(cd);
    try{var inf=await api("/getAddressInformation?address="+cd.addr),b=BigInt(inf.balance||"0");notes.push(cd.label+"\n"+cd.addr+"\nstate: "+inf.state+" | balance: "+TON.fromNano(b));if(inf.state!=="uninitialized"||b>0n){chosen=cd;break}}catch(e){notes.push(cd.label+"\n"+cd.addr+"\nAPI error: "+(e.message||e))}
    await sleep(300)}
-  if(chosen){localStorage.setItem(CHOICE,chosen.id);setStatus("","good")}
-  else{chosen=list[0];setStatus("No active wallet found for these words. Compare with your real wallet address:\n\n"+notes.join("\n\n"),"bad")}
- }else setStatus("","good");
+  if(chosen){localStorage.setItem(CHOICE,chosen.id)}
+  else{chosen=list[0]}
+ }
  kp0=chosen.kp;wallet=chosen.wallet;address=chosen.addr;
- $("cardAddr").textContent=address;$("recvAddr").textContent=address;show("main");refresh()}
+ \( ("cardAddr").textContent=address; \)("recvAddr").textContent=address;show("main");refresh()}
 
 async function refresh(){var rb=$("refreshBtn");rb.style.opacity=.4;
  try{balNano=BigInt(await api("/getAddressBalance?address="+address));var t=TON.fromNano(balNano);$("balN").textContent=parseFloat(t).toString();
-  fetch("https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=usd").then(function(r){return r.json()}).then(function(p){price=p["the-open-network"].usd;$("usd").textContent="$"+(parseFloat(t)*price).toFixed(2);upd()}).catch(function(){})}
- catch(e){setStatus("Balance error: "+(e.message||e),"bad")}
+  fetch("https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=usd").then(function(r){return r.json()}).then(function(p){price=p["the-open-network"].usd;\( ("usd").textContent=" \)"+(parseFloat(t)*price).toFixed(2);upd()}).catch(function(){})}
+ catch(e){}
  await sleep(400);
- try{renderTx(await api("/getTransactions?address="+address+"&limit=20"))}catch(e){$("txList").innerHTML='<div class="empty">Could not load transactions</div>';setStatus("Transactions error: "+(e.message||e),"bad")}
+ try{renderTx(await api("/getTransactions?address="+address+"&limit=20"))}catch(e){$("txList").innerHTML='<div class="empty">Could not load transactions</div>'}
  rb.style.opacity=1}
 function fd(u){return new Date(u*1000).toLocaleString("en",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit",hour12:false})}
 function renderTx(l){var it=[];l.forEach(function(tx){var i=tx.in_msg;if(i&&i.source)it.push({d:"in",a:i.source,v:i.value,m:i.message,t:tx.utime});(tx.out_msgs||[]).forEach(function(o){if(o.destination)it.push({d:"out",a:o.destination,v:o.value,m:o.message,t:tx.utime})})});
@@ -231,63 +239,63 @@ function renderTx(l){var it=[];l.forEach(function(tx){var i=tx.in_msg;if(i&&i.so
  $("txList").innerHTML=it.map(function(x){var n=x.d==="in";return'<div class="tx"><div class="ava '+(n?"in":"")+'">'+(n?"↓":"↑")+'</div><div class="m"><div class="t1">'+esc(short(x.a))+'</div><div class="t2">'+(n?"Incoming":"Outgoing")+' transfer</div><div class="t3">'+fd(x.t)+(x.m?" · "+esc(x.m):"")+'</div></div><div class="amt '+(n?"in":"")+'">'+(n?"+":"−")+parseFloat(TON.fromNano(BigInt(x.v)))+' 💎</div></div>'}).join("")}
 
 /* ---- menu & sheets ---- */
-$("menuBtn").onclick=function(){$("menuBg").classList.add("show")};
-$("menuBg").onclick=function(e){if(e.target.id==="menuBg")$("menuBg").classList.remove("show")};
+\( ("menuBtn").onclick=function(){ \)("menuBg").classList.add("show")};
+\( ("menuBg").onclick=function(e){if(e.target.id==="menuBg") \)("menuBg").classList.remove("show")};
 document.querySelectorAll("[data-m]").forEach(function(b){b.onclick=function(){$("menuBg").classList.remove("show");var m=b.dataset.m;
  if(m==="lock"){words=null;wallet=null;kp0=null;show("unlock")}
  else if(m==="keys")toast("Your words are stored encrypted on this device only")
  else if(m==="cur")toast("Currency: USD")
  else if(m==="apps")toast("STON.fi is connected")
  else toast("Non-custodial TON wallet: only you hold the keys")}});
-$("addBtn").onclick=$("qrBtn").onclick=function(){$("recvBg").classList.add("show")};
-$("recvClose").onclick=function(){$("recvBg").classList.remove("show")};
-$("recvBg").onclick=function(e){if(e.target.id==="recvBg")$("recvBg").classList.remove("show")};
+\( ("addBtn").onclick= \)("qrBtn").onclick=function(){$("recvBg").classList.add("show")};
+\( ("recvClose").onclick=function(){ \)("recvBg").classList.remove("show")};
+\( ("recvBg").onclick=function(e){if(e.target.id==="recvBg") \)("recvBg").classList.remove("show")};
 $("copyBtn").onclick=async function(){try{await navigator.clipboard.writeText(address);toast("Address copied")}catch(e){prompt("Copy address:",address)}};
 $("refreshBtn").onclick=refresh;
 
 /* ---- send screen ---- */
 var keys=["1","2","3","4","5","6","7","8","9",".","0","⌫"];
 $("keys").innerHTML=keys.map(function(k){return'<button class="key" data-k="'+k+'">'+k+'</button>'}).join("")+'<button class="btn done" id="doneBtn">Done</button>';
-function kpShow(s){$("kp").classList.toggle("show",s);$("sendPage").classList.toggle("kp",s)}
-function openSend(){amt="0";wasBad=false;$("toAddr").value="";$("memo").value="";recip();upd();$("balInfo").textContent="Balance: "+parseFloat(TON.fromNano(balNano))+" TON";$("sendPage").classList.add("show");setTimeout(function(){kpShow(true)},250)}
+function kpShow(s){\( ("kp").classList.toggle("show",s); \)("sendPage").classList.toggle("kp",s)}
+function openSend(){amt="0";wasBad=false;\( ("toAddr").value=""; \)("memo").value="";recip();upd();\( ("balInfo").textContent="Balance: "+parseFloat(TON.fromNano(balNano))+" TON"; \)("sendPage").classList.add("show");setTimeout(function(){kpShow(true)},250)}
 function closeSend(){kpShow(false);$("sendPage").classList.remove("show")}
-$("sendBtn").onclick=openSend;$("backBtn").onclick=closeSend;$("doneBtn").onclick=function(){kpShow(false)};
+\( ("sendBtn").onclick=openSend; \)("backBtn").onclick=closeSend;$("doneBtn").onclick=function(){kpShow(false)};
 $("amtBox").onclick=function(){kpShow(true)};
-$("toAddr").onfocus=function(){kpShow(false)};$("memo").onfocus=function(){kpShow(false)};
+\( ("toAddr").onfocus=function(){kpShow(false)}; \)("memo").onfocus=function(){kpShow(false)};
 function recip(){var a=$("toAddr").value.trim(),ok=false;try{TON.Address.parseFriendly(a);ok=true}catch(e){try{TON.Address.parse(a);ok=true}catch(e2){}}
- $("rAva").textContent=ok?a.slice(0,2).toUpperCase():"?";$("rName").textContent=ok?"Recipient":"Recipient";$("rAddr").textContent=ok?short(a):"Enter address below";return ok}
+ \( ("rAva").textContent=ok?a.slice(0,2).toUpperCase():"?"; \)("rName").textContent=ok?"Recipient":"Recipient";$("rAddr").textContent=ok?short(a):"Enter address below";return ok}
 $("toAddr").oninput=function(){recip();upd()};
 function amtNano(){try{return TON.toNano(amt.replace(/\.$/,"")||"0")}catch(e){return 0n}}
 function upd(){var v=$("amtV");v.textContent=amt;v.classList.remove("pop");void v.offsetWidth;v.classList.add("pop");
  var n=parseFloat(amt)||0;$("conv").textContent="= $"+(n*price).toFixed(2);
  var nn=amtNano(),bad=nn>0n&&nn+TON.toNano(FEE)>balNano;$("warn").classList.toggle("show",bad);
  if(bad&&!wasBad){var b=$("amtBox");b.classList.remove("shake");void b.offsetWidth;b.classList.add("shake");buzz()}wasBad=bad;
- var g=$("goBtn"),ok=nn>0n&&!bad&&recip();g.disabled=!ok;g.textContent=n>0?"Send "+amt.replace(/\.$/,"")+" TON":"Continue"}
+ var g=\( ("goBtn"),ok=nn>0n&&!bad&&recip();g.disabled=!ok;g.textContent=n>0?"Send "+amt.replace(/\. \)/,"")+" TON":"Continue"}
 $("keys").onclick=function(e){var b=e.target.closest(".key");if(!b)return;buzz();var k=b.dataset.k;
  if(k==="⌫")amt=amt.length>1?amt.slice(0,-1):"0";
  else if(k==="."){if(amt.indexOf(".")<0)amt+="."}
  else{if(amt==="0")amt=k;else if(amt.length<12&&!(amt.indexOf(".")>-1&&amt.split(".")[1].length>=9))amt+=k}
  upd()};
 
-$("goBtn").onclick=async function(){var g=$("goBtn"),to=$("toAddr").value.trim(),memo=$("memo").value.trim(),dest,bounce=false;
+\( ("goBtn").onclick=async function(){var g= \)("goBtn"),to=\( ("toAddr").value.trim(),memo= \)("memo").value.trim(),dest,bounce=false;
  try{try{var p=TON.Address.parseFriendly(to);dest=p.address;bounce=p.isBounceable}catch(e){dest=TON.Address.parse(to)}}catch(e){return toast("Invalid address")}
  g.disabled=true;g.innerHTML='<span class="sp"></span>';kpShow(false);
  try{var c=client.open(wallet),seqno=await c.getSeqno();
   await c.sendTransfer({seqno:seqno,secretKey:kp0.secretKey,sendMode:TON.SendMode.PAY_GAS_SEPARATELY+TON.SendMode.IGNORE_ERRORS,messages:[TON.internal({to:dest,value:amtNano(),bounce:bounce,body:memo||undefined})]});
   toast("✅ Sent! It will appear in a few seconds");closeSend();setTimeout(refresh,3000);setTimeout(refresh,10000)}
- catch(e){toast("Error: "+(e.message||e));setStatus("Send error: "+(e.message||e),"bad");g.disabled=false;upd()}};
+ catch(e){toast("Error: "+(e.message||e));g.disabled=false;upd()}};
 
 /* ---- import / unlock ---- */
-$("importBtn").onclick=async function(){var w=$("words").value.trim().toLowerCase().split(/\s+/).filter(Boolean),p1=$("pass1").value,p2=$("pass2").value;
+\( ("importBtn").onclick=async function(){var w= \)("words").value.trim().toLowerCase().split(/\s+/).filter(Boolean),p1=\( ("pass1").value,p2= \)("pass2").value;
  if(w.length!==12&&w.length!==24)return setMsg("setupMsg","Enter exactly 12 or 24 words",false);
  if(p1.length<4)return setMsg("setupMsg","Passcode must be at least 4 characters",false);
  if(p1!==p2)return setMsg("setupMsg","Passcodes don't match",false);
  setMsg("setupMsg","Please wait…",true);
- try{await libsReady;localStorage.removeItem(CHOICE);localStorage.setItem(KEY,await encr(w.join(" "),p1));$("words").value="";$("pass1").value="";$("pass2").value="";await loadWallet(w)}catch(e){setMsg("setupMsg","Error: "+(e.message||e),false)}};
+ try{await libsReady;localStorage.removeItem(CHOICE);localStorage.setItem(KEY,await encr(w.join(" "),p1));\( ("words").value=""; \)("pass1").value="";$("pass2").value="";await loadWallet(w)}catch(e){setMsg("setupMsg","Error: "+(e.message||e),false)}};
 $("unlockBtn").onclick=async function(){setMsg("unlockMsg","Please wait…",true);var t;
  try{t=await decr(localStorage.getItem(KEY),$("unlockPass").value)}catch(e){return setMsg("unlockMsg","Wrong passcode",false)}
- try{$("unlockPass").value="";$("unlockMsg").textContent="";await loadWallet(t.split(" "))}catch(e){setMsg("unlockMsg","Error: "+(e.message||e),false)}};
-$("unlockPass").addEventListener("keydown",function(e){if(e.key==="Enter")$("unlockBtn").click()});
+ try{\( ("unlockPass").value=""; \)("unlockMsg").textContent="";await loadWallet(t.split(" "))}catch(e){setMsg("unlockMsg","Error: "+(e.message||e),false)}};
+\( ("unlockPass").addEventListener("keydown",function(e){if(e.key==="Enter") \)("unlockBtn").click()});
 $("forgetBtn").onclick=function(){if(confirm("Remove this wallet from this device? Make sure you saved your secret words!")){localStorage.removeItem(KEY);localStorage.removeItem(CHOICE);location.reload()}};
 
 show(localStorage.getItem(KEY)?"unlock":"setup");
