@@ -1,626 +1,1016 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>TON Wallet Finder</title>
+<title>Mini Wallet</title>
+
+<!-- TON Connect UI (with fallback) -->
+<script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+<script>
+  window.addEventListener("load", function(){
+    if (typeof TON_CONNECT_UI === "undefined") {
+      var s = document.createElement("script");
+      s.src = "https://cdn.jsdelivr.net/npm/@tonconnect/ui@latest/dist/tonconnect-ui.min.js";
+      s.onerror = function(){
+        var s2 = document.createElement("script");
+        s2.src = "https://cdn.jsdelivr.net/npm/@tonconnect/ui@2.0.9/dist/tonconnect-ui.min.js";
+        document.head.appendChild(s2);
+      };
+      document.head.appendChild(s);
+    }
+  });
+</script>
+
 <style>
-:root{--bg:#f0f4f8;--card:#fff;--primary:#2481cc;--primary2:#3390ec;--text:#1a1a1a;--muted:#6b7280;--green:#22c55e;--red:#ef4444;--grad:linear-gradient(135deg,#1e5cbe 0%,#3b9eff 100%);--shadow:0 10px 40px rgba(30,92,190,.25)}
+:root{
+  --bg:#f0f4f8;--card:#fff;--primary:#2481cc;--primary2:#3390ec;
+  --text:#1a1a1a;--muted:#6b7280;--green:#22c55e;--red:#ef4444;
+  --grad:linear-gradient(135deg,#1e5cbe 0%,#3b9eff 100%);
+  --shadow:0 10px 40px rgba(30,92,190,.25);
+}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
 html,body{height:100%;overflow-x:hidden}
-body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Tahoma,sans-serif;color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased}
+
 #loading{position:fixed;inset:0;background:linear-gradient(160deg,#1e5cbe,#3b9eff);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;color:#fff;transition:opacity .5s,visibility .5s}
 #loading.hide{opacity:0;visibility:hidden;pointer-events:none}
 .loader-diamond{font-size:64px;animation:pulse 1.4s ease-in-out infinite;margin-bottom:24px}
 @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.15);opacity:.7}}
-.loader-text{font-size:18px;font-weight:500;opacity:.9}
+.loader-text{font-size:16px;font-weight:500;opacity:.9;text-align:center;padding:0 24px}
 .loader-bar{width:180px;height:4px;background:rgba(255,255,255,.25);border-radius:4px;margin-top:28px;overflow:hidden}
 .loader-bar-inner{height:100%;width:30%;background:#fff;border-radius:4px;animation:loadingBar 1.2s ease-in-out infinite}
 @keyframes loadingBar{0%{transform:translateX(-100%)}100%{transform:translateX(400%)}}
-.app{max-width:520px;margin:0 auto;min-height:100vh;padding:0 16px 40px}
+
+.app{max-width:480px;margin:0 auto;min-height:100vh;padding:0 16px 40px;position:relative}
 .topbar{display:flex;align-items:center;justify-content:space-between;height:60px;padding-top:env(safe-area-inset-top)}
-.topbar h1{font-size:24px;font-weight:700;letter-spacing:-.5px}
-.icon-btn{width:44px;height:44px;border-radius:50%;border:none;background:transparent;font-size:22px;display:flex;align-items:center;justify-content:center;color:var(--text)}
+.topbar h1{font-size:22px;font-weight:700;letter-spacing:-.5px}
+.icon-btn{width:44px;height:44px;border-radius:50%;border:none;background:transparent;font-size:22px;display:flex;align-items:center;justify-content:center;color:var(--text);cursor:pointer}
 .icon-btn:active{background:rgba(0,0,0,.06)}
-.wallet-card{position:relative;height:200px;border-radius:28px;background:var(--grad);color:#fff;padding:24px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:20px}
-.balance-row{display:flex;align-items:center;gap:12px;margin-top:16px;position:relative;z-index:2}
-.balance-row svg{width:40px;height:40px;flex-shrink:0}
-.balance-amount{font-size:40px;font-weight:700;letter-spacing:-1px;line-height:1}
-.balance-unit{font-size:24px;font-weight:600;opacity:.85;margin-left:6px}
-.usd-value{margin-top:6px;font-size:18px;font-weight:500;opacity:.9;position:relative;z-index:2}
-.wallet-handle{position:absolute;bottom:20px;left:24px;font-family:ui-monospace,monospace;font-size:11px;font-weight:600;opacity:.9;z-index:2;right:24px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.address-vertical{position:absolute;right:12px;top:18px;bottom:18px;writing-mode:vertical-rl;font-family:ui-monospace,monospace;font-size:11px;opacity:.7;letter-spacing:.5px;z-index:2;word-break:break-all;line-height:1.3}
-.actions{display:flex;gap:12px;margin-bottom:24px}
-.action-btn{flex:1;height:56px;border-radius:28px;border:none;background:var(--grad);color:#fff;font-size:17px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 20px rgba(36,129,204,.35)}
+
+.wallet-card{position:relative;height:200px;border-radius:26px;background:var(--grad);color:#fff;padding:24px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:16px}
+.wallet-card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 15% 20%,rgba(255,255,255,.4),transparent 50%),repeating-radial-gradient(circle at 80% 70%,rgba(255,255,255,.08) 0 3px,transparent 3px 12px);pointer-events:none}
+.balance-label{font-size:11px;font-weight:600;opacity:.85;letter-spacing:1px;text-transform:uppercase;position:relative;z-index:2}
+.balance-row{display:flex;align-items:baseline;gap:8px;margin-top:14px;position:relative;z-index:2}
+.balance-amount{font-size:38px;font-weight:700;letter-spacing:-1px;line-height:1}
+.balance-unit{font-size:20px;font-weight:600;opacity:.85}
+.usd-value{margin-top:6px;font-size:16px;font-weight:500;opacity:.9;position:relative;z-index:2}
+.wallet-handle{position:absolute;bottom:20px;left:24px;right:24px;font-family:ui-monospace,monospace;font-size:10px;font-weight:600;opacity:.85;z-index:2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:.3px}
+.qr-btn{position:absolute;left:20px;top:20px;width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.9);border:none;font-size:20px;color:#1e5cbe;cursor:pointer;z-index:3;display:flex;align-items:center;justify-content:center}
+.qr-btn:active{transform:scale(.9)}
+
+.actions{display:flex;gap:10px;margin-bottom:16px}
+.action-btn{flex:1;height:52px;border-radius:26px;border:none;background:var(--grad);color:#fff;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 6px 16px rgba(36,129,204,.3);cursor:pointer}
 .action-btn:active{transform:scale(.96)}
-.tx-section{background:var(--card);border-radius:24px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.04)}
-.tx-header{padding:18px 20px 12px;font-size:15px;font-weight:600;color:var(--muted)}
-.tx-item{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid #f1f5f9}
+.action-btn.ghost{background:#fff;color:var(--primary);box-shadow:0 4px 12px rgba(0,0,0,.05)}
+.action-btn:disabled{opacity:.5;cursor:not-allowed}
+
+.section{background:#fff;border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:0 4px 20px rgba(0,0,0,.04)}
+.section h3{font-size:14px;font-weight:600;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+
+.connect-box{text-align:center;padding:4px 0}
+.connect-box .icon{font-size:42px;display:block;margin-bottom:10px}
+.connect-box p{color:var(--muted);font-size:13px;margin-bottom:14px;line-height:1.6}
+#ton-connect-btn{display:flex;justify-content:center;min-height:48px}
+#ton-connect-btn button{width:100%!important;max-width:100%!important;border-radius:14px!important;height:48px!important;font-size:15px!important;font-weight:600!important}
+
+.connected-info{display:flex;align-items:center;gap:12px;padding:12px;background:#f0fdf4;border-radius:14px;margin-bottom:12px}
+.connected-info .dot{width:10px;height:10px;border-radius:50%;background:#22c55e;animation:pulse-dot 2s infinite;flex-shrink:0}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
+.connected-info .info{flex:1;min-width:0}
+.connected-info .name{font-weight:600;font-size:14px}
+.connected-info .addr{font-size:11px;color:var(--muted);font-family:ui-monospace,monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.tx-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #f1f5f9}
 .tx-item:last-child{border-bottom:none}
-.tx-avatar{width:46px;height:46px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.tx-avatar{width:40px;height:40px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
 .tx-avatar.in{background:linear-gradient(135deg,#22c55e,#4ade80)}
 .tx-info{flex:1;min-width:0}
-.tx-title{font-size:16px;font-weight:600;margin-bottom:2px}
-.tx-subtitle{font-size:13px;color:var(--muted)}
-.tx-amount{font-size:16px;font-weight:700;white-space:nowrap}
+.tx-title{font-size:14px;font-weight:600;margin-bottom:2px}
+.tx-subtitle{font-size:11px;color:var(--muted)}
+.tx-amount{font-size:14px;font-weight:700;white-space:nowrap}
 .tx-amount.in{color:var(--green)}
-.empty-state{padding:48px 24px;text-align:center;color:var(--muted);font-size:15px}
+.empty-state{padding:20px;text-align:center;color:var(--muted);font-size:13px}
+
 .sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;display:flex;align-items:flex-end;justify-content:center}
 .sheet-overlay.show{opacity:1;visibility:visible}
-.sheet{background:#fff;width:100%;max-width:520px;border-radius:28px 28px 0 0;padding:24px 20px calc(28px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .35s cubic-bezier(.22,1,.36,1)}
+.sheet{background:#fff;width:100%;max-width:480px;border-radius:28px 28px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .35s cubic-bezier(.22,1,.36,1);max-height:90vh;overflow-y:auto}
 .sheet-overlay.show .sheet{transform:translateY(0)}
-.sheet h2{font-size:22px;font-weight:700;margin-bottom:8px}
-.sheet p{color:var(--muted);font-size:15px;margin-bottom:16px}
-.address-box{background:#f1f5f9;border-radius:16px;padding:16px;font-family:ui-monospace,monospace;font-size:14px;word-break:break-all;text-align:center;margin-bottom:16px;line-height:1.5}
-.full-btn{width:100%;height:54px;border-radius:27px;border:none;background:var(--grad);color:#fff;font-size:17px;font-weight:600;margin-bottom:10px}
+.sheet h2{font-size:20px;font-weight:700;margin-bottom:8px}
+.sheet p{color:var(--muted);font-size:14px;margin-bottom:16px;line-height:1.6}
+.address-box{background:#f1f5f9;border-radius:14px;padding:14px;font-family:ui-monospace,monospace;font-size:12px;word-break:break-all;text-align:center;margin-bottom:14px;line-height:1.5}
+#qrImg{display:block;margin:0 auto 14px;border-radius:14px}
+
+.full-btn{width:100%;height:52px;border-radius:26px;border:none;background:var(--grad);color:#fff;font-size:16px;font-weight:600;margin-bottom:10px;cursor:pointer}
 .full-btn:active{transform:scale(.97)}
 .full-btn.ghost{background:#e8f1fb;color:var(--primary)}
-.full-btn:disabled{opacity:.5}
-.send-page{position:fixed;inset:0;background:var(--bg);z-index:80;transform:translateX(100%);transition:transform .35s cubic-bezier(.22,1,.36,1);overflow-y:auto;padding-bottom:120px}
+.full-btn:disabled{opacity:.5;cursor:not-allowed}
+
+.send-page{position:fixed;inset:0;background:var(--bg);z-index:80;transform:translateX(-100%);transition:transform .35s cubic-bezier(.22,1,.36,1);overflow-y:auto;padding-bottom:140px}
 .send-page.show{transform:translateX(0)}
-.send-header{display:flex;align-items:center;gap:12px;height:60px;padding:0 16px;font-size:20px;font-weight:700;background:#fff;position:sticky;top:0;z-index:10;border-bottom:1px solid #f1f5f9}
-.recipient-card{background:#fff;border-radius:20px;padding:16px;margin:16px;box-shadow:0 2px 12px rgba(0,0,0,.04)}
-.recipient-info{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.recipient-avatar{width:44px;height:44px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px}
-.recipient-name{font-weight:600;font-size:16px}
-.recipient-addr{font-size:13px;color:var(--muted);font-family:ui-monospace,monospace}
-.input-field{width:100%;border:1.5px solid #e2e8f0;border-radius:14px;padding:14px 16px;font-size:16px;background:#f8fafc;outline:none;font-family:inherit}
-.input-field:focus{border-color:var(--primary2);box-shadow:0 0 0 3px rgba(51,144,236,.15)}
-.amount-display{text-align:center;margin:32px 0 8px;font-size:52px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px}
-.amount-display small{font-size:24px;color:var(--muted);font-weight:600}
-.usd-convert{text-align:center;color:var(--muted);font-size:17px;margin-bottom:8px}
-.balance-hint{text-align:center;color:var(--muted);font-size:14px;margin:6px 0}
-.warn-text{text-align:center;color:var(--red);font-size:14px;font-weight:600;height:0;overflow:hidden;opacity:0;transition:all .25s}
-.warn-text.show{height:22px;opacity:1;margin:6px 0}
-.keypad{position:fixed;left:0;right:0;bottom:0;background:#fff;border-radius:24px 24px 0 0;padding:14px 16px calc(16px + env(safe-area-inset-bottom));transform:translateY(110%);transition:transform .32s cubic-bezier(.22,1,.36,1);z-index:85;box-shadow:0 -8px 30px rgba(0,0,0,.08)}
+.send-header{display:flex;align-items:center;gap:12px;height:60px;padding:0 16px;font-size:18px;font-weight:700;background:#fff;position:sticky;top:0;z-index:10;border-bottom:1px solid #f1f5f9}
+.recipient-card{background:#fff;border-radius:18px;padding:14px;margin:14px;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+.input-field{width:100%;border:1.5px solid #e2e8f0;border-radius:12px;padding:12px 14px;font-size:15px;background:#f8fafc;outline:none;font-family:inherit;transition:border-color .2s;direction:ltr;text-align:left}
+.input-field:focus{border-color:var(--primary2)}
+.amount-display{text-align:center;margin:24px 0 8px;font-size:48px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px}
+.amount-display small{font-size:22px;color:var(--muted);font-weight:600}
+.usd-convert{text-align:center;color:var(--muted);font-size:15px;margin-bottom:6px}
+.balance-hint{text-align:center;color:var(--muted);font-size:12px;margin:6px 0}
+.hint-box{background:#fef3c7;border:1px solid #fcd34d;border-radius:12px;padding:12px;margin:14px;font-size:12px;color:#78350f;line-height:1.5}
+.hint-box b{display:block;margin-bottom:4px;color:#92400e}
+.warn-text{text-align:center;color:var(--red);font-size:13px;font-weight:600;height:0;overflow:hidden;opacity:0;transition:all .25s}
+.warn-text.show{height:20px;opacity:1;margin:6px 0}
+
+.keypad{position:fixed;left:0;right:0;bottom:0;background:#fff;border-radius:24px 24px 0 0;padding:12px 16px calc(14px + env(safe-area-inset-bottom));transform:translateY(110%);transition:transform .32s cubic-bezier(.22,1,.36,1);z-index:85;box-shadow:0 -8px 30px rgba(0,0,0,.08)}
 .keypad.show{transform:translateY(0)}
-.keys-grid{max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.key{height:56px;border-radius:16px;border:none;background:#f1f5f9;font-size:26px;font-weight:600;color:var(--text)}
+.keys-grid{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.key{height:52px;border-radius:14px;border:none;background:#f1f5f9;font-size:24px;font-weight:600;color:var(--text);cursor:pointer}
 .key:active{background:#dbeafe;transform:scale(.93)}
-.key.done{grid-column:1/-1;height:52px;font-size:17px;background:var(--grad);color:#fff}
-.auth-screen{max-width:520px;margin:0 auto;padding:40px 20px;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
+.key.done{grid-column:1/-1;height:48px;font-size:16px;background:var(--grad);color:#fff}
+
+.auth-screen{max-width:480px;margin:0 auto;padding:40px 24px;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
 .auth-screen h1{text-align:center;font-size:26px;margin-bottom:8px}
-.auth-screen p{text-align:center;color:var(--muted);margin-bottom:24px;font-size:15px}
-.form-label{display:block;font-size:14px;color:var(--muted);margin-bottom:8px;font-weight:500;margin-top:14px}
-.form-textarea{width:100%;min-height:100px;border:1.5px solid #e2e8f0;border-radius:16px;padding:14px;font-size:15px;background:#f8fafc;outline:none;resize:none;font-family:inherit}
-.form-textarea:focus{border-color:var(--primary2)}
-.form-input{width:100%;border:1.5px solid #e2e8f0;border-radius:14px;padding:14px 16px;font-size:16px;background:#f8fafc;outline:none;font-family:inherit}
+.auth-screen p{text-align:center;color:var(--muted);margin-bottom:24px;font-size:14px;line-height:1.6}
+.form-label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:500;margin-top:12px}
+.form-input{width:100%;border:1.5px solid #e2e8f0;border-radius:12px;padding:12px 14px;font-size:15px;background:#f8fafc;outline:none;font-family:inherit;direction:ltr;text-align:left}
 .form-input:focus{border-color:var(--primary2)}
-.msg{text-align:center;font-size:15px;min-height:22px;margin-top:12px}
+.msg{text-align:center;font-size:13px;min-height:20px;margin-top:10px}
 .msg.err{color:var(--red)}
 .msg.ok{color:var(--green)}
-.link-btn{background:none;border:none;color:var(--red);font-size:15px;margin-top:24px;width:100%;padding:12px}
-#toast{position:fixed;left:50%;bottom:100px;transform:translate(-50%,30px);background:rgba(30,30,30,.92);color:#fff;padding:14px 24px;border-radius:30px;font-size:15px;opacity:0;transition:all .3s cubic-bezier(.22,1,.36,1);z-index:200;pointer-events:none;max-width:90%;text-align:center}
-#toast.show{opacity:1;transform:translate(-50%,0)}
+
+.seed-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:14px 0;padding:14px;background:#f8fafc;border-radius:14px;border:1.5px dashed #cbd5e1}
+.seed-word{display:flex;align-items:center;gap:6px;font-family:ui-monospace,monospace;font-size:13px;padding:6px 8px;background:#fff;border-radius:8px;direction:ltr}
+.seed-word .num{color:var(--muted);font-size:11px;min-width:18px}
+
+.warn-banner{background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;padding:12px;border-radius:12px;font-size:12px;margin:14px 0;line-height:1.6;text-align:center;font-weight:500}
+.checkbox-row{display:flex;align-items:flex-start;gap:10px;margin:14px 0;font-size:13px;color:var(--muted);line-height:1.5}
+.checkbox-row input{width:20px;height:20px;accent-color:var(--primary);margin-top:2px;flex-shrink:0}
+
 .hidden{display:none!important}
-.spin{width:22px;height:22px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+.spin{width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
 @keyframes spin{to{transform:rotate(360deg)}}
-#debugBox{position:fixed;inset:0;background:#0f172a;color:#e2e8f0;z-index:300;overflow:auto;padding:16px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;display:none}
-#debugBox.show{display:block}
-#debugBox h2{font-size:15px;margin:0 0 12px;color:#60a5fa}
-#debugBox .row{padding:10px;margin-bottom:6px;background:#1e293b;border-radius:8px;border-left:3px solid #3b82f6;word-break:break-all;line-height:1.5}
-#debugBox .row.match{background:#14532d;border-left-color:#22c55e}
-#debugBox .label{color:#fbbf24;font-weight:700;display:block;margin-bottom:4px;font-size:11px}
-#debugBox .addr{color:#93c5fd}
-#debugBox .close{position:sticky;top:0;float:right;background:#dc2626;color:#fff;border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600}
-.banner{background:#fef3c7;border:1px solid #fcd34d;color:#92400e;padding:12px;border-radius:12px;font-size:13px;margin-bottom:16px;line-height:1.5}
-.banner b{color:#78350f}
+#toast{position:fixed;left:50%;bottom:100px;transform:translate(-50%,30px);background:rgba(30,30,30,.92);color:#fff;padding:12px 20px;border-radius:30px;font-size:13px;opacity:0;transition:all .3s cubic-bezier(.22,1,.36,1);z-index:200;pointer-events:none;max-width:90%;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+.shake{animation:shake .4s ease}
+@keyframes shake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+.menu-overlay{position:fixed;inset:0;z-index:90;display:none}
+.menu-overlay.show{display:block}
+.menu{position:absolute;top:70px;left:16px;width:220px;background:#fff;border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.15);overflow:hidden}
+.menu-item{display:flex;align-items:center;gap:12px;padding:14px 16px;font-size:14px;border:none;background:none;width:100%;text-align:right;color:var(--text);cursor:pointer}
+.menu-item:active{background:#f1f5f9}
+.menu-item.danger{color:var(--red)}
 </style>
 </head>
 <body>
 
 <div id="loading">
   <div class="loader-diamond">💎</div>
-  <div class="loader-text">Loading…</div>
+  <div class="loader-text">در حال بارگذاری Mini Wallet…</div>
   <div class="loader-bar"><div class="loader-bar-inner"></div></div>
 </div>
 
 <div id="toast"></div>
 
-<div id="debugBox">
-  <button class="close" onclick="document.getElementById('debugBox').classList.remove('show')">✕ Close</button>
-  <h2>🔍 All Candidate Addresses</h2>
-  <p style="color:#94a3b8;font-size:11px;margin-bottom:12px" id="debugTarget"></p>
-  <div id="debugList"></div>
-</div>
-
-<div id="setup" class="auth-screen hidden">
-  <h1>💎 Wallet Finder</h1>
-  <p>پیدا کردن derivation صحیح ولت تو</p>
-
-  <div class="banner">
-    <b>📌 راهنما:</b><br>
-    ۱. Seed phrase خودت رو وارد کن<br>
-    ۲. آدرس واقعی ولتت رو وارد کن (همون UQCuzJ...)<br>
-    ۳. اگه Passphrase داری (کلمه مخفی BIP39) وارد کن<br>
-    ۴. دکمه Find رو بزن
+<!-- WELCOME -->
+<div id="welcome" class="auth-screen hidden">
+  <h1>💎 Mini Wallet</h1>
+  <p>ولت کوچیک خودت رو بساز<br>برای تراکنش‌های زیر ۰.۱ TON</p>
+  <button class="full-btn" id="startGenBtn" style="margin-top:20px">✨ ساخت ولت جدید</button>
+  <div class="hint-box" style="text-align:center;background:#e8f1fb;border-color:#bfdbfe;color:#1e40af">
+    <b>ℹ️ این ولت چیه؟</b>
+    یه ولت جدید ساخته می‌شه که ازش می‌تونی هرچی خواستی (حتی کمتر از ۰.۱) بفرستی. برای شارژش از ولت اصلیت (با TON Connect) بهش واریز می‌کنی.
   </div>
-
-  <label class="form-label">Secret words (12 or 24)</label>
-  <textarea id="words" class="form-textarea" placeholder="word1 word2 word3 ..." autocapitalize="none" autocomplete="off" spellcheck="false"></textarea>
-
-  <label class="form-label">🎯 Target address (آدرس واقعی ولتت)</label>
-  <input id="target" class="form-input" placeholder="UQCuzJ0_EsVDdLCUAF10bDaSWrv9yo7N8TlxC-xJB7xq90vq" autocapitalize="none" autocomplete="off" spellcheck="false" value="UQCuzJ0_EsVDdLCUAF10bDaSWrv9yo7N8TlxC-xJB7xq90vq">
-
-  <label class="form-label">🔐 BIP39 Passphrase (اختیاری — کلمه سیزدهم مخفی)</label>
-  <input id="bipPass" class="form-input" placeholder="اگه نداری خالی بذار" autocomplete="off" spellcheck="false">
-
-  <button class="full-btn" id="findBtn" style="margin-top:16px">🔍 Find My Wallet</button>
-  <button class="full-btn ghost" id="showAllBtn">📋 Show All Candidates</button>
-  <div id="setupMsg" class="msg"></div>
 </div>
 
+<!-- SHOW SEED -->
+<div id="showSeed" class="auth-screen hidden">
+  <h1>🔐 کلمات بازیابی</h1>
+  <p>این ۲۴ کلمه رو یه جای امن ذخیره کن<br>اگه گمش کنی، پولت از دست می‌ره</p>
+  <div class="warn-banner">
+    ⚠️ هیچوقت این کلمات رو به کسی نده<br>
+    حتی اگه بگه از تیم پشتیبانیه
+  </div>
+  <div class="seed-grid" id="seedGrid"></div>
+  <button class="full-btn ghost" id="copySeedBtn" style="margin-bottom:14px">📋 کپی همه کلمات</button>
+  <div class="checkbox-row">
+    <input type="checkbox" id="seedSaved">
+    <label for="seedSaved">کلمات رو ذخیره کردم و می‌دونم اگه گمشون کنم پولم می‌ره</label>
+  </div>
+  <button class="full-btn" id="seedContinueBtn" disabled>ادامه</button>
+</div>
+
+<!-- SET PASS -->
+<div id="setPass" class="auth-screen hidden">
+  <h1>🔒 پسورد بذار</h1>
+  <p>پسوردی که روی این دستگاه از ولتت محافظت می‌کنه</p>
+  <label class="form-label">پسورد (حداقل ۴ کاراکتر)</label>
+  <input id="newPass" type="password" class="form-input" placeholder="••••••">
+  <input id="newPass2" type="password" class="form-input" placeholder="تکرار پسورد" style="margin-top:10px">
+  <button class="full-btn" id="savePassBtn" style="margin-top:14px">ذخیره و ادامه</button>
+  <div id="passMsg" class="msg"></div>
+</div>
+
+<!-- UNLOCK -->
 <div id="unlock" class="auth-screen hidden">
-  <h1>💎 Wallet</h1>
-  <p>Enter your passcode to unlock</p>
-  <input id="unlockPass" type="password" class="form-input" placeholder="Passcode">
-  <button class="full-btn" id="unlockBtn" style="margin-top:8px">Unlock</button>
+  <h1>💎 Mini Wallet</h1>
+  <p>پسورد رو وارد کن</p>
+  <input id="unlockPass" type="password" class="form-input" placeholder="••••••">
+  <button class="full-btn" id="unlockBtn" style="margin-top:8px">باز کردن</button>
   <div id="unlockMsg" class="msg"></div>
-  <button class="link-btn" id="forgetBtn">Remove wallet from this device</button>
+  <button class="full-btn ghost" id="forgetBtn" style="margin-top:16px;color:var(--red)">حذف ولت از این دستگاه</button>
 </div>
 
+<!-- MAIN -->
 <div id="main" class="app hidden">
   <div class="topbar">
-    <h1>Wallet</h1>
+    <h1>Mini Wallet</h1>
     <div style="display:flex;gap:4px">
       <button class="icon-btn" id="refreshBtn">⟳</button>
-      <button class="icon-btn" id="changeBtn" title="Change wallet">⚙</button>
+      <button class="icon-btn" id="menuBtn">⋮</button>
     </div>
   </div>
 
   <div class="wallet-card">
+    <div class="balance-label">Mini Wallet Balance</div>
     <div class="balance-row">
-      <svg viewBox="0 0 24 24" fill="none">
-        <path d="M6 3h12l4 6-10 12L2 9z" fill="#bfe3ff"/>
-        <path d="M2 9h20M9 3l3 6 3-6M12 21 9 9m3 12 3-12" stroke="#fff" stroke-width="1.2"/>
-      </svg>
-      <div>
-        <span class="balance-amount" id="balN">0</span>
-        <span class="balance-unit">TON</span>
-      </div>
+      <span class="balance-amount" id="balN">0</span>
+      <span class="balance-unit">TON</span>
     </div>
     <div class="usd-value" id="usd">$0.00</div>
-    <div class="wallet-handle" id="walletHandle">@Wallet</div>
-    <div class="address-vertical" id="cardAddr"></div>
+    <div class="wallet-handle" id="cardAddr">—</div>
+    <button class="qr-btn" id="qrBtn">▣</button>
   </div>
 
   <div class="actions">
-    <button class="action-btn" id="addBtn">⊕ Receive</button>
-    <button class="action-btn" id="sendBtn">➤ Send</button>
+    <button class="action-btn ghost" id="receiveBtn">📥 دریافت</button>
+    <button class="action-btn" id="sendBtn">📤 ارسال</button>
   </div>
 
-  <div class="tx-section">
-    <div class="tx-header">Recent Activity</div>
-    <div id="txList"><div class="empty-state">Loading transactions…</div></div>
+  <div class="section">
+    <h3>🔗 ولت اصلی (TON Connect)</h3>
+    <div id="notConnected" class="connect-box">
+      <span class="icon">👛</span>
+      <p>ولت اصلیت رو وصل کن تا ازش به این ولت واریز کنی</p>
+      <div id="ton-connect-btn"></div>
+    </div>
+    <div id="connected" class="hidden">
+      <div class="connected-info">
+        <span class="dot"></span>
+        <div class="info">
+          <div class="name" id="walletName">Connected</div>
+          <div class="addr" id="walletAddrShort">—</div>
+        </div>
+      </div>
+      <button class="full-btn" id="depositBtn" style="margin-bottom:0">💰 واریز از ولت اصلی</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>📜 تاریخچه</h3>
+    <div id="txList"><div class="empty-state">در حال بارگذاری…</div></div>
   </div>
 </div>
 
+<!-- MENU -->
+<div class="menu-overlay" id="menuBg">
+  <div class="menu">
+    <button class="menu-item" id="viewSeedMenu">🔑 نمایش کلمات بازیابی</button>
+    <button class="menu-item" id="refreshMenu">🔄 بروزرسانی</button>
+    <button class="menu-item" id="disconnectMenu">🔌 قطع ولت اصلی</button>
+    <button class="menu-item danger" id="resetMenu">⚠️ حذف ولت</button>
+  </div>
+</div>
+
+<!-- RECEIVE SHEET -->
 <div class="sheet-overlay" id="recvBg">
   <div class="sheet">
-    <h2>Receive TON</h2>
-    <p>Send TON to this address</p>
+    <h2>📥 دریافت TON</h2>
+    <p>آدرس ولت فرعی تو</p>
+    <img id="qrImg" width="180" height="180" alt="">
     <div class="address-box" id="recvAddr"></div>
-    <button class="full-btn" id="copyBtn">Copy Address</button>
-    <button class="full-btn ghost" id="recvClose">Close</button>
+    <button class="full-btn" id="copyRecvBtn">کپی آدرس</button>
+    <button class="full-btn ghost" id="recvClose">بستن</button>
   </div>
 </div>
 
-<div class="send-page" id="sendPage">
+<!-- DEPOSIT PAGE -->
+<div class="send-page" id="depositPage">
   <div class="send-header">
-    <button class="icon-btn" id="backBtn">←</button>
-    Send TON
+    <button class="icon-btn" id="depositBack">→</button>
+    واریز از ولت اصلی
+  </div>
+  <div class="hint-box">
+    <b>💰 واریز</b>
+    این مقدار از ولت اصلی (TON Connect) به ولت فرعی تو منتقل می‌شه. یه بار واریز کن، بعدش هرچی خواستی از ولت فرعی بفرست.
   </div>
   <div class="recipient-card">
-    <div class="recipient-info">
-      <div class="recipient-avatar" id="rAva">?</div>
-      <div>
-        <div class="recipient-name" id="rName">Recipient</div>
-        <div class="recipient-addr" id="rAddr">Enter address below</div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="tx-avatar" style="background:linear-gradient(135deg,#22c55e,#4ade80)">📥</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:14px;font-weight:600">به: Mini Wallet</div>
+        <div style="font-size:11px;color:var(--muted);font-family:ui-monospace,monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:ltr" id="depositTarget">—</div>
       </div>
     </div>
-    <input id="toAddr" class="input-field" placeholder="Wallet address (UQ… / EQ…)" autocapitalize="none" autocomplete="off">
-    <input id="memo" class="input-field" placeholder="Memo (optional)" style="margin-top:10px">
   </div>
-  <div class="amount-display" id="amtBox">
-    <svg width="40" height="40" viewBox="0 0 24 24">
-      <path d="M6 3h12l4 6-10 12L2 9z" fill="#3390ec"/>
-      <path d="M2 9h20M9 3l3 6 3-6" stroke="#fff" stroke-width="1"/>
-    </svg>
-    <span id="amtV">0</span>
+  <div class="amount-display">
+    <span id="depositAmtV">0</span>
     <small>TON</small>
   </div>
-  <div class="usd-convert" id="conv">= $0.00</div>
-  <div class="warn-text" id="warn">Insufficient funds</div>
-  <div class="balance-hint" id="balInfo">Balance: 0 TON</div>
-  <div class="balance-hint" id="feeInfo">Network fee ≈ 0.00007 TON</div>
-  <div style="padding:0 16px;margin-top:24px">
-    <button class="full-btn" id="goBtn" disabled>Continue</button>
+  <div class="usd-convert" id="depositConv">= $0.00</div>
+  <div style="padding:0 14px;margin-top:20px">
+    <button class="full-btn" id="doDepositBtn" disabled>ادامه</button>
   </div>
 </div>
 
-<div class="keypad" id="kp"><div class="keys-grid" id="keys"></div></div>
+<!-- SEND PAGE -->
+<div class="send-page" id="sendPage">
+  <div class="send-header">
+    <button class="icon-btn" id="sendBack">→</button>
+    ارسال از ولت فرعی
+  </div>
+  <div class="recipient-card">
+    <input id="toAddr" class="input-field" placeholder="UQ… / EQ…" autocapitalize="none" autocomplete="off">
+    <input id="memo" class="input-field" placeholder="کامنت (اختیاری)" style="margin-top:8px">
+  </div>
+  <div class="amount-display">
+    <span id="sendAmtV">0</span>
+    <small>TON</small>
+  </div>
+  <div class="usd-convert" id="sendConv">= $0.00</div>
+  <div class="warn-text" id="warn">موجودی کافی نیست</div>
+  <div class="balance-hint" id="sendBalHint">موجودی: 0 TON</div>
+  <div style="padding:0 14px;margin-top:20px">
+    <button class="full-btn" id="doSendBtn" disabled>ادامه</button>
+  </div>
+</div>
 
-<script>
-(function(){
-"use strict";
+<!-- KEYPAD -->
+<div class="keypad" id="kp">
+  <div class="keys-grid" id="keys"></div>
+</div>
 
-const API="https://toncenter.com/api/v2";
-const API_KEY="e08b96c939bcca03c136cbc8e48e0f49d4b622013cf97b7fa00f8ad553ff9910";
-const KEY="ton_wallet_enc_v2";
-const CHOICE="ton_wallet_choice_v2";
-const FEE="0.00007";
-const FEE_NANO=70000n;
+<script type="module">
+/* ==========================================================
+   Mini Wallet — Generate + TON Connect + Send
+   ========================================================== */
 
-let words=null,wallet=null,kp0=null,address="",balNano=0n;
-let client=null,TON=null,CR=null,price=0,amt="0",wasBad=false;
+const TONCENTER = "https://toncenter.com/api/v2";
+const API_KEY = "e08b96c939bcca03c136cbc8e48e0f49d4b622013cf97b7fa00f8ad553ff9910";
+const STORE_KEY = "mini_wallet_enc_v1";
 
-const $=id=>document.getElementById(id);
+// ⚠️ اینو با آدرس GitHub Pages خودت عوض کن:
+const MANIFEST_URL = location.origin + location.pathname.replace(/\/[^/]*$/, "") + "/tonconnect-manifest.json";
 
+const FEE = 5000000n; // 0.005 TON reserve
+
+// ---------- State ----------
+let TON = null, CR = null, client = null;
+let miniWallet = null;
+let tonConnectUI = null;
+let mainAddress = null;
+let mainName = "";
+let balanceNano = 0n;
+let price = 0;
+
+let depositAmt = "0";
+let sendAmt = "0";
+let activeField = "deposit";
+
+const $ = id => document.getElementById(id);
+
+// ---------- Utils ----------
 function toast(msg){
-  const el=$("toast");el.textContent=msg;el.classList.add("show");
-  clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove("show"),3000);
+  const el = $("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => el.classList.remove("show"), 2800);
 }
-function shortAddr(a){return(!a||a.length<12)?(a||""):a.slice(0,4)+"…"+a.slice(-4);}
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
-function buzz(){try{navigator.vibrate&&navigator.vibrate(10);}catch(e){}}
+function shortAddr(a){ return (!a || a.length < 12) ? (a || "") : a.slice(0,4) + "…" + a.slice(-4); }
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function nanoToTon(n){ return (Number(n) / 1e9).toString(); }
+function tonToNano(t){ try { return BigInt(Math.round(parseFloat(t || "0") * 1e9)); } catch(e){ return 0n; } }
+function buzz(){ try{ navigator.vibrate && navigator.vibrate(10); }catch(e){} }
+function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
 
-// ========== LIB LOADER ==========
-const TON_URLS=["https://esm.sh/@ton/ton@15","https://esm.sh/@ton/ton@15.2.0","https://cdn.jsdelivr.net/npm/@ton/ton@15/+esm","https://fastly.jsdelivr.net/npm/@ton/ton@15/+esm"];
-const CRYPTO_URLS=["https://esm.sh/@ton/crypto@3","https://esm.sh/@ton/crypto@3.3.0","https://cdn.jsdelivr.net/npm/@ton/crypto@3/+esm","https://fastly.jsdelivr.net/npm/@ton/crypto@3/+esm"];
-async function tryImport(urls,check){
-  for(const url of urls){
-    try{const mod=await import(url);if(check(mod))return mod;}catch(e){}
-  }
-  return null;
-}
-async function loadLibraries(){
-  try{
-    if(!window.Buffer){
-      const buf=await import("https://esm.sh/buffer@6.0.3");
-      window.Buffer=buf.Buffer||(buf.default&&buf.default.Buffer);
-    }
-  }catch(e){}
-  TON=await tryImport(TON_URLS,m=>m.WalletContractV4&&m.WalletContractV3R2&&m.TonClient);
-  if(!TON)throw new Error("Could not load TON library.");
-  CR=await tryImport(CRYPTO_URLS,m=>m.mnemonicToPrivateKey&&m.keyPairFromSeed);
-  if(!CR)throw new Error("Could not load crypto library.");
-  client=new TON.TonClient({endpoint:API+"/jsonRPC",apiKey:API_KEY});
-}
+// ---------- Base64 ----------
+function toB64(u8){ let s=""; for(let i=0;i<u8.length;i++) s+=String.fromCharCode(u8[i]); return btoa(s); }
+function fromB64(s){ const bin=atob(s); const u8=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u8[i]=bin.charCodeAt(i); return u8; }
 
-// ========== CRYPTO ==========
-const enc=new TextEncoder(),dec=new TextDecoder();
-function toB64(u8){let s="";for(let i=0;i<u8.length;i++)s+=String.fromCharCode(u8[i]);return btoa(s);}
-function fromB64(s){const bin=atob(s);const u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);return u8;}
-async function deriveKey(pass,salt){
-  const material=await crypto.subtle.importKey("raw",enc.encode(pass),"PBKDF2",false,["deriveKey"]);
-  return crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:150000,hash:"SHA-256"},material,{name:"AES-GCM",length:256},false,["encrypt","decrypt"]);
+// ---------- Encryption ----------
+const enc = new TextEncoder(), dec = new TextDecoder();
+async function deriveKey(pass, salt){
+  const m = await crypto.subtle.importKey("raw", enc.encode(pass), "PBKDF2", false, ["deriveKey"]);
+  return crypto.subtle.deriveKey(
+    { name:"PBKDF2", salt, iterations:150000, hash:"SHA-256" },
+    m, { name:"AES-GCM", length:256 }, false, ["encrypt","decrypt"]
+  );
 }
-async function encrypt(text,pass){
-  const salt=crypto.getRandomValues(new Uint8Array(16));
-  const iv=crypto.getRandomValues(new Uint8Array(12));
-  const key=await deriveKey(pass,salt);
-  const cipher=new Uint8Array(await crypto.subtle.encrypt({name:"AES-GCM",iv},key,enc.encode(text)));
-  return JSON.stringify({s:toB64(salt),i:toB64(iv),c:toB64(cipher)});
+async function encryptText(text, pass){
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const key = await deriveKey(pass, salt);
+  const c = new Uint8Array(await crypto.subtle.encrypt({ name:"AES-GCM", iv }, key, enc.encode(text)));
+  return JSON.stringify({ s:toB64(salt), i:toB64(iv), c:toB64(c) });
 }
-async function decrypt(blob,pass){
-  const obj=JSON.parse(blob);
-  const key=await deriveKey(pass,fromB64(obj.s));
-  const plain=await crypto.subtle.decrypt({name:"AES-GCM",iv:fromB64(obj.i)},key,fromB64(obj.c));
-  return dec.decode(plain);
+async function decryptText(blob, pass){
+  const o = JSON.parse(blob);
+  const key = await deriveKey(pass, fromB64(o.s));
+  const p = await crypto.subtle.decrypt({ name:"AES-GCM", iv:fromB64(o.i) }, key, fromB64(o.c));
+  return dec.decode(p);
 }
 
-// ========== DERIVATION ==========
-function toBuf(u8){return window.Buffer?window.Buffer.from(u8):u8;}
-async function hmac(key,data){
-  const k=await crypto.subtle.importKey("raw",key,{name:"HMAC",hash:"SHA-512"},false,["sign"]);
-  return new Uint8Array(await crypto.subtle.sign("HMAC",k,data));
-}
-async function slip10(wordsArr,path,passphrase){
-  const mnemonic=wordsArr.join(" ").normalize("NFKD");
-  const salt=("mnemonic"+(passphrase||"")).normalize("NFKD");
-  const material=await crypto.subtle.importKey("raw",enc.encode(mnemonic),"PBKDF2",false,["deriveBits"]);
-  const seed=new Uint8Array(await crypto.subtle.deriveBits(
-    {name:"PBKDF2",salt:enc.encode(salt),iterations:2048,hash:"SHA-512"},material,512));
-  let I=await hmac(enc.encode("ed25519 seed"),seed);
-  let k=I.slice(0,32),c=I.slice(32);
-  for(const p of path){
-    const idx=p>>>0;
-    const data=new Uint8Array(37);
-    data.set(k,1);
-    data[33]=(idx>>>24)&255;data[34]=(idx>>>16)&255;data[35]=(idx>>>8)&255;data[36]=idx&255;
-    I=await hmac(c,data);
-    k=I.slice(0,32);c=I.slice(32);
-  }
-  return CR.keyPairFromSeed(toBuf(k));
-}
+// ---------- Load TON libs ----------
+async function loadTonLibs(){
+  if (TON && CR) return;
 
-const H=0x80000000;
-
-function getDerivations(pass){
-  return [
-    {name:"TON-standard"+(pass?" +pass":""),        fn:async w=>await CR.mnemonicToPrivateKey(w)},
-    {name:"BIP39 m/44'/607'/0'"+(pass?" +pass":""), fn:async w=>await slip10(w,[44|H,607|H,0|H],pass)},
-    {name:"BIP39 m/44'/607'/0'/0'"+(pass?" +pass":""),  fn:async w=>await slip10(w,[44|H,607|H,0|H,0|H],pass)},
-    {name:"BIP39 m/44'/607'/0'/0/0"+(pass?" +pass":""), fn:async w=>await slip10(w,[44|H,607|H,0|H,0,0],pass)},
-    {name:"BIP39 m/44'/607'/0'/0'/0'"+(pass?" +pass":""),fn:async w=>await slip10(w,[44|H,607|H,0|H,0|H,0|H],pass)},
-    {name:"BIP39 m/44'/607'/0'/0"+(pass?" +pass":""),   fn:async w=>await slip10(w,[44|H,607|H,0|H,0],pass)},
-    {name:"BIP39 m/44'/607'/0'/0/0/0"+(pass?" +pass":""),fn:async w=>await slip10(w,[44|H,607|H,0|H,0,0,0],pass)},
+  const tonUrls = [
+    "https://esm.sh/@ton/ton@15",
+    "https://esm.sh/@ton/ton@15.2.0",
+    "https://cdn.jsdelivr.net/npm/@ton/ton@15/+esm"
   ];
-}
-
-const VERSIONS=[
-  {v:"V3R1",make:pk=>TON.WalletContractV3R1.create({workchain:0,publicKey:pk})},
-  {v:"V3R2",make:pk=>TON.WalletContractV3R2.create({workchain:0,publicKey:pk})},
-  {v:"V4R2",make:pk=>TON.WalletContractV4.create({workchain:0,publicKey:pk})},
-  {v:"V5R1",make:pk=>TON.WalletContractV5R1.create({workchain:0,publicKey:pk})},
-];
-
-function normalizeAddr(a){return a.replace(/[-_]/g,"").toLowerCase();}
-
-async function bruteForce(wordsArr,target,bipPass){
-  const target_norm=normalizeAddr(target);
-  const all=[];
-  const derivs=getDerivations(bipPass);
-
-  for(const d of derivs){
-    let kp;
-    try{kp=await d.fn(wordsArr);}catch(e){continue;}
-    for(const v of VERSIONS){
-      let w,addr;
-      try{w=v.make(kp.publicKey);addr=w.address.toString({bounceable:false,urlSafe:true});}catch(e){continue;}
-      const entry={deriv:d.name,version:v.v,addr,kp,wallet:w};
-      all.push(entry);
-      if(normalizeAddr(addr)===target_norm){
-        return {found:entry,all};
+  for (const url of tonUrls){
+    try {
+      const m = await import(url);
+      if (m.WalletContractV5R1 && m.WalletContractV4 && m.TonClient && m.Address && m.internal && m.SendMode){
+        TON = m; break;
       }
-    }
+    } catch(e){}
   }
-  return {found:null,all};
+  if (!TON) throw new Error("Could not load @ton/ton");
+
+  const crUrls = [
+    "https://esm.sh/@ton/crypto@3",
+    "https://esm.sh/@ton/crypto@3.3.0",
+    "https://cdn.jsdelivr.net/npm/@ton/crypto@3/+esm"
+  ];
+  for (const url of crUrls){
+    try {
+      const m = await import(url);
+      if (m.mnemonicToPrivateKey && m.mnemonicNew){
+        CR = m; break;
+      }
+    } catch(e){}
+  }
+  if (!CR) throw new Error("Could not load @ton/crypto");
+
+  client = new TON.TonClient({
+    endpoint: TONCENTER + "/jsonRPC",
+    apiKey: API_KEY
+  });
 }
 
-function showDebug(all,target){
-  $("debugList").innerHTML=all.map(x=>{
-    const match=normalizeAddr(x.addr)===normalizeAddr(target);
-    return '<div class="row'+(match?" match":"")+'">'+
-      '<span class="label">'+(match?"✅ MATCH: ":"")+esc(x.deriv)+" + "+esc(x.version)+'</span>'+
-      '<span class="addr">'+esc(x.addr)+'</span>'+
-    '</div>';
-  }).join("");
-  $("debugTarget").innerHTML='Looking for: <span style="color:#22c55e">'+esc(target)+'</span><br>Total: '+all.length+' candidates';
-  $("debugBox").classList.add("show");
+// ---------- Generate wallet ----------
+async function generateWallet(){
+  await loadTonLibs();
+  const words = await CR.mnemonicNew(24);
+  const kp = await CR.mnemonicToPrivateKey(words);
+  const contract = TON.WalletContractV5R1.create({
+    workchain: 0,
+    publicKey: kp.publicKey
+  });
+  const friendly = contract.address.toString({ bounceable:false, urlSafe:true });
+  return { words, kp, contract, address: contract.address, addressFriendly: friendly };
 }
 
-// ========== API ==========
+async function deriveFromWords(words){
+  await loadTonLibs();
+  const kp = await CR.mnemonicToPrivateKey(words);
+  const contract = TON.WalletContractV5R1.create({
+    workchain: 0,
+    publicKey: kp.publicKey
+  });
+  const friendly = contract.address.toString({ bounceable:false, urlSafe:true });
+  return { words, kp, contract, address: contract.address, addressFriendly: friendly };
+}
+
+// ---------- API ----------
 async function api(path){
-  const url=API+path+(path.includes("?")?"&":"?")+"api_key="+API_KEY;
-  const res=await fetch(url);
-  const text=await res.text();
-  let json;try{json=JSON.parse(text);}catch(e){throw new Error("HTTP "+res.status);}
-  if(!json.ok)throw new Error(json.error||"API error");
+  const url = TONCENTER + path + (path.includes("?") ? "&" : "?") + "api_key=" + API_KEY;
+  const res = await fetch(url);
+  const text = await res.text();
+  let json;
+  try { json = JSON.parse(text); } catch(e){ throw new Error("HTTP " + res.status); }
+  if (!json.ok) throw new Error(json.error || "API error");
   return json.result;
 }
 
-// ========== LOAD WALLET ==========
-async function loadWallet(wordsArr,bipPass){
-  words=wordsArr;
-  let chosen=null;
-  const saved=localStorage.getItem(CHOICE);
-
-  if(saved&&!bipPass){
-    try{
-      const meta=JSON.parse(saved);
-      const d=getDerivations("").find(x=>x.name===meta.deriv);
-      const v=VERSIONS.find(x=>x.v===meta.version);
-      if(d&&v){
-        const kp=await d.fn(wordsArr);
-        const w=v.make(kp.publicKey);
-        chosen={deriv:meta.deriv,version:meta.version,kp,wallet:w,
-                addr:w.address.toString({bounceable:false,urlSafe:true})};
-      }
-    }catch(e){chosen=null;}
+// ==========================================================
+// TON CONNECT
+// ==========================================================
+function initTonConnect(){
+  if (typeof TON_CONNECT_UI === "undefined"){
+    console.warn("TON Connect UI not available");
+    return false;
   }
-
-  if(!chosen){
-    const target=$("target").value.trim();
-    if(!target){toast("Target address رو وارد کن");return;}
-
-    $("setupMsg").textContent="🔍 Searching…";
-    const res=await bruteForce(wordsArr,target,bipPass);
-
-    if(res.found){
-      chosen=res.found;
-      localStorage.setItem(CHOICE,JSON.stringify({deriv:res.found.deriv,version:res.found.version}));
-      $("setupMsg").textContent="";
-      toast("✅ Found: "+res.found.deriv+" + "+res.found.version);
-    }else{
-      showDebug(res.all,target);
-      $("setupMsg").textContent="❌ Found: 0 / "+res.all.length+" — Debug باز شد";
-      $("setupMsg").className="msg err";
-      return;
+  try {
+    if (tonConnectUI) return true;
+    const btnRoot = $("ton-connect-btn");
+    if (!btnRoot) {
+      console.error("Button root not found");
+      return false;
     }
+
+    tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+      manifestUrl: MANIFEST_URL,
+      buttonRootId: "ton-connect-btn",
+      uiPreferences: { theme: "SYSTEM" }
+    });
+
+    if (tonConnectUI.wallet) onMainConnected(tonConnectUI.wallet);
+
+    tonConnectUI.onStatusChange(wallet => {
+      if (wallet) onMainConnected(wallet);
+      else onMainDisconnected();
+    });
+
+    console.log("✅ TON Connect initialized");
+    return true;
+  } catch(e){
+    console.error("TON Connect init error:", e);
+    return false;
+  }
+}
+function onMainConnected(wallet){
+  mainAddress = wallet.account.address;
+  mainName = (wallet.device && wallet.device.appName) || "Wallet";
+  $("walletName").textContent = mainName;
+  $("walletAddrShort").textContent = shortAddr(mainAddress);
+  $("notConnected").classList.add("hidden");
+  $("connected").classList.remove("hidden");
+  toast("✅ " + mainName + " وصل شد");
+}
+function onMainDisconnected(){
+  mainAddress = null;
+  $("notConnected").classList.remove("hidden");
+  $("connected").classList.add("hidden");
+}
+
+// ==========================================================
+// BALANCE + TX
+// ==========================================================
+async function refreshBalance(){
+  if (!miniWallet) return;
+  try {
+    const bal = await api("/getAddressBalance?address=" + encodeURIComponent(miniWallet.addressFriendly));
+    balanceNano = BigInt(bal || "0");
+    const ton = nanoToTon(balanceNano);
+    $("balN").textContent = parseFloat(ton).toFixed(4);
+    $("sendBalHint").textContent = "موجودی: " + parseFloat(ton).toFixed(4) + " TON";
+    try {
+      const r = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=usd");
+      const p = await r.json();
+      price = (p["the-open-network"] && p["the-open-network"].usd) || 0;
+      $("usd").textContent = "$" + (parseFloat(ton) * price).toFixed(2);
+      updateDepositUI();
+      updateSendUI();
+    } catch(e){}
+  } catch(e){ console.warn("balance error", e); }
+}
+
+async function refreshTxs(){
+  if (!miniWallet) return;
+  try {
+    const txs = await api("/getTransactions?address=" + encodeURIComponent(miniWallet.addressFriendly) + "&limit=25");
+    renderTxs(txs);
+  } catch(e){
+    $("txList").innerHTML = '<div class="empty-state">خطا در بارگذاری</div>';
+  }
+}
+
+function formatTime(t){
+  return new Date(t * 1000).toLocaleString("fa-IR", {
+    month:"short", day:"numeric", hour:"2-digit", minute:"2-digit", hour12:false
+  });
+}
+
+function renderTxs(list){
+  const items = [];
+  list.forEach(tx => {
+    if (tx.in_msg && tx.in_msg.source){
+      items.push({ dir:"in", addr:tx.in_msg.source, value:tx.in_msg.value, memo:tx.in_msg.message, time:tx.utime });
+    }
+    (tx.out_msgs || []).forEach(o => {
+      if (o.destination){
+        items.push({ dir:"out", addr:o.destination, value:o.value, memo:o.message, time:tx.utime });
+      }
+    });
+  });
+
+  if (!items.length){
+    $("txList").innerHTML = '<div class="empty-state">تراکنشی نیست</div>';
+    return;
   }
 
-  kp0=chosen.kp;wallet=chosen.wallet;address=chosen.addr;
-  $("cardAddr").textContent=address;
-  $("recvAddr").textContent=address;
-  $("walletHandle").textContent=chosen.deriv+" / "+chosen.version;
-  showScreen("main");
-  refresh();
-}
-
-// ========== REFRESH ==========
-async function refresh(){
-  const btn=$("refreshBtn");btn.style.opacity=".4";
-  try{
-    balNano=BigInt(await api("/getAddressBalance?address="+address));
-    const ton=TON.fromNano(balNano);
-    $("balN").textContent=ton;
-    fetch("https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=usd")
-      .then(r=>r.json()).then(p=>{
-        price=(p["the-open-network"]&&p["the-open-network"].usd)||0;
-        $("usd").textContent="$"+(parseFloat(ton)*price).toFixed(2);
-      }).catch(()=>{});
-  }catch(e){}
-  await sleep(300);
-  try{
-    const txs=await api("/getTransactions?address="+address+"&limit=25");
-    renderTransactions(txs);
-  }catch(e){$("txList").innerHTML='<div class="empty-state">Could not load</div>';}
-  btn.style.opacity="1";
-}
-function formatTime(t){return new Date(t*1000).toLocaleString("en",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit",hour12:false});}
-function renderTransactions(list){
-  const items=[];
-  list.forEach(tx=>{
-    if(tx.in_msg&&tx.in_msg.source)items.push({dir:"in",addr:tx.in_msg.source,value:tx.in_msg.value,memo:tx.in_msg.message,time:tx.utime});
-    (tx.out_msgs||[]).forEach(o=>{if(o.destination)items.push({dir:"out",addr:o.destination,value:o.value,memo:o.message,time:tx.utime});});
-  });
-  if(!items.length){$("txList").innerHTML='<div class="empty-state">No transactions yet</div>';return;}
-  $("txList").innerHTML=items.map(x=>{
-    const isIn=x.dir==="in";
-    const val=parseFloat(TON.fromNano(BigInt(x.value||"0")));
-    return '<div class="tx-item"><div class="tx-avatar '+(isIn?"in":"")+'">'+(isIn?"↓":"↑")+'</div>'+
-      '<div class="tx-info"><div class="tx-title">'+esc(shortAddr(x.addr))+'</div>'+
-      '<div class="tx-subtitle">'+(isIn?"Incoming":"Outgoing")+' · '+formatTime(x.time)+(x.memo?" · "+esc(x.memo):"")+'</div></div>'+
-      '<div class="tx-amount '+(isIn?"in":"")+'">'+(isIn?"+":"−")+val+' 💎</div></div>';
+  $("txList").innerHTML = items.map(x => {
+    const isIn = x.dir === "in";
+    const val = nanoToTon(BigInt(x.value || "0"));
+    const memoPart = x.memo ? " · " + esc(x.memo) : "";
+    return '<div class="tx-item">' +
+      '<div class="tx-avatar ' + (isIn ? "in" : "") + '">' + (isIn ? "↓" : "↑") + '</div>' +
+      '<div class="tx-info">' +
+        '<div class="tx-title">' + esc(shortAddr(x.addr)) + '</div>' +
+        '<div class="tx-subtitle">' + (isIn ? "دریافت" : "ارسال") + ' · ' + formatTime(x.time) + memoPart + '</div>' +
+      '</div>' +
+      '<div class="tx-amount ' + (isIn ? "in" : "") + '">' + (isIn ? "+" : "−") + parseFloat(val).toFixed(4) + '</div>' +
+    '</div>';
   }).join("");
 }
-function showScreen(n){["setup","unlock","main"].forEach(id=>{$(id).classList.toggle("hidden",id!==n);});}
 
-// ========== FIND BUTTON ==========
-$("findBtn").onclick=async()=>{
-  const w=$("words").value.trim().toLowerCase().split(/\s+/).filter(Boolean);
-  const target=$("target").value.trim();
-  const bipPass=$("bipPass").value;
-  if(w.length!==12&&w.length!==24)return setMsg$("Enter exactly 12 or 24 words",false);
-  if(!target)return setMsg$("Target address required",false);
-  setMsg$("⏳ Searching "+(getDerivations(bipPass).length*VERSIONS.length)+" combinations…",true);
-  try{
-    if(!TON||!CR||!client)await loadLibraries();
-    // ذخیره seed با یه پسورد ثابت (برای استفاده بعدی) — یا skip encryption
-    // برای سادگی، seed رو در حافظه نگه می‌داریم
-    await loadWallet(w,bipPass);
-  }catch(e){
-    setMsg$("Error: "+(e&&e.message?e.message:e),false);
+// ==========================================================
+// DEPOSIT
+// ==========================================================
+function openDeposit(){
+  if (!mainAddress){ toast("اول ولت اصلی رو وصل کن"); return; }
+  activeField = "deposit";
+  depositAmt = "0";
+  $("depositTarget").textContent = miniWallet.addressFriendly;
+  updateDepositUI();
+  $("depositPage").classList.add("show");
+  setTimeout(() => showKeypad(true), 280);
+}
+function closeDeposit(){
+  showKeypad(false);
+  $("depositPage").classList.remove("show");
+}
+function updateDepositUI(){
+  $("depositAmtV").textContent = depositAmt;
+  const n = parseFloat(depositAmt) || 0;
+  $("depositConv").textContent = "= $" + (n * price).toFixed(2);
+  const go = $("doDepositBtn");
+  go.disabled = !(n > 0 && mainAddress);
+  go.textContent = n > 0 ? "واریز " + depositAmt.replace(/\.$/, "") + " TON" : "ادامه";
+}
+$("doDepositBtn").onclick = async () => {
+  if (!tonConnectUI || !mainAddress) return toast("ولت اصلی وصل نیست");
+  if (!miniWallet) return toast("ولت فرعی نیست");
+  const go = $("doDepositBtn");
+  go.disabled = true;
+  go.innerHTML = '<span class="spin"></span>';
+  showKeypad(false);
+  try {
+    const nano = tonToNano(depositAmt);
+    if (nano <= 0n) throw new Error("مقدار نامعتبر");
+    const tx = {
+      validUntil: Math.floor(Date.now() / 1000) + 360,
+      messages: [{ address: miniWallet.addressFriendly, amount: nano.toString() }]
+    };
+    const result = await tonConnectUI.sendTransaction(tx);
+    console.log("deposit result:", result);
+    toast("✅ واریز شد!");
+    closeDeposit();
+    setTimeout(() => { refreshBalance(); refreshTxs(); }, 3000);
+    setTimeout(() => { refreshBalance(); refreshTxs(); }, 10000);
+  } catch(e){
+    console.error(e);
+    const msg = (e && e.message) ? e.message : String(e);
+    if (msg.toLowerCase().includes("reject") || msg.toLowerCase().includes("cancel")){
+      toast("لغو شد");
+    } else {
+      toast("خطا: " + msg);
+    }
+    go.disabled = false;
+    updateDepositUI();
   }
 };
-function setMsg$(text,ok){
-  const el=$("setupMsg");el.textContent=text;el.className="msg "+(ok?"ok":"err");
-}
 
-$("showAllBtn").onclick=async()=>{
-  const w=$("words").value.trim().toLowerCase().split(/\s+/).filter(Boolean);
-  const target=$("target").value.trim()||"NONE";
-  const bipPass=$("bipPass").value;
-  if(w.length!==12&&w.length!==24)return setMsg$("Enter exactly 12 or 24 words",false);
-  setMsg$("⏳ Generating all addresses…",true);
-  try{
-    if(!TON||!CR||!client)await loadLibraries();
-    const res=await bruteForce(w,target,bipPass);
-    showDebug(res.all,target);
-    setMsg$("✅ "+res.all.length+" addresses shown",true);
-  }catch(e){setMsg$("Error: "+(e&&e.message?e.message:e),false);}
-};
-
-// ========== RECEIVE / SEND ==========
-$("addBtn").onclick=()=>$("recvBg").classList.add("show");
-$("recvClose").onclick=()=>$("recvBg").classList.remove("show");
-$("recvBg").onclick=e=>{if(e.target.id==="recvBg")$("recvBg").classList.remove("show");};
-$("copyBtn").onclick=async()=>{try{await navigator.clipboard.writeText(address);toast("Copied");}catch(e){prompt("Copy:",address);}};
-$("refreshBtn").onclick=refresh;
-$("changeBtn").onclick=()=>{words=null;wallet=null;kp0=null;showScreen("setup");};
-
-const keyLabels=["1","2","3","4","5","6","7","8","9",".","0","⌫"];
-$("keys").innerHTML=keyLabels.map(k=>'<button class="key" data-k="'+k+'">'+k+'</button>').join("")+'<button class="key done" id="doneBtn">Done</button>';
-function showKeypad(s){$("kp").classList.toggle("show",s);}
+// ==========================================================
+// SEND
+// ==========================================================
 function openSend(){
-  amt="0";wasBad=false;$("toAddr").value="";$("memo").value="";
-  updateRecipient();updateAmountUI();
-  $("balInfo").textContent="Balance: "+TON.fromNano(balNano)+" TON";
-  $("feeInfo").textContent="Network fee ≈ "+FEE+" TON";
+  if (!miniWallet){ toast("ولت فرعی نیست"); return; }
+  activeField = "send";
+  sendAmt = "0";
+  $("toAddr").value = "";
+  $("memo").value = "";
+  updateSendUI();
   $("sendPage").classList.add("show");
-  setTimeout(()=>showKeypad(true),280);
+  setTimeout(() => showKeypad(true), 280);
 }
-function closeSend(){showKeypad(false);$("sendPage").classList.remove("show");}
-$("sendBtn").onclick=openSend;
-$("backBtn").onclick=closeSend;
-$("doneBtn").onclick=()=>showKeypad(false);
-$("amtBox").onclick=()=>showKeypad(true);
-$("toAddr").onfocus=()=>showKeypad(false);
-$("memo").onfocus=()=>showKeypad(false);
+function closeSend(){
+  showKeypad(false);
+  $("sendPage").classList.remove("show");
+}
 function isValidAddress(a){
-  if(!a)return false;
-  try{TON.Address.parseFriendly(a);return true;}catch(e){}
-  try{TON.Address.parse(a);return true;}catch(e){return false;}
+  if (!a || a.length < 40) return false;
+  return /^[EUk0]Q[A-Za-z0-9_-]{46}$/.test(a);
 }
-function updateRecipient(){
-  const a=$("toAddr").value.trim();
-  const ok=isValidAddress(a);
-  $("rAva").textContent=ok?a.slice(0,2).toUpperCase():"?";
-  $("rAddr").textContent=ok?shortAddr(a):"Enter address below";
-  return ok;
+function updateSendUI(){
+  $("sendAmtV").textContent = sendAmt;
+  const n = parseFloat(sendAmt) || 0;
+  $("sendConv").textContent = "= $" + (n * price).toFixed(2);
+  const nano = tonToNano(sendAmt);
+  const bad = nano > 0n && (nano + FEE) > balanceNano;
+  $("warn").classList.toggle("show", bad);
+  const addrOk = isValidAddress($("toAddr").value.trim());
+  const go = $("doSendBtn");
+  go.disabled = !(n > 0 && !bad && addrOk);
+  go.textContent = n > 0 ? "ارسال " + sendAmt.replace(/\.$/, "") + " TON" : "ادامه";
 }
-$("toAddr").oninput=()=>{updateRecipient();updateAmountUI();};
-function amtNano(){try{return TON.toNano(amt.replace(/\.$/,"")||"0");}catch(e){return 0n;}}
-function updateAmountUI(){
-  $("amtV").textContent=amt;
-  const n=parseFloat(amt)||0;
-  $("conv").textContent="= $"+(n*price).toFixed(2);
-  const nano=amtNano();
-  const bad=nano>0n&&(nano+FEE_NANO)>balNano;
-  $("warn").classList.toggle("show",bad);
-  const go=$("goBtn");
-  const ok=nano>0n&&!bad&&updateRecipient();
-  go.disabled=!ok;
-  go.textContent=n>0?"Send "+amt.replace(/\.$/,"")+" TON":"Continue";
-}
-$("keys").onclick=e=>{
-  const btn=e.target.closest(".key");if(!btn||btn.id==="doneBtn")return;buzz();
-  const k=btn.dataset.k;
-  if(k==="⌫")amt=amt.length>1?amt.slice(0,-1):"0";
-  else if(k==="."){if(!amt.includes("."))amt+=".";}
-  else{if(amt==="0")amt=k;else if(amt.length<14&&!(amt.includes(".")&&amt.split(".")[1].length>=9))amt+=k;}
-  updateAmountUI();
-};
-$("goBtn").onclick=async()=>{
-  const go=$("goBtn"),to=$("toAddr").value.trim(),memo=$("memo").value.trim();
-  let dest,bounce=false;
-  try{try{const p=TON.Address.parseFriendly(to);dest=p.address;bounce=p.isBounceable;}catch(e){dest=TON.Address.parse(to);}}
-  catch(e){return toast("Invalid address");}
-  go.disabled=true;go.innerHTML='<span class="spin"></span>';showKeypad(false);
-  try{
-    const opened=client.open(wallet);
-    const seqno=await opened.getSeqno();
+$("toAddr").oninput = updateSendUI;
+
+$("doSendBtn").onclick = async () => {
+  if (!miniWallet) return toast("ولت فرعی نیست");
+  const to = $("toAddr").value.trim();
+  const memo = $("memo").value.trim();
+  if (!isValidAddress(to)) return toast("آدرس نامعتبر");
+  const go = $("doSendBtn");
+  go.disabled = true;
+  go.innerHTML = '<span class="spin"></span>';
+  showKeypad(false);
+  try {
+    const nano = tonToNano(sendAmt);
+    if (nano <= 0n) throw new Error("مقدار نامعتبر");
+    let dest, bounce = false;
+    try {
+      const p = TON.Address.parseFriendly(to);
+      dest = p.address;
+      bounce = p.isBounceable;
+    } catch(e){
+      dest = TON.Address.parse(to);
+    }
+    const opened = client.open(miniWallet.contract);
+    const seqno = await opened.getSeqno();
     await opened.sendTransfer({
-      seqno,secretKey:kp0.secretKey,
-      sendMode:TON.SendMode.PAY_GAS_SEPARATELY+TON.SendMode.IGNORE_ERRORS,
-      messages:[TON.internal({to:dest,value:amtNano(),bounce,body:memo||undefined})]
+      seqno,
+      secretKey: miniWallet.kp.secretKey,
+      sendMode: TON.SendMode.PAY_GAS_SEPARATELY + TON.SendMode.IGNORE_ERRORS,
+      messages: [
+        TON.internal({ to: dest, value: nano, bounce: bounce, body: memo || undefined })
+      ]
     });
-    toast("✅ Sent!");
+    toast("✅ ارسال شد!");
     closeSend();
-    setTimeout(refresh,3000);setTimeout(refresh,10000);
-  }catch(e){
-    toast("Error: "+(e&&e.message?e.message:e));
-    go.disabled=false;updateAmountUI();
+    setTimeout(() => { refreshBalance(); refreshTxs(); }, 3000);
+    setTimeout(() => { refreshBalance(); refreshTxs(); }, 10000);
+  } catch(e){
+    console.error(e);
+    toast("خطا: " + ((e && e.message) || e));
+    go.disabled = false;
+    updateSendUI();
   }
 };
 
-// ========== BOOT ==========
+// ==========================================================
+// KEYPAD
+// ==========================================================
+const keyLabels = ["1","2","3","4","5","6","7","8","9",".","0","⌫"];
+$("keys").innerHTML = keyLabels.map(k =>
+  '<button class="key" data-k="' + k + '">' + k + '</button>'
+).join("") + '<button class="key done" id="doneBtn">تمام</button>';
+function showKeypad(show){ $("kp").classList.toggle("show", show); }
+$("doneBtn").onclick = () => showKeypad(false);
+$("toAddr").onfocus = () => showKeypad(false);
+$("memo").onfocus = () => showKeypad(false);
+
+$("keys").onclick = (e) => {
+  const btn = e.target.closest(".key");
+  if (!btn || btn.id === "doneBtn") return;
+  buzz();
+  const k = btn.dataset.k;
+  let val = activeField === "deposit" ? depositAmt : sendAmt;
+  if (k === "⌫"){
+    val = val.length > 1 ? val.slice(0, -1) : "0";
+  } else if (k === "."){
+    if (!val.includes(".")) val += ".";
+  } else {
+    if (val === "0") val = k;
+    else if (val.length < 14 && !(val.includes(".") && val.split(".")[1].length >= 9)) val += k;
+  }
+  if (activeField === "deposit"){
+    depositAmt = val;
+    updateDepositUI();
+  } else {
+    sendAmt = val;
+    updateSendUI();
+  }
+};
+
+// ==========================================================
+// NAV
+// ==========================================================
+$("receiveBtn").onclick = () => { if (miniWallet) $("recvBg").classList.add("show"); };
+$("qrBtn").onclick = $("receiveBtn").onclick;
+$("recvClose").onclick = () => $("recvBg").classList.remove("show");
+$("recvBg").onclick = (e) => { if (e.target.id === "recvBg") $("recvBg").classList.remove("show"); };
+$("copyRecvBtn").onclick = async () => {
+  if (!miniWallet) return;
+  try {
+    await navigator.clipboard.writeText(miniWallet.addressFriendly);
+    toast("کپی شد");
+  } catch(e){ prompt("کپی:", miniWallet.addressFriendly); }
+};
+$("sendBtn").onclick = openSend;
+$("depositBtn").onclick = openDeposit;
+$("depositBack").onclick = closeDeposit;
+$("sendBack").onclick = closeSend;
+$("refreshBtn").onclick = () => {
+  $("refreshBtn").style.opacity = ".4";
+  Promise.all([refreshBalance(), refreshTxs()]).finally(() => {
+    $("refreshBtn").style.opacity = "1";
+  });
+};
+
+// MENU
+$("menuBtn").onclick = () => $("menuBg").classList.add("show");
+$("menuBg").onclick = (e) => { if (e.target.id === "menuBg") $("menuBg").classList.remove("show"); };
+$("refreshMenu").onclick = () => { $("menuBg").classList.remove("show"); $("refreshBtn").click(); };
+$("disconnectMenu").onclick = async () => {
+  $("menuBg").classList.remove("show");
+  if (tonConnectUI && mainAddress){
+    if (confirm("قطع اتصال ولت اصلی؟")){
+      try { await tonConnectUI.disconnect(); } catch(e){}
+    }
+  } else toast("ولت اصلی وصل نیست");
+};
+$("viewSeedMenu").onclick = async () => {
+  $("menuBg").classList.remove("show");
+  const pass = prompt("پسورد رو وارد کن:");
+  if (!pass) return;
+  try {
+    const plain = await decryptText(localStorage.getItem(STORE_KEY), pass);
+    alert("🔐 کلمات بازیابی (جایی امن ذخیره کن):\n\n" + plain);
+  } catch(e){
+    toast("پسورد اشتباه");
+  }
+};
+$("resetMenu").onclick = () => {
+  $("menuBg").classList.remove("show");
+  if (confirm("حذف ولت از این دستگاه؟\nمطمئن شو کلمات بازیابی رو داری!")){
+    localStorage.removeItem(STORE_KEY);
+    location.reload();
+  }
+};
+
+// ==========================================================
+// GENERATE FLOW
+// ==========================================================
+let pendingSeed = null;
+
+$("startGenBtn").onclick = async () => {
+  $("startGenBtn").disabled = true;
+  $("startGenBtn").innerHTML = '<span class="spin"></span> ساخت…';
+  try {
+    const generated = await generateWallet();
+    pendingSeed = generated;
+    renderSeedGrid(generated.words);
+    showScreen("showSeed");
+  } catch(e){
+    console.error(e);
+    toast("خطا: " + ((e && e.message) || e));
+    $("startGenBtn").disabled = false;
+    $("startGenBtn").textContent = "✨ ساخت ولت جدید";
+  }
+};
+
+function renderSeedGrid(words){
+  $("seedGrid").innerHTML = words.map((w, i) =>
+    '<div class="seed-word"><span class="num">' + (i+1) + '.</span><span>' + esc(w) + '</span></div>'
+  ).join("");
+}
+
+$("copySeedBtn").onclick = async () => {
+  if (!pendingSeed) return;
+  const text = pendingSeed.words.join(" ");
+  try {
+    await navigator.clipboard.writeText(text);
+    toast("کپی شد — جای امن بذارش!");
+  } catch(e){
+    prompt("کپی کن:", text);
+  }
+};
+
+$("seedSaved").onchange = (e) => {
+  $("seedContinueBtn").disabled = !e.target.checked;
+};
+
+$("seedContinueBtn").onclick = () => { showScreen("setPass"); };
+
+$("savePassBtn").onclick = async () => {
+  const p1 = $("newPass").value;
+  const p2 = $("newPass2").value;
+  if (p1.length < 4){ setMsg("passMsg","حداقل ۴ کاراکتر", false); return; }
+  if (p1 !== p2){ setMsg("passMsg","پسوردها یکسان نیستن", false); return; }
+  if (!pendingSeed){ setMsg("passMsg","خطا در بازیابی seed", false); return; }
+  setMsg("passMsg", "در حال ذخیره…", true);
+  try {
+    const blob = await encryptText(pendingSeed.words.join(" "), p1);
+    localStorage.setItem(STORE_KEY, blob);
+    miniWallet = pendingSeed;
+    pendingSeed = null;
+    $("newPass").value = ""; $("newPass2").value = "";
+    await enterMain();
+  } catch(e){
+    setMsg("passMsg","خطا: " + ((e && e.message) || e), false);
+  }
+};
+
+// ==========================================================
+// UNLOCK
+// ==========================================================
+$("unlockBtn").onclick = async () => {
+  const pass = $("unlockPass").value;
+  setMsg("unlockMsg","در حال باز کردن…", true);
+  try {
+    const blob = localStorage.getItem(STORE_KEY);
+    if (!blob) throw new Error("ولتی ذخیره نشده");
+    const plain = await decryptText(blob, pass);
+    const words = plain.split(" ");
+    miniWallet = await deriveFromWords(words);
+    $("unlockPass").value = "";
+    $("unlockMsg").textContent = "";
+    await enterMain();
+  } catch(e){
+    setMsg("unlockMsg", "پسورد اشتباه", false);
+  }
+};
+$("unlockPass").addEventListener("keydown", e => {
+  if (e.key === "Enter") $("unlockBtn").click();
+});
+$("forgetBtn").onclick = () => {
+  if (confirm("حذف ولت از این دستگاه؟\nمطمئن شو کلمات بازیابی رو داری!")){
+    localStorage.removeItem(STORE_KEY);
+    location.reload();
+  }
+};
+
+// ==========================================================
+// MAIN ENTRY
+// ==========================================================
+async function enterMain(){
+  $("cardAddr").textContent = miniWallet.addressFriendly;
+  $("recvAddr").textContent = miniWallet.addressFriendly;
+  $("depositTarget").textContent = miniWallet.addressFriendly;
+  $("qrImg").src = "https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=" +
+                   encodeURIComponent(miniWallet.addressFriendly);
+
+  // ✅ اول main رو نشون بده تا button root visible بشه
+  showScreen("main");
+
+  // ✅ صبر کن تا SDK لود بشه
+  let tries = 0;
+  while (typeof TON_CONNECT_UI === "undefined" && tries < 15){
+    await sleep(300);
+    tries++;
+  }
+
+  if (typeof TON_CONNECT_UI === "undefined"){
+    console.error("TON Connect SDK failed to load");
+    $("notConnected").innerHTML =
+      '<div style="text-align:center;padding:20px;color:var(--red)">' +
+        '⚠️ TON Connect لود نشد<br>' +
+        '<small style="font-size:12px;color:var(--muted)">اتصال اینترنت / VPN رو چک کن</small><br>' +
+        '<button class="full-btn" style="margin-top:12px;height:44px;font-size:14px" onclick="location.reload()">تلاش مجدد</button>' +
+      '</div>';
+  } else {
+    await sleep(100);
+    initTonConnect();
+  }
+
+  await Promise.all([refreshBalance(), refreshTxs()]);
+}
+
+// ==========================================================
+// SCREENS
+// ==========================================================
+function showScreen(name){
+  ["welcome","showSeed","setPass","unlock","main"].forEach(id => {
+    $(id).classList.toggle("hidden", id !== name);
+  });
+}
+function setMsg(id, text, ok){
+  const el = $(id);
+  el.textContent = text;
+  el.className = "msg " + (ok ? "ok" : "err");
+}
+
+// ==========================================================
+// BOOT
+// ==========================================================
 async function boot(){
-  try{
-    await loadLibraries();
+  try {
+    try { await loadTonLibs(); } catch(e){ console.warn("libs preload failed:", e); }
+
     $("loading").classList.add("hide");
-    showScreen("setup");
-  }catch(e){
-    $("loading").innerHTML='<div style="text-align:center;padding:40px;color:white">'+
-      '<div style="font-size:48px;margin-bottom:16px">⚠️</div>'+
-      '<div style="opacity:.8;font-size:14px;max-width:280px;margin:0 auto 24px">'+esc(e.message)+'</div>'+
-      '<button onclick="location.reload()" style="background:white;color:#1e5cbe;border:none;padding:12px 28px;border-radius:30px;font-size:16px;font-weight:600">Retry</button></div>';
+
+    if (localStorage.getItem(STORE_KEY)){
+      showScreen("unlock");
+    } else {
+      showScreen("welcome");
+    }
+  } catch(e){
+    console.error(e);
+    $("loading").innerHTML =
+      '<div style="text-align:center;padding:40px;color:white">' +
+        '<div style="font-size:48px;margin-bottom:16px">⚠️</div>' +
+        '<div style="font-size:16px;margin-bottom:12px">خطا در بارگذاری</div>' +
+        '<div style="opacity:.8;font-size:13px;max-width:280px;margin:0 auto 24px">' + esc(e.message) + '</div>' +
+        '<button onclick="location.reload()" style="background:white;color:#1e5cbe;border:none;padding:12px 28px;border-radius:30px;font-size:15px;font-weight:600;cursor:pointer">تلاش مجدد</button>' +
+      '</div>';
   }
 }
+
 boot();
-})();
 </script>
 </body>
 </html>
