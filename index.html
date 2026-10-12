@@ -42,7 +42,6 @@ body{
   font-feature-settings:"ss01","cv11";
 }
 
-/* ==================== BASE ANIMATIONS ==================== */
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
@@ -50,60 +49,21 @@ body{
 @keyframes slideInRight{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes pulseSoft{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.65;transform:scale(.94)}}
-@keyframes glowPulse{
-  0%,100%{box-shadow:0 0 0 0 rgba(47,124,232,.4)}
-  50%{box-shadow:0 0 0 12px rgba(47,124,232,0)}
-}
-@keyframes cardFloat{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-4px)}
-}
-@keyframes shimmer{
-  0%{background-position:-200% 0}
-  100%{background-position:200% 0}
-}
-@keyframes shineSweep{
-  0%{left:-150%}
-  60%,100%{left:150%}
-}
-@keyframes starTwinkle{
-  0%,100%{opacity:.35;transform:scale(1)}
-  50%{opacity:.9;transform:scale(1.3)}
-}
-@keyframes numberChange{
-  0%{transform:translateY(0);opacity:1}
-  40%{transform:translateY(-6px);opacity:.4}
-  60%{transform:translateY(6px);opacity:.4}
-  100%{transform:translateY(0);opacity:1}
-}
-@keyframes ripple{
-  0%{transform:scale(0);opacity:.5}
-  100%{transform:scale(3);opacity:0}
-}
-@keyframes badgeBounce{
-  0%{transform:scale(1)}
-  30%{transform:scale(1.15)}
-  60%{transform:scale(.95)}
-  100%{transform:scale(1)}
-}
-@keyframes shakeX{
-  20%,60%{transform:translateX(-8px)}
-  40%,80%{transform:translateX(8px)}
-}
-@keyframes toastEnter{
-  0%{transform:translate(-50%,20px) scale(.9);opacity:0}
-  100%{transform:translate(-50%,0) scale(1);opacity:1}
-}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 rgba(47,124,232,.4)}50%{box-shadow:0 0 0 12px rgba(47,124,232,0)}}
+@keyframes cardFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes shineSweep{0%{left:-150%}60%,100%{left:150%}}
+@keyframes starTwinkle{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:.9;transform:scale(1.3)}}
+@keyframes numberChange{0%{transform:translateY(0);opacity:1}40%{transform:translateY(-6px);opacity:.4}60%{transform:translateY(6px);opacity:.4}100%{transform:translateY(0);opacity:1}}
+@keyframes ripple{0%{transform:scale(0);opacity:.5}100%{transform:scale(3);opacity:0}}
+@keyframes badgeBounce{0%{transform:scale(1)}30%{transform:scale(1.15)}60%{transform:scale(.95)}100%{transform:scale(1)}}
+@keyframes shakeX{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+@keyframes toastEnter{0%{transform:translate(-50%,20px) scale(.9);opacity:0}100%{transform:translate(-50%,0) scale(1);opacity:1}}
+@keyframes pulseRing{0%{transform:scale(.8);opacity:.8}100%{transform:scale(2);opacity:0}}
 
-/* ==================== APP SHELL ==================== */
 .app{max-width:460px;margin:0 auto;min-height:100vh;padding:0 14px 32px;position:relative}
 
-/* ==================== TOP BAR ==================== */
-.topbar{
-  display:flex;align-items:center;justify-content:space-between;
-  height:56px;padding-top:env(safe-area-inset-top);
-  animation:fadeDown .4s var(--ease) both;
-}
+.topbar{display:flex;align-items:center;justify-content:space-between;height:56px;padding-top:env(safe-area-inset-top);animation:fadeDown .4s var(--ease) both}
 .topbar .left,.topbar .right{display:flex;gap:4px;align-items:center}
 .icon-btn{
   width:40px;height:40px;border-radius:50%;border:none;background:transparent;
@@ -113,36 +73,17 @@ body{
   position:relative;overflow:hidden;
 }
 .icon-btn:active{background:rgba(0,0,0,.06);transform:scale(.88)}
-.icon-btn::before{
-  content:"";position:absolute;inset:0;border-radius:50%;
-  background:radial-gradient(circle, rgba(47,124,232,.25), transparent 70%);
-  opacity:0;transition:opacity .2s;
-  pointer-events:none;
-}
-.icon-btn:active::before{opacity:1}
 .page-title{font-size:17px;font-weight:600;letter-spacing:-.2px}
 
-/* ==================== HERO CARD ==================== */
 .hero-card{
-  position:relative;
-  border-radius:22px;
-  overflow:hidden;
+  position:relative;border-radius:22px;overflow:hidden;
   background:linear-gradient(135deg, #4a9bff 0%, #2f7ce8 55%, #1e5cbe 100%);
-  color:#fff;
-  padding:22px 22px 26px;
-  min-height:186px;
-  box-shadow:var(--shadow-card);
-  isolation:isolate;
+  color:#fff;padding:22px 22px 26px;min-height:186px;
+  box-shadow:var(--shadow-card);isolation:isolate;
   animation:cardEnter .7s var(--ease) both;
 }
-@keyframes cardEnter{
-  0%{opacity:0;transform:translateY(24px) scale(.96)}
-  60%{opacity:1}
-  100%{opacity:1;transform:translateY(0) scale(1)}
-}
-.hero-card:hover{animation:cardFloat 3s ease-in-out infinite}
+@keyframes cardEnter{0%{opacity:0;transform:translateY(24px) scale(.96)}60%{opacity:1}100%{opacity:1;transform:translateY(0) scale(1)}}
 
-/* star particles */
 .hero-card::before{
   content:"";position:absolute;inset:0;
   background:
@@ -153,123 +94,69 @@ body{
     radial-gradient(circle at 88% 72%, rgba(255,255,255,.45) 0, transparent 2px),
     radial-gradient(circle at 45% 50%, rgba(255,255,255,.25) 0, transparent 2.5px),
     radial-gradient(circle at 20% 85%, rgba(255,255,255,.35) 0, transparent 2px);
-  pointer-events:none;opacity:.9;
-  animation:starTwinkle 4s ease-in-out infinite;
+  pointer-events:none;opacity:.9;animation:starTwinkle 4s ease-in-out infinite;
 }
-/* soft glow */
 .hero-card::after{
-  content:"";position:absolute;
-  top:-40%;left:-30%;width:80%;height:120%;
+  content:"";position:absolute;top:-40%;left:-30%;width:80%;height:120%;
   background:radial-gradient(circle, rgba(255,255,255,.28) 0%, transparent 60%);
-  pointer-events:none;
-  animation:glowPulse 4s ease-in-out infinite;
+  pointer-events:none;animation:glowPulse 4s ease-in-out infinite;
 }
-/* shine sweep */
 .card-shine{
-  position:absolute;top:0;left:-150%;
-  width:60%;height:100%;
+  position:absolute;top:0;left:-150%;width:60%;height:100%;
   background:linear-gradient(100deg, transparent 0%, rgba(255,255,255,.18) 45%, rgba(255,255,255,.35) 50%, rgba(255,255,255,.18) 55%, transparent 100%);
-  transform:skewX(-20deg);
-  animation:shineSweep 5s ease-in-out infinite;
+  transform:skewX(-20deg);animation:shineSweep 5s ease-in-out infinite;
   pointer-events:none;z-index:1;
 }
-
-.card-head{
-  display:flex;align-items:center;justify-content:space-between;
-  position:relative;z-index:2;margin-bottom:18px;
-  animation:fadeDown .5s var(--ease) .15s both;
-}
-.card-logo{
-  display:flex;align-items:center;gap:6px;
-  font-size:12px;font-weight:600;opacity:.92;letter-spacing:.2px;
-}
+.card-head{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2;margin-bottom:18px;animation:fadeDown .5s var(--ease) .15s both}
+.card-logo{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;opacity:.92;letter-spacing:.2px}
 .card-logo svg{width:16px;height:16px}
-
-.balance-wrap{
-  display:flex;align-items:center;gap:14px;
-  position:relative;z-index:2;
-  animation:fadeUp .6s var(--ease) .2s both;
-}
+.balance-wrap{display:flex;align-items:center;gap:14px;position:relative;z-index:2;animation:fadeUp .6s var(--ease) .2s both}
 .diamond-badge{
-  width:44px;height:44px;border-radius:14px;
-  background:rgba(255,255,255,.18);
+  width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.18);
   display:flex;align-items:center;justify-content:center;
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  border:1px solid rgba(255,255,255,.2);
-  flex-shrink:0;
+  border:1px solid rgba(255,255,255,.2);flex-shrink:0;
   transition:transform .3s var(--ease-spring);
 }
 .hero-card:hover .diamond-badge{transform:rotate(-8deg) scale(1.06)}
 .diamond-badge svg{width:22px;height:22px}
-
 .balance-numbers{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
-.balance-amount{
-  font-size:38px;font-weight:700;letter-spacing:-1.4px;line-height:1;
-  font-variant-numeric:tabular-nums;
-}
+.balance-amount{font-size:38px;font-weight:700;letter-spacing:-1.4px;line-height:1;font-variant-numeric:tabular-nums}
 .balance-amount.bump{animation:numberChange .6s var(--ease)}
-.balance-unit{
-  font-size:24px;font-weight:600;letter-spacing:-.5px;
-  color:rgba(255,255,255,.62);
-}
-.balance-usd{
-  font-size:14px;font-weight:500;opacity:.72;margin-top:6px;
-  position:relative;z-index:2;
-  font-variant-numeric:tabular-nums;
-  animation:fadeUp .6s var(--ease) .3s both;
-}
-
+.balance-unit{font-size:24px;font-weight:600;letter-spacing:-.5px;color:rgba(255,255,255,.62)}
+.balance-usd{font-size:14px;font-weight:500;opacity:.72;margin-top:6px;position:relative;z-index:2;font-variant-numeric:tabular-nums;animation:fadeUp .6s var(--ease) .3s both}
 .qr-circle{
-  position:absolute;
-  top:50%;right:22px;transform:translateY(-50%);
-  width:52px;height:52px;border-radius:16px;
-  background:rgba(255,255,255,.92);
-  border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  z-index:3;
-  transition:transform .2s var(--ease-spring), background .2s;
-  box-shadow:0 6px 16px -4px rgba(0,0,0,.25);
-  color:#2f7ce8;
+  position:absolute;top:50%;right:22px;transform:translateY(-50%);
+  width:52px;height:52px;border-radius:16px;background:rgba(255,255,255,.92);
+  border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  z-index:3;transition:transform .2s var(--ease-spring), background .2s;
+  box-shadow:0 6px 16px -4px rgba(0,0,0,.25);color:#2f7ce8;
   animation:scaleIn .5s var(--ease-spring) .4s both;
 }
 .qr-circle:active{transform:translateY(-50%) scale(.88)}
 .qr-circle:hover{background:#fff}
 .qr-circle svg{width:24px;height:24px}
-
 .vaddr{
-  position:absolute;
-  right:8px;top:12px;bottom:12px;
-  writing-mode:vertical-rl;
-  font-family:ui-monospace,"SF Mono",Menlo,monospace;
-  font-size:9.5px;font-weight:500;
-  color:rgba(255,255,255,.5);
-  letter-spacing:2px;
-  line-height:1;overflow:hidden;
+  position:absolute;right:8px;top:12px;bottom:12px;writing-mode:vertical-rl;
+  font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:9.5px;font-weight:500;
+  color:rgba(255,255,255,.5);letter-spacing:2px;line-height:1;overflow:hidden;
   z-index:2;pointer-events:none;text-transform:uppercase;
 }
-
 .card-foot{
-  position:absolute;left:22px;bottom:20px;
-  display:flex;align-items:baseline;gap:10px;
-  font-size:12px;font-weight:600;letter-spacing:.6px;
-  text-transform:uppercase;z-index:2;
+  position:absolute;left:22px;bottom:20px;display:flex;align-items:baseline;gap:10px;
+  font-size:12px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;z-index:2;
   animation:fadeUp .6s var(--ease) .35s both;
 }
 .card-foot .name{color:#fff;opacity:.95}
 .card-foot .handle{color:rgba(255,255,255,.62)}
 
-/* ==================== ACTION BUTTONS ==================== */
-.actions{
-  display:flex;gap:10px;margin-top:14px;
-  animation:fadeUp .6s var(--ease) .4s both;
-}
+.actions{display:flex;gap:10px;margin-top:14px;animation:fadeUp .6s var(--ease) .4s both}
 .act{
   flex:1;height:54px;border-radius:16px;border:none;cursor:pointer;
   display:flex;align-items:center;justify-content:center;gap:8px;
   font-size:14px;font-weight:600;
   transition:transform .15s var(--ease-spring), box-shadow .25s;
-  font-family:inherit;
-  position:relative;overflow:hidden;
+  font-family:inherit;position:relative;overflow:hidden;
 }
 .act:active{transform:scale(.95)}
 .act-primary{background:#2f7ce8;color:#fff;box-shadow:0 6px 16px -4px rgba(47,124,232,.5)}
@@ -277,49 +164,19 @@ body{
 .act-secondary{background:#fff;color:#2f7ce8;box-shadow:var(--shadow-soft)}
 .act svg{width:18px;height:18px;transition:transform .25s var(--ease-spring)}
 .act:active svg{transform:translateY(-2px)}
+.act .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.5);transform:scale(0);pointer-events:none;animation:ripple .6s ease-out}
 
-/* ripple */
-.act .ripple{
-  position:absolute;border-radius:50%;
-  background:rgba(255,255,255,.5);
-  transform:scale(0);pointer-events:none;
-  animation:ripple .6s ease-out;
-}
-
-/* ==================== SECTIONS ==================== */
-.section{
-  background:#fff;border-radius:18px;margin-top:12px;
-  padding:6px 0;overflow:hidden;
-  box-shadow:var(--shadow-soft);
-  animation:fadeUp .6s var(--ease) .5s both;
-}
-.section-head{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 18px 8px;
-}
+.section{background:#fff;border-radius:18px;margin-top:12px;padding:6px 0;overflow:hidden;box-shadow:var(--shadow-soft);animation:fadeUp .6s var(--ease) .5s both}
+.section-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 8px}
 .section-title{font-size:15px;font-weight:600;color:var(--text)}
-.section-link{font-size:13px;color:var(--blue);font-weight:500;cursor:pointer}
-
-/* tx rows */
-.tx-row{
-  display:flex;align-items:center;gap:12px;
-  padding:11px 18px;cursor:pointer;
-  transition:background .15s;
-  animation:fadeUp .4s var(--ease) both;
-}
+.tx-row{display:flex;align-items:center;gap:12px;padding:11px 18px;cursor:pointer;transition:background .15s;animation:fadeUp .4s var(--ease) both}
 .tx-row:nth-child(1){animation-delay:.05s}
 .tx-row:nth-child(2){animation-delay:.1s}
 .tx-row:nth-child(3){animation-delay:.15s}
 .tx-row:nth-child(4){animation-delay:.2s}
 .tx-row:nth-child(5){animation-delay:.25s}
 .tx-row:active{background:#f6f7f9;transform:scale(.99);transition:transform .1s}
-.tx-avatar{
-  width:40px;height:40px;border-radius:50%;
-  background:var(--blue-soft);color:var(--blue);
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px;flex-shrink:0;
-  transition:transform .25s var(--ease-spring);
-}
+.tx-avatar{width:40px;height:40px;border-radius:50%;background:var(--blue-soft);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:transform .25s var(--ease-spring)}
 .tx-row:active .tx-avatar{transform:scale(1.08)}
 .tx-avatar.in{background:#dcf5ec;color:var(--green)}
 .tx-body{flex:1;min-width:0}
@@ -328,48 +185,19 @@ body{
 .tx-amount{font-size:14.5px;font-weight:600;white-space:nowrap;color:var(--text);font-variant-numeric:tabular-nums}
 .tx-amount.in{color:var(--green)}
 
-/* ==================== TON CONNECT ==================== */
-.connect-area{
-  background:#fff;border-radius:18px;padding:18px;
-  margin-top:12px;
-  box-shadow:var(--shadow-soft);
-  animation:fadeUp .6s var(--ease) .55s both;
-}
-.connect-area h3{
-  font-size:14px;font-weight:600;color:var(--muted);
-  margin-bottom:12px;letter-spacing:.2px;
-}
+.connect-area{background:#fff;border-radius:18px;padding:18px;margin-top:12px;box-shadow:var(--shadow-soft);animation:fadeUp .6s var(--ease) .55s both}
+.connect-area h3{font-size:14px;font-weight:600;color:var(--muted);margin-bottom:12px;letter-spacing:.2px}
 #ton-connect-btn{display:flex;justify-content:center}
-#ton-connect-btn button{
-  width:100%!important;max-width:100%!important;
-  border-radius:14px!important;height:50px!important;
-  font-size:15px!important;font-weight:600!important;
-  transition:transform .15s var(--ease-spring)!important;
-}
+#ton-connect-btn button{width:100%!important;max-width:100%!important;border-radius:14px!important;height:50px!important;font-size:15px!important;font-weight:600!important;transition:transform .15s var(--ease-spring)!important}
 #ton-connect-btn button:active{transform:scale(.97)!important}
 
-.connected-row{
-  display:flex;align-items:center;gap:12px;
-  padding:12px 14px;background:#f0f9f4;border-radius:14px;
-  margin-bottom:10px;
-  animation:scaleIn .4s var(--ease-spring) both;
-}
-.connected-dot{
-  width:9px;height:9px;border-radius:50%;background:var(--green);
-  box-shadow:0 0 0 3px rgba(49,196,141,.15);
-  flex-shrink:0;
-  animation:pulseSoft 2s ease-in-out infinite;
-}
+.connected-row{display:flex;align-items:center;gap:12px;padding:12px 14px;background:#f0f9f4;border-radius:14px;margin-bottom:10px;animation:scaleIn .4s var(--ease-spring) both}
+.connected-dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(49,196,141,.15);flex-shrink:0;animation:pulseSoft 2s ease-in-out infinite;position:relative}
+.connected-dot::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(49,196,141,.35);animation:pulseRing 2s ease-out infinite}
 .connected-info{flex:1;min-width:0}
 .connected-name{font-size:13.5px;font-weight:600;color:var(--text)}
-.connected-addr{
-  font-size:11.5px;color:var(--muted);
-  font-family:ui-monospace,monospace;
-  direction:ltr;text-align:right;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-}
+.connected-addr{font-size:11.5px;color:var(--muted);font-family:ui-monospace,monospace;direction:ltr;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-/* ==================== BUTTONS ==================== */
 .btn-full{
   width:100%;height:52px;border-radius:14px;border:none;cursor:pointer;
   background:#2f7ce8;color:#fff;font-size:15px;font-weight:600;
@@ -379,288 +207,80 @@ body{
   box-shadow:0 4px 12px -4px rgba(47,124,232,.5);
 }
 .btn-full:active{transform:scale(.97);box-shadow:0 2px 6px -2px rgba(47,124,232,.5)}
-.btn-full.ghost{
-  background:#fff;color:#2f7ce8;box-shadow:var(--shadow-soft);
-}
+.btn-full.ghost{background:#fff;color:#2f7ce8;box-shadow:var(--shadow-soft)}
 .btn-full:disabled{opacity:.45;cursor:not-allowed;transform:none!important}
-.btn-full .ripple{
-  position:absolute;border-radius:50%;
-  background:rgba(255,255,255,.5);
-  transform:scale(0);pointer-events:none;
-  animation:ripple .6s ease-out;
-}
+.btn-full .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.5);transform:scale(0);pointer-events:none;animation:ripple .6s ease-out}
 
-/* ==================== AUTH SCREENS ==================== */
-.auth{
-  max-width:460px;margin:0 auto;padding:48px 22px;
-  min-height:100vh;display:flex;flex-direction:column;justify-content:center;
-  animation:fadeIn .5s var(--ease);
-}
-.auth h1{
-  font-size:26px;font-weight:700;text-align:center;
-  margin-bottom:6px;letter-spacing:-.4px;
-  animation:fadeUp .6s var(--ease) both;
-}
-.auth p{
-  font-size:14px;color:var(--muted);text-align:center;
-  margin-bottom:28px;line-height:1.6;
-  animation:fadeUp .6s var(--ease) .1s both;
-}
-.input{
-  width:100%;border:1.5px solid var(--line);border-radius:12px;
-  padding:14px 16px;font-size:15px;background:#fff;
-  outline:none;font-family:inherit;
-  transition:border-color .2s, box-shadow .3s, transform .15s;
-  animation:fadeUp .6s var(--ease) .2s both;
-}
-.input:focus{
-  border-color:#2f7ce8;
-  box-shadow:0 0 0 3px rgba(47,124,232,.12);
-  transform:translateY(-1px);
-}
+.auth{max-width:460px;margin:0 auto;padding:48px 22px;min-height:100vh;display:flex;flex-direction:column;justify-content:center;animation:fadeIn .5s var(--ease)}
+.auth h1{font-size:26px;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:-.4px;animation:fadeUp .6s var(--ease) both}
+.auth p{font-size:14px;color:var(--muted);text-align:center;margin-bottom:28px;line-height:1.6;animation:fadeUp .6s var(--ease) .1s both}
+.input{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;font-size:15px;background:#fff;outline:none;font-family:inherit;transition:border-color .2s, box-shadow .3s, transform .15s;animation:fadeUp .6s var(--ease) .2s both}
+.input:focus{border-color:#2f7ce8;box-shadow:0 0 0 3px rgba(47,124,232,.12);transform:translateY(-1px)}
 .input + .input{margin-top:10px}
-.label{
-  font-size:12.5px;color:var(--muted);
-  margin:14px 0 6px;display:block;font-weight:500;
-  animation:fadeUp .6s var(--ease) .15s both;
-}
+.label{font-size:12.5px;color:var(--muted);margin:14px 0 6px;display:block;font-weight:500;animation:fadeUp .6s var(--ease) .15s both}
 
-/* seed grid */
-.seed-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
-  padding:14px;background:#f6f7f9;border-radius:14px;
-  margin:14px 0;
-  animation:scaleIn .5s var(--ease-spring) .2s both;
-}
-.seed-word{
-  display:flex;align-items:center;gap:6px;
-  background:#fff;border-radius:8px;padding:6px 8px;
-  font-family:ui-monospace,"SF Mono",monospace;
-  font-size:12px;direction:ltr;
-  animation:fadeUp .4s var(--ease) both;
-  transition:transform .2s var(--ease-spring);
-}
+.seed-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:14px;background:#f6f7f9;border-radius:14px;margin:14px 0;animation:scaleIn .5s var(--ease-spring) .2s both}
+.seed-word{display:flex;align-items:center;gap:6px;background:#fff;border-radius:8px;padding:6px 8px;font-family:ui-monospace,"SF Mono",monospace;font-size:12px;direction:ltr;animation:fadeUp .4s var(--ease) both;transition:transform .2s var(--ease-spring)}
 .seed-word:active{transform:scale(1.05);background:#e6f0ff}
 .seed-word .n{color:var(--muted);font-size:10px;min-width:14px}
 
-/* warning */
-.warn-card{
-  background:#fff1f0;border:1px solid #fecdd3;
-  border-radius:12px;padding:12px;
-  font-size:12px;color:#b91c1c;line-height:1.6;
-  text-align:center;font-weight:500;margin:14px 0;
-  animation:fadeUp .5s var(--ease) .3s both;
-}
-.check{
-  display:flex;align-items:flex-start;gap:10px;
-  margin:16px 0;font-size:13px;color:var(--muted);line-height:1.5;
-  animation:fadeUp .5s var(--ease) .35s both;
-}
+.warn-card{background:#fff1f0;border:1px solid #fecdd3;border-radius:12px;padding:12px;font-size:12px;color:#b91c1c;line-height:1.6;text-align:center;font-weight:500;margin:14px 0;animation:fadeUp .5s var(--ease) .3s both}
+.check{display:flex;align-items:flex-start;gap:10px;margin:16px 0;font-size:13px;color:var(--muted);line-height:1.5;animation:fadeUp .5s var(--ease) .35s both}
 .check input{width:20px;height:20px;accent-color:#2f7ce8;margin-top:2px;flex-shrink:0;cursor:pointer}
 
-/* ==================== SHEETS ==================== */
-.overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.4);
-  z-index:100;opacity:0;visibility:hidden;
-  transition:opacity .3s var(--ease), visibility .3s;
-  display:flex;align-items:flex-end;justify-content:center;
-  backdrop-filter:blur(0px);-webkit-backdrop-filter:blur(0px);
-}
-.overlay.show{
-  opacity:1;visibility:visible;
-  backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
-}
-.sheet{
-  background:#fff;width:100%;max-width:460px;
-  border-radius:22px 22px 0 0;
-  padding:20px 20px calc(24px + env(safe-area-inset-bottom));
-  transform:translateY(100%);
-  transition:transform .4s var(--ease);
-  max-height:92vh;overflow-y:auto;
-}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;opacity:0;visibility:hidden;transition:opacity .3s var(--ease), visibility .3s;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(0px);-webkit-backdrop-filter:blur(0px)}
+.overlay.show{opacity:1;visibility:visible;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+.sheet{background:#fff;width:100%;max-width:460px;border-radius:22px 22px 0 0;padding:20px 20px calc(24px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .4s var(--ease);max-height:92vh;overflow-y:auto}
 .overlay.show .sheet{transform:translateY(0)}
-.sheet h2{
-  font-size:19px;font-weight:700;margin-bottom:6px;letter-spacing:-.3px;
-  animation:fadeUp .4s var(--ease) .1s both;
-}
-.sheet p{
-  font-size:13.5px;color:var(--muted);margin-bottom:16px;line-height:1.5;
-  animation:fadeUp .4s var(--ease) .15s both;
-}
-.addr-box{
-  background:#f6f7f9;border-radius:12px;padding:14px;
-  font-family:ui-monospace,monospace;font-size:12.5px;
-  word-break:break-all;text-align:center;
-  margin-bottom:14px;line-height:1.5;direction:ltr;
-  animation:scaleIn .4s var(--ease-spring) .2s both;
-}
-#qrImg{
-  display:block;margin:6px auto 16px;border-radius:12px;
-  animation:scaleIn .5s var(--ease-spring) .1s both;
-}
+.sheet h2{font-size:19px;font-weight:700;margin-bottom:6px;letter-spacing:-.3px;animation:fadeUp .4s var(--ease) .1s both}
+.sheet p{font-size:13.5px;color:var(--muted);margin-bottom:16px;line-height:1.5;animation:fadeUp .4s var(--ease) .15s both}
+.addr-box{background:#f6f7f9;border-radius:12px;padding:14px;font-family:ui-monospace,monospace;font-size:12.5px;word-break:break-all;text-align:center;margin-bottom:14px;line-height:1.5;direction:ltr;animation:scaleIn .4s var(--ease-spring) .2s both}
+#qrImg{display:block;margin:6px auto 16px;border-radius:12px;animation:scaleIn .5s var(--ease-spring) .1s both}
 
-/* ==================== SEND PAGES ==================== */
-.send-page{
-  position:fixed;inset:0;background:var(--bg);z-index:80;
-  transform:translateX(-100%);
-  transition:transform .35s var(--ease);
-  overflow-y:auto;padding-bottom:140px;
-}
+.send-page{position:fixed;inset:0;background:var(--bg);z-index:80;transform:translateX(-100%);transition:transform .35s var(--ease);overflow-y:auto;padding-bottom:140px}
 .send-page.show{transform:translateX(0)}
-.send-header{
-  display:flex;align-items:center;gap:12px;
-  padding:0 14px;
-  font-size:16px;font-weight:600;
-  background:#fff;position:sticky;top:0;z-index:10;
-  border-bottom:1px solid #f1f3f5;
-  padding-top:env(safe-area-inset-top);
-  height:calc(56px + env(safe-area-inset-top));
-  animation:fadeDown .35s var(--ease);
-}
+.send-header{display:flex;align-items:center;gap:12px;padding:0 14px;font-size:16px;font-weight:600;background:#fff;position:sticky;top:0;z-index:10;border-bottom:1px solid #f1f3f5;padding-top:env(safe-area-inset-top);height:calc(56px + env(safe-area-inset-top));animation:fadeDown .35s var(--ease)}
 .send-header .icon-btn{font-size:22px}
 
-.amount-hero{
-  text-align:center;padding:36px 20px 20px;
-  animation:fadeUp .5s var(--ease) .1s both;
-}
-.amount-value{
-  font-size:52px;font-weight:700;letter-spacing:-2px;
-  color:var(--text);font-variant-numeric:tabular-nums;
-  line-height:1;
-}
-.amount-value .unit{
-  font-size:22px;color:var(--muted);font-weight:600;
-  margin-right:8px;letter-spacing:-.5px;
-}
+.amount-hero{text-align:center;padding:36px 20px 20px;animation:fadeUp .5s var(--ease) .1s both}
+.amount-value{font-size:52px;font-weight:700;letter-spacing:-2px;color:var(--text);font-variant-numeric:tabular-nums;line-height:1}
+.amount-value .unit{font-size:22px;color:var(--muted);font-weight:600;margin-right:8px;letter-spacing:-.5px}
 .amount-value.bump{animation:numberChange .5s var(--ease)}
-.amount-fiat{
-  font-size:14px;color:var(--muted);
-  margin-top:10px;font-variant-numeric:tabular-nums;
-}
+.amount-fiat{font-size:14px;color:var(--muted);margin-top:10px;font-variant-numeric:tabular-nums}
 
-.pill{
-  display:inline-flex;align-items:center;gap:8px;
-  background:#fff;border-radius:12px;padding:10px 14px;
-  font-size:13.5px;margin:0 auto;
-  box-shadow:var(--shadow-soft);
-  animation:scaleIn .4s var(--ease-spring) .2s both;
-}
+.pill{display:inline-flex;align-items:center;gap:8px;background:#fff;border-radius:12px;padding:10px 14px;font-size:13.5px;margin:0 auto;box-shadow:var(--shadow-soft);animation:scaleIn .4s var(--ease-spring) .2s both}
 .pill .lbl{color:var(--muted)}
-.pill .val{
-  color:var(--text);font-weight:600;
-  font-family:ui-monospace,monospace;direction:ltr;
-}
+.pill .val{color:var(--text);font-weight:600;font-family:ui-monospace,monospace;direction:ltr}
 
-.warn-line{
-  text-align:center;color:var(--red);font-size:13px;font-weight:600;
-  height:0;overflow:hidden;opacity:0;
-  transition:all .25s var(--ease);
-  margin-top:0;
-}
-.warn-line.show{
-  height:20px;opacity:1;margin-top:10px;
-  animation:shakeX .4s ease;
-}
+.warn-line{text-align:center;color:var(--red);font-size:13px;font-weight:600;height:0;overflow:hidden;opacity:0;transition:all .25s var(--ease);margin-top:0}
+.warn-line.show{height:20px;opacity:1;margin-top:10px;animation:shakeX .4s ease}
 
-/* ==================== KEYPAD ==================== */
-.keypad{
-  position:fixed;left:0;right:0;bottom:0;background:#f2f3f5;
-  padding:8px 6px calc(10px + env(safe-area-inset-bottom));
-  transform:translateY(110%);
-  transition:transform .35s var(--ease);
-  z-index:85;
-}
+.keypad{position:fixed;left:0;right:0;bottom:0;background:#f2f3f5;padding:8px 6px calc(10px + env(safe-area-inset-bottom));transform:translateY(110%);transition:transform .35s var(--ease);z-index:85}
 .keypad.show{transform:translateY(0)}
-.keys{
-  max-width:460px;margin:0 auto;
-  display:grid;grid-template-columns:repeat(3,1fr);gap:6px;
-}
-.key{
-  height:50px;border:none;background:#fff;
-  border-radius:10px;cursor:pointer;
-  font-size:24px;font-weight:400;
-  color:var(--text);font-family:inherit;
-  transition:background .12s, transform .1s var(--ease-spring);
-  position:relative;overflow:hidden;
-}
+.keys{max-width:460px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.key{height:50px;border:none;background:#fff;border-radius:10px;cursor:pointer;font-size:24px;font-weight:400;color:var(--text);font-family:inherit;transition:background .12s, transform .1s var(--ease-spring);position:relative;overflow:hidden}
 .key:active{background:#dde2e8;transform:scale(.94)}
-.key .ripple{
-  position:absolute;border-radius:50%;
-  background:rgba(47,124,232,.25);
-  transform:scale(0);pointer-events:none;
-  animation:ripple .5s ease-out;
-}
-.key.done{
-  grid-column:1/-1;height:48px;font-size:16px;font-weight:600;
-  background:#2f7ce8;color:#fff;border-radius:12px;
-}
+.key .ripple{position:absolute;border-radius:50%;background:rgba(47,124,232,.25);transform:scale(0);pointer-events:none;animation:ripple .5s ease-out}
+.key.done{grid-column:1/-1;height:48px;font-size:16px;font-weight:600;background:#2f7ce8;color:#fff;border-radius:12px}
 .key.done:active{background:#2568c9}
 
-/* ==================== MISC ==================== */
 .hidden{display:none!important}
-.spin{
-  width:18px;height:18px;border:2.5px solid rgba(255,255,255,.35);
-  border-top-color:#fff;border-radius:50%;
-  animation:spin .7s linear infinite;display:inline-block;
-}
+.spin{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
 
-#toast{
-  position:fixed;left:50%;bottom:90px;
-  transform:translate(-50%,0) scale(1);
-  background:rgba(15,20,25,.92);color:#fff;
-  padding:11px 18px;border-radius:24px;
-  font-size:13.5px;font-weight:500;
-  opacity:0;visibility:hidden;
-  transition:opacity .3s var(--ease), visibility .3s, transform .3s var(--ease);
-  z-index:200;pointer-events:none;max-width:86%;
-  text-align:center;
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-}
-#toast.show{
-  opacity:1;visibility:visible;
-  animation:toastEnter .3s var(--ease) both;
-}
+#toast{position:fixed;left:50%;bottom:90px;transform:translate(-50%,0) scale(1);background:rgba(15,20,25,.92);color:#fff;padding:11px 18px;border-radius:24px;font-size:13.5px;font-weight:500;opacity:0;visibility:hidden;transition:opacity .3s var(--ease), visibility .3s, transform .3s var(--ease);z-index:200;pointer-events:none;max-width:86%;text-align:center;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+#toast.show{opacity:1;visibility:visible;animation:toastEnter .3s var(--ease) both}
 
-/* loading overlay */
-#loading{
-  position:fixed;inset:0;
-  background:linear-gradient(160deg,#1e5cbe,#3b9eff);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  z-index:9999;color:#fff;
-  transition:opacity .5s, visibility .5s;
-}
+#loading{position:fixed;inset:0;background:linear-gradient(160deg,#1e5cbe,#3b9eff);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;color:#fff;transition:opacity .5s, visibility .5s}
 #loading.hide{opacity:0;visibility:hidden;pointer-events:none}
-.loader-diamond{
-  font-size:64px;
-  animation:pulseSoft 1.4s ease-in-out infinite;
-  margin-bottom:24px;
-}
+.loader-diamond{font-size:64px;animation:pulseSoft 1.4s ease-in-out infinite;margin-bottom:24px}
 .loader-text{font-size:16px;font-weight:500;opacity:.9;text-align:center;padding:0 24px}
-.loader-bar{
-  width:180px;height:4px;background:rgba(255,255,255,.25);
-  border-radius:4px;margin-top:28px;overflow:hidden;
-}
-.loader-bar-inner{
-  height:100%;width:40%;background:#fff;border-radius:4px;
-  animation:loadingBar 1.4s ease-in-out infinite;
-}
-@keyframes loadingBar{
-  0%{transform:translateX(-100%)}
-  100%{transform:translateX(350%)}
-}
-
-/* skeleton shimmer */
-.skeleton{
-  background:linear-gradient(90deg,#eef0f3 0%,#f7f8fa 50%,#eef0f3 100%);
-  background-size:200% 100%;
-  animation:shimmer 1.5s ease-in-out infinite;
-  border-radius:6px;
-}
+.loader-bar{width:180px;height:4px;background:rgba(255,255,255,.25);border-radius:4px;margin-top:28px;overflow:hidden}
+.loader-bar-inner{height:100%;width:40%;background:#fff;border-radius:4px;animation:loadingBar 1.4s ease-in-out infinite}
+@keyframes loadingBar{0%{transform:translateX(-100%)}100%{transform:translateX(350%)}}
 </style>
 </head>
 <body>
 
-<!-- ============ LOADING ============ -->
 <div id="loading">
   <div class="loader-diamond">💎</div>
   <div class="loader-text">در حال بارگذاری Wallet…</div>
@@ -682,9 +302,7 @@ body{
 <div id="showSeed" class="auth hidden">
   <h1>🔐 کلمات بازیابی</h1>
   <p>این کلمات رو یه جای امن ذخیره کن</p>
-  <div class="warn-card">
-    ⚠️ هیچوقت به کسی نشونشون نده<br>حتی اگه ادعا کنه از تیم پشتیبانیه
-  </div>
+  <div class="warn-card">⚠️ هیچوقت به کسی نشونشون نده<br>حتی اگه ادعا کنه از تیم پشتیبانیه</div>
   <div class="seed-grid" id="seedGrid"></div>
   <button class="btn-full ghost" id="copySeedBtn">📋 کپی کلمات</button>
   <div class="check">
@@ -736,7 +354,6 @@ body{
     </div>
   </div>
 
-  <!-- HERO CARD -->
   <div class="hero-card">
     <div class="card-shine"></div>
     <div class="card-head">
@@ -782,7 +399,6 @@ body{
     </div>
   </div>
 
-  <!-- ACTIONS -->
   <div class="actions">
     <button class="act act-secondary" id="receiveBtn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -798,7 +414,6 @@ body{
     </button>
   </div>
 
-  <!-- TON CONNECT -->
   <div class="connect-area">
     <h3>🔗 اتصال به ولت اصلی</h3>
     <div id="notConnected">
@@ -817,7 +432,6 @@ body{
     </div>
   </div>
 
-  <!-- TRANSACTIONS -->
   <div class="section">
     <div class="section-head">
       <span class="section-title">تاریخچه</span>
@@ -922,20 +536,24 @@ body{
 
 <script type="module">
 /* ==========================================================
-   Mini Wallet v2 — Animations + Withdraw All
+   Mini Wallet v3 — با رفع مشکل اتصال پس از بستن اپ
    ========================================================== */
 
 const TONCENTER = "https://toncenter.com/api/v2";
 const API_KEY = "e08b96c939bcca03c136cbc8e48e0f49d4b622013cf97b7fa00f8ad553ff9910";
 const STORE_KEY = "mini_wallet_enc_v2";
+const MAIN_ADDR_KEY = "mini_wallet_main_addr_v1";
+const MAIN_NAME_KEY = "mini_wallet_main_name_v1";
 const MANIFEST_URL = location.origin + location.pathname.replace(/\/[^/]*$/, "") + "/tonconnect-manifest.json";
-const FEE = 70000n;               // 0.00007 TON
+const FEE = 70000n;
 const FEE_DISPLAY = "0.00007";
 
 let TON = null, CR = null, client = null;
 let miniWallet = null;
 let tonConnectUI = null;
 let mainAddress = null;
+let mainName = "";
+let lastKnownWallet = null;
 let balanceNano = 0n;
 let price = 0;
 let depositAmt = "0";
@@ -974,7 +592,6 @@ document.addEventListener("click", (e) => {
   setTimeout(() => ripple.remove(), 600);
 });
 
-/* ========== BALANCE BUMP ========== */
 function bumpNumber(el){
   el.classList.remove("bump");
   void el.offsetWidth;
@@ -988,10 +605,7 @@ const enc = new TextEncoder(), dec = new TextDecoder();
 
 async function deriveKey(pass, salt){
   const m = await crypto.subtle.importKey("raw", enc.encode(pass), "PBKDF2", false, ["deriveKey"]);
-  return crypto.subtle.deriveKey(
-    {name:"PBKDF2",salt,iterations:150000,hash:"SHA-256"},
-    m, {name:"AES-GCM",length:256}, false, ["encrypt","decrypt"]
-  );
+  return crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:150000,hash:"SHA-256"}, m, {name:"AES-GCM",length:256}, false, ["encrypt","decrypt"]);
 }
 async function encryptText(text, pass){
   const salt = crypto.getRandomValues(new Uint8Array(16));
@@ -1047,6 +661,47 @@ async function api(path){
   return j.result;
 }
 
+/* ==========================================================
+   CONNECTION CACHE — مهم برای رفع مشکل
+   ========================================================== */
+function cacheMainWallet(){
+  if (mainAddress) {
+    try {
+      localStorage.setItem(MAIN_ADDR_KEY, mainAddress);
+      localStorage.setItem(MAIN_NAME_KEY, mainName || "Wallet");
+    } catch(e){}
+  }
+}
+function restoreMainWallet(){
+  try {
+    const addr = localStorage.getItem(MAIN_ADDR_KEY);
+    const nm = localStorage.getItem(MAIN_NAME_KEY);
+    if (addr) {
+      mainAddress = addr;
+      mainName = nm || "Wallet";
+      return true;
+    }
+  } catch(e){}
+  return false;
+}
+function clearMainWallet(){
+  try {
+    localStorage.removeItem(MAIN_ADDR_KEY);
+    localStorage.removeItem(MAIN_NAME_KEY);
+  } catch(e){}
+}
+function updateConnectedUI(){
+  if (mainAddress) {
+    $("walletName").textContent = mainName || "Wallet";
+    $("walletAddrShort").textContent = short(mainAddress);
+    $("notConnected").classList.add("hidden");
+    $("connected").classList.remove("hidden");
+  } else {
+    $("notConnected").classList.remove("hidden");
+    $("connected").classList.add("hidden");
+  }
+}
+
 /* ========== TON CONNECT ========== */
 function initTonConnect(){
   if (typeof TON_CONNECT_UI === "undefined") return false;
@@ -1057,25 +712,70 @@ function initTonConnect(){
       buttonRootId: "ton-connect-btn",
       uiPreferences: { theme: "SYSTEM" }
     });
-    if (tonConnectUI.wallet) onMainConnected(tonConnectUI.wallet);
-    tonConnectUI.onStatusChange(w => w ? onMainConnected(w) : onMainDisconnected());
+
+    // اگه session از قبل هست
+    if (tonConnectUI.wallet) {
+      lastKnownWallet = tonConnectUI.wallet;
+      onMainConnected(tonConnectUI.wallet);
+    }
+
+    tonConnectUI.onStatusChange(w => {
+      if (w) {
+        lastKnownWallet = w;
+        onMainConnected(w);
+      } else {
+        // فقط وقتی که مطمئنیم disconnect شده
+        if (lastKnownWallet) {
+          lastKnownWallet = null;
+          onMainDisconnected();
+        }
+        // اگه از اول null بود → یعنی در حال restore هست، کاری نکن
+      }
+    });
     return true;
   } catch(e){ console.error(e); return false; }
 }
+
 function onMainConnected(wallet){
   mainAddress = wallet.account.address;
-  $("walletName").textContent = (wallet.device && wallet.device.appName) || "Wallet";
-  $("walletAddrShort").textContent = short(mainAddress);
-  $("notConnected").classList.add("hidden");
-  $("connected").classList.remove("hidden");
+  mainName = (wallet.device && wallet.device.appName) || "Wallet";
+  cacheMainWallet();
+  updateConnectedUI();
   $("connected").style.animation = "scaleIn .4s var(--ease-spring)";
-  toast("✅ " + $("walletName").textContent + " وصل شد");
+  toast("✅ " + mainName + " وصل شد");
   buzz(15);
 }
+
 function onMainDisconnected(){
   mainAddress = null;
-  $("notConnected").classList.remove("hidden");
-  $("connected").classList.add("hidden");
+  mainName = "";
+  clearMainWallet();
+  updateConnectedUI();
+}
+
+/* ========== WAIT FOR CONNECTION ========== */
+async function ensureConnected(timeoutMs = 4000){
+  if (!mainAddress) restoreMainWallet();
+  if (mainAddress && tonConnectUI && tonConnectUI.connected) return true;
+
+  if (!tonConnectUI) initTonConnect();
+  if (!tonConnectUI) return !!mainAddress;
+
+  // صبر کن TON Connect restore کنه
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    if (tonConnectUI.connected && tonConnectUI.wallet) {
+      if (!mainAddress) onMainConnected(tonConnectUI.wallet);
+      return true;
+    }
+    if (mainAddress) {
+      // آدرس cached داریم، فقط یه کم صبر کن
+      await sleep(200);
+      if (tonConnectUI.connected) return true;
+    }
+    await sleep(200);
+  }
+  return !!mainAddress;
 }
 
 /* ========== BALANCE ========== */
@@ -1159,8 +859,14 @@ $("keys").onclick = e => {
 };
 
 /* ========== DEPOSIT ========== */
-function openDeposit(){
-  if (!mainAddress) return toast("اول ولت اصلی رو وصل کن");
+async function openDeposit(){
+  if (!mainAddress) restoreMainWallet();
+  if (!mainAddress) {
+    toast("در حال اتصال…");
+    const ok = await ensureConnected(4000);
+    if (!ok) return toast("اول ولت اصلی رو وصل کن");
+  }
+
   activeField = "deposit"; depositAmt = "0";
   $("depositTarget").textContent = short(miniWallet.addressFriendly);
   updateDepositUI();
@@ -1175,8 +881,14 @@ function updateDepositUI(){
   $("doDepositBtn").disabled = !(n > 0 && mainAddress);
   $("doDepositBtn").textContent = n > 0 ? "واریز " + depositAmt + " TON" : "ادامه";
 }
+
 $("doDepositBtn").onclick = async () => {
-  if (!tonConnectUI || !mainAddress) return toast("ولت اصلی وصل نیست");
+  // اگه وصل نیست، سعی کن وصل کنی
+  if (!mainAddress || !tonConnectUI || !tonConnectUI.connected) {
+    const ok = await ensureConnected(5000);
+    if (!ok) return toast("ولت اصلی وصل نیست");
+  }
+
   const go = $("doDepositBtn");
   go.disabled = true; go.innerHTML = '<span class="spin"></span>';
   showKeypad(false);
@@ -1201,7 +913,11 @@ $("doDepositBtn").onclick = async () => {
 /* ========== WITHDRAW ALL ========== */
 async function withdrawAllToMain(){
   if (!miniWallet) return toast("ولت فرعی نیست");
-  if (!mainAddress) return toast("اول ولت اصلی رو وصل کن");
+  if (!mainAddress || !tonConnectUI || !tonConnectUI.connected) {
+    const ok = await ensureConnected(5000);
+    if (!ok) return toast("اول ولت اصلی رو وصل کن");
+  }
+
   if (balanceNano <= FEE) return toast("موجودی خیلی کمه");
   if (balanceNano < FEE * 2n) return toast("موجودی برای برداشت کافی نیست");
 
@@ -1232,7 +948,7 @@ async function withdrawAllToMain(){
     await opened.sendTransfer({
       seqno,
       secretKey: miniWallet.kp.secretKey,
-      sendMode: 128 | 2, // SendRemainingBalance + IgnoreErrors
+      sendMode: 128 | 2,
       messages: [TON.internal({ to: dest, value: 1n, bounce: false })]
     });
 
@@ -1316,24 +1032,44 @@ $("withdrawAllBtn").onclick = withdrawAllToMain;
 $("depositBack").onclick = closeDeposit;
 $("sendBack").onclick = closeSend;
 
-$("refreshBtn").onclick = () => {
+$("refreshBtn").onclick = async () => {
   const btn = $("refreshBtn");
   btn.style.transform = "rotate(360deg)";
   btn.style.transition = "transform .6s var(--ease)";
   setTimeout(() => { btn.style.transform = ""; btn.style.transition = ""; }, 650);
   refreshBalance(); refreshTxs();
   buzz();
+  // همچنین connection رو چک کن
+  if (!mainAddress) {
+    restoreMainWallet();
+    updateConnectedUI();
+  }
 };
 
 /* ========== MENU ========== */
 $("menuBtn").onclick = () => $("menuBg").classList.add("show");
 $("menuBg").onclick = e => { if (e.target.id === "menuBg") $("menuBg").classList.remove("show"); };
 $("refreshMenu").onclick = () => { $("menuBg").classList.remove("show"); refreshBalance(); refreshTxs(); };
+
 $("disconnectMenu").onclick = async () => {
   $("menuBg").classList.remove("show");
-  if (tonConnectUI && mainAddress) { try { await tonConnectUI.disconnect(); } catch(e){} }
-  else toast("ولت اصلی وصل نیست");
+  if (tonConnectUI && mainAddress) {
+    try {
+      await tonConnectUI.disconnect();
+      clearMainWallet();
+      mainAddress = null;
+      lastKnownWallet = null;
+      updateConnectedUI();
+      toast("قطع شد");
+    } catch(e){}
+  } else {
+    clearMainWallet();
+    mainAddress = null;
+    updateConnectedUI();
+    toast("قطع شد");
+  }
 };
+
 $("viewSeedMenu").onclick = async () => {
   $("menuBg").classList.remove("show");
   const pass = prompt("پسورد:");
@@ -1343,10 +1079,12 @@ $("viewSeedMenu").onclick = async () => {
     alert("🔐 کلمات بازیابی:\n\n" + plain);
   } catch(e){ toast("پسورد اشتباه"); }
 };
+
 $("resetMenu").onclick = () => {
   $("menuBg").classList.remove("show");
   if (confirm("حذف ولت از این دستگاه؟")){
     localStorage.removeItem(STORE_KEY);
+    clearMainWallet();
     location.reload();
   }
 };
@@ -1375,6 +1113,7 @@ $("copySeedBtn").onclick = async () => {
 };
 $("seedSaved").onchange = e => { $("seedContinueBtn").disabled = !e.target.checked; };
 $("seedContinueBtn").onclick = () => showScreen("setPass");
+
 $("savePassBtn").onclick = async () => {
   const p1 = $("newPass").value, p2 = $("newPass2").value;
   if (p1.length < 4) return setMsg("passMsg","حداقل ۴ کاراکتر",false);
@@ -1404,7 +1143,7 @@ $("unlockBtn").onclick = async () => {
 $("unlockPass").addEventListener("keydown", e => { if (e.key === "Enter") $("unlockBtn").click(); });
 $("forgetBtn").onclick = () => {
   if (confirm("حذف ولت از این دستگاه؟")){
-    localStorage.removeItem(STORE_KEY); location.reload();
+    localStorage.removeItem(STORE_KEY); clearMainWallet(); location.reload();
   }
 };
 
@@ -1419,9 +1158,17 @@ async function enterMain(){
 
   showScreen("main");
 
+  // ✅ اول cache رو restore کن (UI سریع آپدیت می‌شه)
+  restoreMainWallet();
+  updateConnectedUI();
+
+  // ✅ بعد TON Connect رو init کن
   let tries = 0;
   while (typeof TON_CONNECT_UI === "undefined" && tries < 15) { await sleep(300); tries++; }
-  if (typeof TON_CONNECT_UI !== "undefined") { await sleep(100); initTonConnect(); }
+  if (typeof TON_CONNECT_UI !== "undefined") {
+    await sleep(100);
+    initTonConnect();
+  }
 
   await Promise.all([refreshBalance(), refreshTxs()]);
 }
@@ -1450,6 +1197,23 @@ async function boot(){
     $("loading").classList.add("hide");
     if (localStorage.getItem(STORE_KEY)) showScreen("unlock");
     else showScreen("welcome");
+
+    // ✅ هر بار کاربر برگشت به اپ، connection رو چک کن
+    document.addEventListener("visibilitychange", async () => {
+      if (!document.hidden && miniWallet) {
+        await sleep(200);
+        // اگه cache داریم ولی TON Connect هنوز connect نشده
+        if (!mainAddress) {
+          restoreMainWallet();
+          updateConnectedUI();
+        }
+        if (mainAddress && tonConnectUI && !tonConnectUI.connected) {
+          await ensureConnected(3000);
+        }
+        // رفرش کن
+        refreshBalance();
+      }
+    });
   } catch(e){
     $("loading").innerHTML = '<div style="text-align:center;padding:40px;color:white"><div style="font-size:48px;margin-bottom:16px">⚠️</div><div style="font-size:16px">خطا در بارگذاری</div></div>';
   }
