@@ -1,1224 +1,1481 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>Wallet</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TON / GRAM Wallet V5</title>
+    <!-- کتابخانه رسمی TON Connect UI -->
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@500;600;700&family=Share+Tech+Mono&display=swap');
 
-<script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
-<script>
-  window.addEventListener("load", function(){
-    if (typeof TON_CONNECT_UI === "undefined") {
-      var s = document.createElement("script");
-      s.src = "https://cdn.jsdelivr.net/npm/@tonconnect/ui@latest/dist/tonconnect-ui.min.js";
-      document.head.appendChild(s);
-    }
-  });
-</script>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
 
-<style>
-:root{
-  --bg:#f2f3f5;
-  --text:#0f1419;
-  --muted:#8a8f98;
-  --line:#e5e7eb;
-  --green:#31c48d;
-  --red:#f5564c;
-  --blue:#2f7ce8;
-  --blue-soft:#e6f0ff;
-  --white:#ffffff;
-  --shadow-card:0 12px 32px -8px rgba(47,124,232,.45), 0 4px 12px -4px rgba(0,0,0,.08);
-  --shadow-soft:0 2px 8px rgba(0,0,0,.04);
-  --ease:cubic-bezier(.22,1,.36,1);
-  --ease-spring:cubic-bezier(.34,1.56,.64,1);
-}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
-html,body{height:100%;overflow-x:hidden}
-body{
-  background:var(--bg);
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Tahoma,sans-serif;
-  color:var(--text);
-  -webkit-font-smoothing:antialiased;
-  font-feature-settings:"ss01","cv11";
-}
+        body {
+            background-color: #f3f4f6;
+            color: #1c1c1e;
+            overflow-x: hidden;
+            user-select: none;
+        }
 
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
-@keyframes scaleIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
-@keyframes slideInRight{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes pulseSoft{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.65;transform:scale(.94)}}
-@keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 rgba(47,124,232,.4)}50%{box-shadow:0 0 0 12px rgba(47,124,232,0)}}
-@keyframes cardFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-@keyframes shineSweep{0%{left:-150%}60%,100%{left:150%}}
-@keyframes starTwinkle{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:.9;transform:scale(1.3)}}
-@keyframes numberChange{0%{transform:translateY(0);opacity:1}40%{transform:translateY(-6px);opacity:.4}60%{transform:translateY(6px);opacity:.4}100%{transform:translateY(0);opacity:1}}
-@keyframes ripple{0%{transform:scale(0);opacity:.5}100%{transform:scale(3);opacity:0}}
-@keyframes badgeBounce{0%{transform:scale(1)}30%{transform:scale(1.15)}60%{transform:scale(.95)}100%{transform:scale(1)}}
-@keyframes shakeX{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
-@keyframes toastEnter{0%{transform:translate(-50%,20px) scale(.9);opacity:0}100%{transform:translate(-50%,0) scale(1);opacity:1}}
-@keyframes pulseRing{0%{transform:scale(.8);opacity:.8}100%{transform:scale(2);opacity:0}}
+        /* ساختار صفحات */
+        .screen {
+            display: none;
+            min-height: 100vh;
+            flex-direction: column;
+            max-width: 480px;
+            margin: 0 auto;
+            background-color: #f3f4f6;
+            position: relative;
+        }
 
-.app{max-width:460px;margin:0 auto;min-height:100vh;padding:0 14px 32px;position:relative}
+        .screen.active {
+            display: flex;
+            animation: screenFade 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
 
-.topbar{display:flex;align-items:center;justify-content:space-between;height:56px;padding-top:env(safe-area-inset-top);animation:fadeDown .4s var(--ease) both}
-.topbar .left,.topbar .right{display:flex;gap:4px;align-items:center}
-.icon-btn{
-  width:40px;height:40px;border-radius:50%;border:none;background:transparent;
-  display:flex;align-items:center;justify-content:center;
-  color:var(--text);cursor:pointer;font-size:20px;
-  transition:background .2s var(--ease), transform .15s var(--ease-spring);
-  position:relative;overflow:hidden;
-}
-.icon-btn:active{background:rgba(0,0,0,.06);transform:scale(.88)}
-.page-title{font-size:17px;font-weight:600;letter-spacing:-.2px}
+        @keyframes screenFade {
+            from { opacity: 0; transform: translateX(8px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
 
-.hero-card{
-  position:relative;border-radius:22px;overflow:hidden;
-  background:linear-gradient(135deg, #4a9bff 0%, #2f7ce8 55%, #1e5cbe 100%);
-  color:#fff;padding:22px 22px 26px;min-height:186px;
-  box-shadow:var(--shadow-card);isolation:isolate;
-  animation:cardEnter .7s var(--ease) both;
-}
-@keyframes cardEnter{0%{opacity:0;transform:translateY(24px) scale(.96)}60%{opacity:1}100%{opacity:1;transform:translateY(0) scale(1)}}
+        /* هدر مشترک */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 18px 12px;
+            background-color: transparent;
+        }
 
-.hero-card::before{
-  content:"";position:absolute;inset:0;
-  background:
-    radial-gradient(circle at 82% 18%, rgba(255,255,255,.55) 0, transparent 3px),
-    radial-gradient(circle at 12% 62%, rgba(255,255,255,.4) 0, transparent 2.5px),
-    radial-gradient(circle at 68% 88%, rgba(255,255,255,.35) 0, transparent 3px),
-    radial-gradient(circle at 30% 22%, rgba(255,255,255,.28) 0, transparent 2px),
-    radial-gradient(circle at 88% 72%, rgba(255,255,255,.45) 0, transparent 2px),
-    radial-gradient(circle at 45% 50%, rgba(255,255,255,.25) 0, transparent 2.5px),
-    radial-gradient(circle at 20% 85%, rgba(255,255,255,.35) 0, transparent 2px);
-  pointer-events:none;opacity:.9;animation:starTwinkle 4s ease-in-out infinite;
-}
-.hero-card::after{
-  content:"";position:absolute;top:-40%;left:-30%;width:80%;height:120%;
-  background:radial-gradient(circle, rgba(255,255,255,.28) 0%, transparent 60%);
-  pointer-events:none;animation:glowPulse 4s ease-in-out infinite;
-}
-.card-shine{
-  position:absolute;top:0;left:-150%;width:60%;height:100%;
-  background:linear-gradient(100deg, transparent 0%, rgba(255,255,255,.18) 45%, rgba(255,255,255,.35) 50%, rgba(255,255,255,.18) 55%, transparent 100%);
-  transform:skewX(-20deg);animation:shineSweep 5s ease-in-out infinite;
-  pointer-events:none;z-index:1;
-}
-.card-head{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2;margin-bottom:18px;animation:fadeDown .5s var(--ease) .15s both}
-.card-logo{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;opacity:.92;letter-spacing:.2px}
-.card-logo svg{width:16px;height:16px}
-.balance-wrap{display:flex;align-items:center;gap:14px;position:relative;z-index:2;animation:fadeUp .6s var(--ease) .2s both}
-.diamond-badge{
-  width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.18);
-  display:flex;align-items:center;justify-content:center;
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  border:1px solid rgba(255,255,255,.2);flex-shrink:0;
-  transition:transform .3s var(--ease-spring);
-}
-.hero-card:hover .diamond-badge{transform:rotate(-8deg) scale(1.06)}
-.diamond-badge svg{width:22px;height:22px}
-.balance-numbers{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
-.balance-amount{font-size:38px;font-weight:700;letter-spacing:-1.4px;line-height:1;font-variant-numeric:tabular-nums}
-.balance-amount.bump{animation:numberChange .6s var(--ease)}
-.balance-unit{font-size:24px;font-weight:600;letter-spacing:-.5px;color:rgba(255,255,255,.62)}
-.balance-usd{font-size:14px;font-weight:500;opacity:.72;margin-top:6px;position:relative;z-index:2;font-variant-numeric:tabular-nums;animation:fadeUp .6s var(--ease) .3s both}
-.qr-circle{
-  position:absolute;top:50%;right:22px;transform:translateY(-50%);
-  width:52px;height:52px;border-radius:16px;background:rgba(255,255,255,.92);
-  border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
-  z-index:3;transition:transform .2s var(--ease-spring), background .2s;
-  box-shadow:0 6px 16px -4px rgba(0,0,0,.25);color:#2f7ce8;
-  animation:scaleIn .5s var(--ease-spring) .4s both;
-}
-.qr-circle:active{transform:translateY(-50%) scale(.88)}
-.qr-circle:hover{background:#fff}
-.qr-circle svg{width:24px;height:24px}
-.vaddr{
-  position:absolute;right:8px;top:12px;bottom:12px;writing-mode:vertical-rl;
-  font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:9.5px;font-weight:500;
-  color:rgba(255,255,255,.5);letter-spacing:2px;line-height:1;overflow:hidden;
-  z-index:2;pointer-events:none;text-transform:uppercase;
-}
-.card-foot{
-  position:absolute;left:22px;bottom:20px;display:flex;align-items:baseline;gap:10px;
-  font-size:12px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;z-index:2;
-  animation:fadeUp .6s var(--ease) .35s both;
-}
-.card-foot .name{color:#fff;opacity:.95}
-.card-foot .handle{color:rgba(255,255,255,.62)}
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
 
-.actions{display:flex;gap:10px;margin-top:14px;animation:fadeUp .6s var(--ease) .4s both}
-.act{
-  flex:1;height:54px;border-radius:16px;border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  font-size:14px;font-weight:600;
-  transition:transform .15s var(--ease-spring), box-shadow .25s;
-  font-family:inherit;position:relative;overflow:hidden;
-}
-.act:active{transform:scale(.95)}
-.act-primary{background:#2f7ce8;color:#fff;box-shadow:0 6px 16px -4px rgba(47,124,232,.5)}
-.act-primary:active{box-shadow:0 2px 6px -2px rgba(47,124,232,.5)}
-.act-secondary{background:#fff;color:#2f7ce8;box-shadow:var(--shadow-soft)}
-.act svg{width:18px;height:18px;transition:transform .25s var(--ease-spring)}
-.act:active svg{transform:translateY(-2px)}
-.act .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.5);transform:scale(0);pointer-events:none;animation:ripple .6s ease-out}
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            color: #1c1c1e;
+        }
 
-.section{background:#fff;border-radius:18px;margin-top:12px;padding:6px 0;overflow:hidden;box-shadow:var(--shadow-soft);animation:fadeUp .6s var(--ease) .5s both}
-.section-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 8px}
-.section-title{font-size:15px;font-weight:600;color:var(--text)}
-.tx-row{display:flex;align-items:center;gap:12px;padding:11px 18px;cursor:pointer;transition:background .15s;animation:fadeUp .4s var(--ease) both}
-.tx-row:nth-child(1){animation-delay:.05s}
-.tx-row:nth-child(2){animation-delay:.1s}
-.tx-row:nth-child(3){animation-delay:.15s}
-.tx-row:nth-child(4){animation-delay:.2s}
-.tx-row:nth-child(5){animation-delay:.25s}
-.tx-row:active{background:#f6f7f9;transform:scale(.99);transition:transform .1s}
-.tx-avatar{width:40px;height:40px;border-radius:50%;background:var(--blue-soft);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:transform .25s var(--ease-spring)}
-.tx-row:active .tx-avatar{transform:scale(1.08)}
-.tx-avatar.in{background:#dcf5ec;color:var(--green)}
-.tx-body{flex:1;min-width:0}
-.tx-title{font-size:14.5px;font-weight:600;color:var(--text);margin-bottom:2px}
-.tx-sub{font-size:12px;color:var(--muted)}
-.tx-amount{font-size:14.5px;font-weight:600;white-space:nowrap;color:var(--text);font-variant-numeric:tabular-nums}
-.tx-amount.in{color:var(--green)}
+        .header-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: #1c1c1e;
+            letter-spacing: 0.1px;
+        }
 
-.connect-area{background:#fff;border-radius:18px;padding:18px;margin-top:12px;box-shadow:var(--shadow-soft);animation:fadeUp .6s var(--ease) .55s both}
-.connect-area h3{font-size:14px;font-weight:600;color:var(--muted);margin-bottom:12px;letter-spacing:.2px}
-#ton-connect-btn{display:flex;justify-content:center}
-#ton-connect-btn button{width:100%!important;max-width:100%!important;border-radius:14px!important;height:50px!important;font-size:15px!important;font-weight:600!important;transition:transform .15s var(--ease-spring)!important}
-#ton-connect-btn button:active{transform:scale(.97)!important}
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
 
-.connected-row{display:flex;align-items:center;gap:12px;padding:12px 14px;background:#f0f9f4;border-radius:14px;margin-bottom:10px;animation:scaleIn .4s var(--ease-spring) both}
-.connected-dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(49,196,141,.15);flex-shrink:0;animation:pulseSoft 2s ease-in-out infinite;position:relative}
-.connected-dot::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(49,196,141,.35);animation:pulseRing 2s ease-out infinite}
-.connected-info{flex:1;min-width:0}
-.connected-name{font-size:13.5px;font-weight:600;color:var(--text)}
-.connected-addr{font-size:11.5px;color:var(--muted);font-family:ui-monospace,monospace;direction:ltr;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        /* ================= صفحه ۱: صفحه اصلی ولت (Money) ================= */
+        .card-container {
+            padding: 8px 18px 10px;
+        }
 
-.btn-full{
-  width:100%;height:52px;border-radius:14px;border:none;cursor:pointer;
-  background:#2f7ce8;color:#fff;font-size:15px;font-weight:600;
-  margin-bottom:10px;font-family:inherit;
-  transition:transform .15s var(--ease-spring), box-shadow .25s;
-  position:relative;overflow:hidden;
-  box-shadow:0 4px 12px -4px rgba(47,124,232,.5);
-}
-.btn-full:active{transform:scale(.97);box-shadow:0 2px 6px -2px rgba(47,124,232,.5)}
-.btn-full.ghost{background:#fff;color:#2f7ce8;box-shadow:var(--shadow-soft)}
-.btn-full:disabled{opacity:.45;cursor:not-allowed;transform:none!important}
-.btn-full .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.5);transform:scale(0);pointer-events:none;animation:ripple .6s ease-out}
+        .ton-card {
+            width: 100%;
+            height: 212px;
+            border-radius: 22px;
+            /* افکت نوری شعاعی دقیقاً منطبق با عکس اول */
+            background: 
+                radial-gradient(circle at 66% 44%, rgba(120, 215, 255, 0.88) 0%, rgba(10, 132, 255, 0.35) 38%, transparent 68%),
+                conic-gradient(from 195deg at 64% 46%, #0051a8 0deg, #0077e6 55deg, #004999 120deg, #003777 190deg, #0a84ff 260deg, #0051a8 360deg);
+            background-color: #005ec4;
+            box-shadow: 0 8px 22px rgba(0, 92, 196, 0.32), inset 0 1px 1.5px rgba(255, 255, 255, 0.45);
+            position: relative;
+            padding: 22px 24px;
+            color: white;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
 
-.auth{max-width:460px;margin:0 auto;padding:48px 22px;min-height:100vh;display:flex;flex-direction:column;justify-content:center;animation:fadeIn .5s var(--ease)}
-.auth h1{font-size:26px;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:-.4px;animation:fadeUp .6s var(--ease) both}
-.auth p{font-size:14px;color:var(--muted);text-align:center;margin-bottom:28px;line-height:1.6;animation:fadeUp .6s var(--ease) .1s both}
-.input{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;font-size:15px;background:#fff;outline:none;font-family:inherit;transition:border-color .2s, box-shadow .3s, transform .15s;animation:fadeUp .6s var(--ease) .2s both}
-.input:focus{border-color:#2f7ce8;box-shadow:0 0 0 3px rgba(47,124,232,.12);transform:translateY(-1px)}
-.input + .input{margin-top:10px}
-.label{font-size:12.5px;color:var(--muted);margin:14px 0 6px;display:block;font-weight:500;animation:fadeUp .6s var(--ease) .15s both}
+        /* ستاره‌های چهارپر ریز روی کارت */
+        .sparkle {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 9px;
+            pointer-events: none;
+            line-height: 1;
+        }
 
-.seed-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:14px;background:#f6f7f9;border-radius:14px;margin:14px 0;animation:scaleIn .5s var(--ease-spring) .2s both}
-.seed-word{display:flex;align-items:center;gap:6px;background:#fff;border-radius:8px;padding:6px 8px;font-family:ui-monospace,"SF Mono",monospace;font-size:12px;direction:ltr;animation:fadeUp .4s var(--ease) both;transition:transform .2s var(--ease-spring)}
-.seed-word:active{transform:scale(1.05);background:#e6f0ff}
-.seed-word .n{color:var(--muted);font-size:10px;min-width:14px}
+        .card-balance-section {
+            margin-top: 38px;
+            z-index: 2;
+        }
 
-.warn-card{background:#fff1f0;border:1px solid #fecdd3;border-radius:12px;padding:12px;font-size:12px;color:#b91c1c;line-height:1.6;text-align:center;font-weight:500;margin:14px 0;animation:fadeUp .5s var(--ease) .3s both}
-.check{display:flex;align-items:flex-start;gap:10px;margin:16px 0;font-size:13px;color:var(--muted);line-height:1.5;animation:fadeUp .5s var(--ease) .35s both}
-.check input{width:20px;height:20px;accent-color:#2f7ce8;margin-top:2px;flex-shrink:0;cursor:pointer}
+        .balance-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;opacity:0;visibility:hidden;transition:opacity .3s var(--ease), visibility .3s;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(0px);-webkit-backdrop-filter:blur(0px)}
-.overlay.show{opacity:1;visibility:visible;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
-.sheet{background:#fff;width:100%;max-width:460px;border-radius:22px 22px 0 0;padding:20px 20px calc(24px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .4s var(--ease);max-height:92vh;overflow-y:auto}
-.overlay.show .sheet{transform:translateY(0)}
-.sheet h2{font-size:19px;font-weight:700;margin-bottom:6px;letter-spacing:-.3px;animation:fadeUp .4s var(--ease) .1s both}
-.sheet p{font-size:13.5px;color:var(--muted);margin-bottom:16px;line-height:1.5;animation:fadeUp .4s var(--ease) .15s both}
-.addr-box{background:#f6f7f9;border-radius:12px;padding:14px;font-family:ui-monospace,monospace;font-size:12.5px;word-break:break-all;text-align:center;margin-bottom:14px;line-height:1.5;direction:ltr;animation:scaleIn .4s var(--ease-spring) .2s both}
-#qrImg{display:block;margin:6px auto 16px;border-radius:12px;animation:scaleIn .5s var(--ease-spring) .1s both}
+        .card-diamond {
+            width: 28px;
+            height: 28px;
+            filter: drop-shadow(0 1px 6px rgba(255, 255, 255, 0.45));
+        }
 
-.send-page{position:fixed;inset:0;background:var(--bg);z-index:80;transform:translateX(-100%);transition:transform .35s var(--ease);overflow-y:auto;padding-bottom:140px}
-.send-page.show{transform:translateX(0)}
-.send-header{display:flex;align-items:center;gap:12px;padding:0 14px;font-size:16px;font-weight:600;background:#fff;position:sticky;top:0;z-index:10;border-bottom:1px solid #f1f3f5;padding-top:env(safe-area-inset-top);height:calc(56px + env(safe-area-inset-top));animation:fadeDown .35s var(--ease)}
-.send-header .icon-btn{font-size:22px}
+        .balance-amount {
+            font-size: 30px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: baseline;
+            gap: 7px;
+        }
 
-.amount-hero{text-align:center;padding:36px 20px 20px;animation:fadeUp .5s var(--ease) .1s both}
-.amount-value{font-size:52px;font-weight:700;letter-spacing:-2px;color:var(--text);font-variant-numeric:tabular-nums;line-height:1}
-.amount-value .unit{font-size:22px;color:var(--muted);font-weight:600;margin-right:8px;letter-spacing:-.5px}
-.amount-value.bump{animation:numberChange .5s var(--ease)}
-.amount-fiat{font-size:14px;color:var(--muted);margin-top:10px;font-variant-numeric:tabular-nums}
+        .balance-currency {
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.78);
+            font-size: 27px;
+        }
 
-.pill{display:inline-flex;align-items:center;gap:8px;background:#fff;border-radius:12px;padding:10px 14px;font-size:13.5px;margin:0 auto;box-shadow:var(--shadow-soft);animation:scaleIn .4s var(--ease-spring) .2s both}
-.pill .lbl{color:var(--muted)}
-.pill .val{color:var(--text);font-weight:600;font-family:ui-monospace,monospace;direction:ltr}
+        .balance-usd {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.72);
+            margin-top: 4px;
+            margin-left: 2px;
+            font-weight: 400;
+        }
 
-.warn-line{text-align:center;color:var(--red);font-size:13px;font-weight:600;height:0;overflow:hidden;opacity:0;transition:all .25s var(--ease);margin-top:0}
-.warn-line.show{height:20px;opacity:1;margin-top:10px;animation:shakeX .4s ease}
+        /* تراشه نقره‌ای QR روی کارت با آیکون دقیق */
+        .card-chip {
+            position: absolute;
+            right: 52px;
+            top: 48%;
+            transform: translateY(-50%);
+            width: 52px;
+            height: 44px;
+            background: linear-gradient(135deg, #d8e1eb 0%, #f1f5f9 50%, #bdcad9 100%);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18), inset 0 1px 1px #ffffff;
+            cursor: pointer;
+            z-index: 3;
+        }
 
-.keypad{position:fixed;left:0;right:0;bottom:0;background:#f2f3f5;padding:8px 6px calc(10px + env(safe-area-inset-bottom));transform:translateY(110%);transition:transform .35s var(--ease);z-index:85}
-.keypad.show{transform:translateY(0)}
-.keys{max-width:460px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.key{height:50px;border:none;background:#fff;border-radius:10px;cursor:pointer;font-size:24px;font-weight:400;color:var(--text);font-family:inherit;transition:background .12s, transform .1s var(--ease-spring);position:relative;overflow:hidden}
-.key:active{background:#dde2e8;transform:scale(.94)}
-.key .ripple{position:absolute;border-radius:50%;background:rgba(47,124,232,.25);transform:scale(0);pointer-events:none;animation:ripple .5s ease-out}
-.key.done{grid-column:1/-1;height:48px;font-size:16px;font-weight:600;background:#2f7ce8;color:#fff;border-radius:12px}
-.key.done:active{background:#2568c9}
+        /* آدرس عمودی سمت راست کارت */
+        .card-vertical-address {
+            position: absolute;
+            right: 11px;
+            top: 15px;
+            bottom: 15px;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 10.5px;
+            line-height: 1.25;
+            color: rgba(0, 35, 85, 0.62);
+            letter-spacing: 0.9px;
+            font-weight: 600;
+        }
 
-.hidden{display:none!important}
-.spin{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+        .card-holder {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 15.5px;
+            letter-spacing: 1.4px;
+            color: rgba(255, 255, 255, 0.92);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+            margin-bottom: -2px;
+        }
 
-#toast{position:fixed;left:50%;bottom:90px;transform:translate(-50%,0) scale(1);background:rgba(15,20,25,.92);color:#fff;padding:11px 18px;border-radius:24px;font-size:13.5px;font-weight:500;opacity:0;visibility:hidden;transition:opacity .3s var(--ease), visibility .3s, transform .3s var(--ease);z-index:200;pointer-events:none;max-width:86%;text-align:center;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-#toast.show{opacity:1;visibility:visible;animation:toastEnter .3s var(--ease) both}
+        /* دکمه‌های Add Funds و Send */
+        .main-actions {
+            display: flex;
+            gap: 14px;
+            padding: 10px 18px 18px;
+        }
 
-#loading{position:fixed;inset:0;background:linear-gradient(160deg,#1e5cbe,#3b9eff);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;color:#fff;transition:opacity .5s, visibility .5s}
-#loading.hide{opacity:0;visibility:hidden;pointer-events:none}
-.loader-diamond{font-size:64px;animation:pulseSoft 1.4s ease-in-out infinite;margin-bottom:24px}
-.loader-text{font-size:16px;font-weight:500;opacity:.9;text-align:center;padding:0 24px}
-.loader-bar{width:180px;height:4px;background:rgba(255,255,255,.25);border-radius:4px;margin-top:28px;overflow:hidden}
-.loader-bar-inner{height:100%;width:40%;background:#fff;border-radius:4px;animation:loadingBar 1.4s ease-in-out infinite}
-@keyframes loadingBar{0%{transform:translateX(-100%)}100%{transform:translateX(350%)}}
-</style>
+        .action-btn {
+            flex: 1;
+            height: 48px;
+            border-radius: 24px;
+            border: none;
+            background-color: #4a7dff;
+            color: white;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(74, 125, 255, 0.22);
+            transition: transform 0.12s, background-color 0.15s;
+        }
+
+        .action-btn:active {
+            transform: scale(0.97);
+            background-color: #3b6ce8;
+        }
+
+        /* لیست تراکنش‌ها */
+        .tx-list-container {
+            background: white;
+            margin: 0 18px 24px;
+            border-radius: 20px;
+            padding: 4px 0;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.03);
+            flex: 1;
+        }
+
+        .tx-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f2f3f5;
+        }
+
+        .tx-item:last-child {
+            border-bottom: none;
+        }
+
+        .tx-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .tx-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        /* آیکون دایره‌ای سبز با دایره سفید وسط و فلش سبز مثل عکس اول */
+        .tx-icon.out {
+            background-color: #30b856;
+        }
+        /* آیکون دایره‌ای آبی با دایره سفید وسط و فلش آبی مثل عکس اول */
+        .tx-icon.in {
+            background-color: #2787e7;
+        }
+        /* آواتار دایره آبی با نقطه سفید وسط (برای ۲ تراکنش آخر عکس اول) */
+        .tx-icon.dot-avatar {
+            background: linear-gradient(180deg, #6dc1ea 0%, #449cd6 100%);
+            position: relative;
+        }
+        .tx-icon.dot-avatar::after {
+            content: '';
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            margin-top: 6px;
+        }
+
+        .inner-white-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tx-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .tx-address {
+            font-size: 15px;
+            font-weight: 500;
+            color: #1c1c1e;
+        }
+
+        .tx-type {
+            font-size: 13.5px;
+            color: #3a3a3c;
+        }
+
+        .tx-date {
+            font-size: 12.5px;
+            color: #8e8e93;
+        }
+
+        .tx-amount {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 15px;
+            font-weight: 500;
+            align-self: flex-start;
+            margin-top: 2px;
+        }
+
+        .tx-amount.positive { color: #30b856; }
+        .tx-amount.negative { color: #1c1c1e; }
+
+        .mini-gem-svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+        }
+
+        /* ================= صفحه ۲: انتخاب گیرنده (Send Grams) ================= */
+        .recipient-box {
+            background: white;
+            margin: 6px 16px 14px;
+            border-radius: 18px;
+            padding: 14px 16px 16px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .box-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #3875e8;
+            margin-bottom: 12px;
+        }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .recipient-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            color: #1c1c1e;
+            background: transparent;
+            caret-color: #3875e8;
+        }
+
+        .recipient-input::placeholder {
+            color: #b5b5ba;
+        }
+
+        .paste-btn {
+            background-color: #edf3fc;
+            color: #3875e8;
+            border: none;
+            padding: 7px 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .recent-box {
+            background: white;
+            margin: 0 16px 95px;
+            border-radius: 18px;
+            padding: 14px 0 4px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+            flex: 1;
+        }
+
+        .recent-box .box-label {
+            padding: 0 16px 4px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 9px 16px;
+            cursor: pointer;
+            transition: background 0.15s;
+            border-bottom: 1px solid #f5f5f7;
+        }
+
+        .contact-item:last-child {
+            border-bottom: none;
+        }
+
+        .contact-item:active {
+            background-color: #f0f3f9;
+        }
+
+        .avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            font-weight: 500;
+            color: white;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .contact-name {
+            font-size: 15.5px;
+            font-weight: 500;
+            color: #1c1c1e;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .contact-handle {
+            font-size: 14px;
+            color: #8e8e93;
+        }
+
+        .bottom-fixed-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            padding: 10px 18px 22px;
+            background: linear-gradient(to top, #f3f4f6 80%, rgba(243, 244, 246, 0));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .primary-bottom-btn {
+            width: 100%;
+            height: 52px;
+            border-radius: 26px;
+            border: none;
+            background-color: #4a7dff;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        .primary-bottom-btn:disabled {
+            background-color: #4a7dff;
+            color: rgba(255, 255, 255, 0.65);
+            cursor: not-allowed;
+        }
+
+        /* ================= صفحه ۳: وارد کردن مبلغ (Send Money to) ================= */
+        .screen-white {
+            background-color: #ffffff;
+        }
+
+        .recipient-pill {
+            margin: 6px 22px;
+            background-color: #f3f4f6;
+            border-radius: 38px;
+            padding: 10px 16px 10px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .pill-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 70%, #d4893b, #3a2512 65%, #1a120b);
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+
+        /* شبیه‌سازی تصویر غروب/افق داخل آواتار عکس سوم */
+        .pill-avatar::after {
+            content: '';
+            position: absolute;
+            left: 0; right: 0; top: 48%;
+            height: 2px;
+            background: rgba(255, 210, 120, 0.7);
+            box-shadow: 0 0 6px #ffae42;
+        }
+
+        .pill-info {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .pill-name {
+            font-size: 14.5px;
+            font-weight: 500;
+            color: #1c1c1e;
+            margin-bottom: 2px;
+        }
+
+        .pill-address {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11.5px;
+            color: #8e8e93;
+            line-height: 1.35;
+            letter-spacing: -0.2px;
+        }
+
+        .pill-address b {
+            color: #2c2c2e;
+            font-weight: 600;
+        }
+
+        .help-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1.6px solid #7c7c80;
+            color: #7c7c80;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 600;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        /* بخش مرکزی مبلغ و الماس متحرک */
+        .amount-center-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-bottom: 105px;
+        }
+
+        .amount-input-wrapper {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        /* الماس سه‌بعدی متحرک که تکون میخوره */
+        .animated-diamond-wrap {
+            align-self: center;
+            perspective: 400px;
+            margin-right: 2px;
+        }
+
+        .animated-diamond {
+            width: 44px;
+            height: 44px;
+            animation: gemFloat 2.4s ease-in-out infinite;
+            filter: drop-shadow(0 5px 10px rgba(0, 110, 255, 0.28));
+            transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+        }
+
+        .animated-diamond.bump {
+            animation: none;
+            transform: scale(1.26) rotateY(22deg) rotateZ(-8deg);
+        }
+
+        @keyframes gemFloat {
+            0%, 100% { transform: translateY(0px) rotateY(0deg) rotateZ(0deg); }
+            25% { transform: translateY(-5px) rotateY(12deg) rotateZ(-3deg); }
+            50% { transform: translateY(-8px) rotateY(0deg) rotateZ(2deg); }
+            75% { transform: translateY(-4px) rotateY(-12deg) rotateZ(-2deg); }
+        }
+
+        /* حذف فلش‌های بالا/پایین اینپوت عدد */
+        .big-amount-input::-webkit-outer-spin-button,
+        .big-amount-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .big-amount-input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .big-amount-input {
+            width: 42px;
+            border: none;
+            outline: none;
+            font-size: 54px;
+            font-weight: 400;
+            color: #8a8a8e;
+            text-align: center;
+            background: transparent;
+            padding: 0;
+            margin: 0;
+        }
+
+        .big-amount-input.has-val {
+            color: #1c1c1e;
+        }
+
+        .big-currency-label {
+            font-size: 31px;
+            font-weight: 400;
+            color: #4a7dff;
+            letter-spacing: 0.5px;
+        }
+
+        .usd-equivalent-pill {
+            background-color: #f4f5f7;
+            color: #8a8a8e;
+            padding: 6px 14px;
+            border-radius: 18px;
+            font-size: 14.5px;
+            font-weight: 400;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .usd-equivalent-pill:active {
+            transform: scale(0.95);
+        }
+
+        .deposit-shortcut-pill {
+            background-color: #eef3ff;
+            color: #4a7dff;
+            padding: 7px 15px;
+            border-radius: 18px;
+            font-size: 14.5px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .balance-footer-text {
+            font-size: 14.5px;
+            color: #8a8a8e;
+            margin-bottom: 4px;
+        }
+
+        /* ================= مودال دیپازیت و TON Connect (V5) ================= */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(3px);
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-sheet {
+            background: white;
+            width: 100%;
+            max-width: 480px;
+            border-radius: 24px 24px 0 0;
+            padding: 22px 20px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            animation: slideUp 0.22s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-title {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .v5-address-box {
+            background: #f3f4f6;
+            padding: 12px 14px;
+            border-radius: 14px;
+            width: 100%;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 12.5px;
+            word-break: break-all;
+            text-align: center;
+            color: #2c2c2e;
+            border: 1px dashed #c7c7cc;
+        }
+
+        .deposit-input-group {
+            display: flex;
+            width: 100%;
+            gap: 10px;
+        }
+
+        .deposit-input {
+            flex: 1;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid #d1d1d6;
+            font-size: 15px;
+            outline: none;
+        }
+    </style>
 </head>
 <body>
 
-<div id="loading">
-  <div class="loader-diamond">💎</div>
-  <div class="loader-text">در حال بارگذاری Wallet…</div>
-  <div class="loader-bar"><div class="loader-bar-inner"></div></div>
-</div>
+    <!-- SVG مخفی برای استفاده مجدد از آیکون الماس کوچک کنار تراکنش‌ها -->
+    <svg style="display: none;">
+        <symbol id="mini-gem" viewBox="0 0 24 24">
+            <polygon points="12,2 2,9 12,22 22,9" fill="#3290ec"/>
+            <polygon points="12,2 7,9 12,22 17,9" fill="#64b5f6"/>
+            <polygon points="2,9 22,9 12,12" fill="#bbdefb" opacity="0.65"/>
+        </symbol>
+    </svg>
 
-<!-- ============ WELCOME ============ -->
-<div id="welcome" class="auth hidden">
-  <h1>💎 Wallet</h1>
-  <p>ولت شخصی خودت رو بساز<br>برای تراکنش‌های سریع و کم‌هزینه</p>
-  <button class="btn-full" id="startGenBtn">✨ ساخت ولت جدید</button>
-  <div class="warn-card" style="background:#e6f0ff;border-color:#bfdbfe;color:#1e40af;text-align:right">
-    <b>ℹ️ چیکار می‌کنه؟</b><br>
-    یه ولت جدید می‌سازه که می‌تونی بهش واریز کنی و بعد هرچی خواستی (حتی مقادیر کم) ازش بفرستی.
-  </div>
-</div>
-
-<!-- ============ SHOW SEED ============ -->
-<div id="showSeed" class="auth hidden">
-  <h1>🔐 کلمات بازیابی</h1>
-  <p>این کلمات رو یه جای امن ذخیره کن</p>
-  <div class="warn-card">⚠️ هیچوقت به کسی نشونشون نده<br>حتی اگه ادعا کنه از تیم پشتیبانیه</div>
-  <div class="seed-grid" id="seedGrid"></div>
-  <button class="btn-full ghost" id="copySeedBtn">📋 کپی کلمات</button>
-  <div class="check">
-    <input type="checkbox" id="seedSaved">
-    <label for="seedSaved">کلمات رو یه جای امن ذخیره کردم و می‌دونم اگه گمشون کنم پولم می‌ره</label>
-  </div>
-  <button class="btn-full" id="seedContinueBtn" disabled>ادامه</button>
-</div>
-
-<!-- ============ SET PASS ============ -->
-<div id="setPass" class="auth hidden">
-  <h1>🔒 پسورد</h1>
-  <p>پسوردی که از ولتت روی این دستگاه محافظت می‌کنه</p>
-  <label class="label">پسورد (حداقل ۴ کاراکتر)</label>
-  <input id="newPass" type="password" class="input" placeholder="••••••">
-  <input id="newPass2" type="password" class="input" placeholder="تکرار پسورد">
-  <button class="btn-full" id="savePassBtn" style="margin-top:18px">ذخیره و ادامه</button>
-  <div id="passMsg" style="text-align:center;font-size:13px;min-height:20px;margin-top:10px"></div>
-</div>
-
-<!-- ============ UNLOCK ============ -->
-<div id="unlock" class="auth hidden">
-  <h1>💎 Wallet</h1>
-  <p>پسوردت رو وارد کن</p>
-  <input id="unlockPass" type="password" class="input" placeholder="••••••">
-  <button class="btn-full" id="unlockBtn" style="margin-top:12px">باز کردن</button>
-  <div id="unlockMsg" style="text-align:center;font-size:13px;min-height:20px;margin-top:10px"></div>
-  <button class="btn-full ghost" id="forgetBtn" style="margin-top:14px;color:#f5564c">حذف ولت از این دستگاه</button>
-</div>
-
-<!-- ============ MAIN ============ -->
-<div id="main" class="app hidden">
-  <div class="topbar">
-    <div class="left">
-      <div id="topAvatar" style="width:36px;height:36px;border-radius:50%;background:#2f7ce8;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700">S</div>
-    </div>
-    <div class="page-title">Wallet</div>
-    <div class="right">
-      <button class="icon-btn" id="refreshBtn" aria-label="refresh">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/>
-        </svg>
-      </button>
-      <button class="icon-btn" id="menuBtn" aria-label="menu">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <circle cx="12" cy="5" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="12" cy="19" r="1.2"/>
-        </svg>
-      </button>
-    </div>
-  </div>
-
-  <div class="hero-card">
-    <div class="card-shine"></div>
-    <div class="card-head">
-      <div class="card-logo">
-        <svg viewBox="0 0 24 24" fill="#fff">
-          <path d="M6 3h12l4 6-10 12L2 9z" opacity=".55"/>
-          <path d="M2 9h20" stroke="#fff" stroke-width="1.2" fill="none"/>
-        </svg>
-        Mini Wallet
-      </div>
-    </div>
-
-    <div class="balance-wrap">
-      <div class="diamond-badge">
-        <svg viewBox="0 0 24 24" fill="none">
-          <path d="M6 3h12l4 6-10 12L2 9z" fill="#fff"/>
-          <path d="M2 9h20M9 3l3 6 3-6M12 21 9 9m3 12 3-12" stroke="#4a9bff" stroke-width="1"/>
-        </svg>
-      </div>
-      <div>
-        <div class="balance-numbers">
-          <span class="balance-amount" id="balN">0</span>
-          <span class="balance-unit">TON</span>
+    <!-- ================================================================= -->
+    <!-- صفحه ۱: صفحه اصلی ولت (Money) -->
+    <!-- ================================================================= -->
+    <div id="screen-home" class="screen active">
+        <div class="header">
+            <div class="header-left">
+                <button class="icon-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                </button>
+                <span class="header-title">Money</span>
+            </div>
+            <div class="header-right">
+                <button class="icon-btn" onclick="openDepositModal()" title="Scan / Connect">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/>
+                        <line x1="7" y1="12" x2="17" y2="12"/>
+                    </svg>
+                </button>
+                <button class="icon-btn">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+                </button>
+            </div>
         </div>
-        <div class="balance-usd" id="usd">$0.00</div>
-      </div>
-    </div>
 
-    <button class="qr-circle" id="qrBtn" aria-label="receive">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="7" height="7" rx="1.5"/>
-        <rect x="14" y="3" width="7" height="7" rx="1.5"/>
-        <rect x="3" y="14" width="7" height="7" rx="1.5"/>
-        <path d="M14 14h3v3h-3zM20 20h1v1h-1zM14 20h1v1h-1zM20 14h1v1h-1z"/>
-      </svg>
-    </button>
+        <div class="card-container">
+            <div class="ton-card">
+                <!-- ستاره‌های ریز روی کارت دقیقاً در موقعیت عکس اول -->
+                <span class="sparkle" style="bottom: 62px; left: 26px;">✦</span>
+                <span class="sparkle" style="bottom: 70px; left: 78px;">✦</span>
+                <span class="sparkle" style="bottom: 18px; left: 26px; opacity: 0.45;">✦</span>
 
-    <div class="vaddr" id="vaddr">—</div>
+                <div class="card-balance-section">
+                    <div class="balance-row">
+                        <!-- آیکون الماس روشن روی کارت -->
+                        <svg class="card-diamond" viewBox="0 0 56 56" fill="none">
+                            <polygon points="28,5 5,22 28,51 51,22" fill="url(#cardGemGrad)"/>
+                            <polygon points="28,5 16,22 28,51 40,22" fill="#ffffff" opacity="0.45"/>
+                            <polygon points="5,22 51,22 28,28" fill="#ffffff" opacity="0.6"/>
+                            <defs>
+                                <linearGradient id="cardGemGrad" x1="5" y1="5" x2="51" y2="51" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#ffffff"/>
+                                    <stop offset="1" stop-color="#9be2ff"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div class="balance-amount">
+                            <span id="main-balance">0.016</span>
+                            <span class="balance-currency">GRAM</span>
+                        </div>
+                    </div>
+                    <div class="balance-usd" id="main-usd">$0.02</div>
+                </div>
 
-    <div class="card-foot">
-      <span class="name" id="cardName">MINI WALLET</span>
-      <span class="handle" id="cardHandle">@WALLET</span>
-    </div>
-  </div>
+                <!-- تراشه نقره‌ای وسط کارت با آیکون دقیق عکس اول -->
+                <div class="card-chip" onclick="openDepositModal()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5c6470" stroke-width="1.8">
+                        <rect x="4" y="4" width="6" height="6" rx="1.2"/>
+                        <rect x="14" y="4" width="6" height="6" rx="1.2"/>
+                        <rect x="4" y="14" width="6" height="6" rx="1.2"/>
+                        <path d="M14.5 14.5l5 5M19.5 14.5l-5 5" stroke-width="1.5"/>
+                        <circle cx="21" cy="15" r="0.8" fill="#5c6470" stroke="none"/>
+                        <circle cx="21" cy="19" r="0.8" fill="#5c6470" stroke="none"/>
+                    </svg>
+                </div>
 
-  <div class="actions">
-    <button class="act act-secondary" id="receiveBtn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 5v14M5 12l7 7 7-7"/>
-      </svg>
-      دریافت
-    </button>
-    <button class="act act-primary" id="sendBtn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 19V5M5 12l7-7 7 7"/>
-      </svg>
-      ارسال
-    </button>
-  </div>
+                <!-- آدرس عمودی V5 سمت راست کارت -->
+                <div class="card-vertical-address">
+                    UQDb GLVQ KWDC -WVB GGGG IUXO<br>
+                    CPOH EARY HATM CCME 1ZDV GXUA
+                </div>
 
-  <div class="connect-area">
-    <h3>🔗 اتصال به ولت اصلی</h3>
-    <div id="notConnected">
-      <div id="ton-connect-btn"></div>
-    </div>
-    <div id="connected" class="hidden">
-      <div class="connected-row">
-        <span class="connected-dot"></span>
-        <div class="connected-info">
-          <div class="connected-name" id="walletName">Connected</div>
-          <div class="connected-addr" id="walletAddrShort">—</div>
+                <div class="card-holder">MR.SADRA @GIFTSDOUBLE</div>
+            </div>
         </div>
-      </div>
-      <button class="btn-full" id="depositBtn" style="margin-bottom:8px">💰 واریز از ولت اصلی</button>
-      <button class="btn-full ghost" id="withdrawAllBtn" style="margin-bottom:0;color:#f5564c;border:1px solid #fecdd3">🏦 برداشت کل به ولت اصلی</button>
+
+        <!-- دکمه‌های Add Funds و Send -->
+        <div class="main-actions">
+            <button class="action-btn" onclick="openDepositModal()">Add Funds</button>
+            <button class="action-btn" onclick="showScreen('screen-recipient')">Send</button>
+        </div>
+
+        <!-- لیست ۶ تراکنش کامل مطابق تصویر اول -->
+        <div class="tx-list-container" id="tx-list">
+            <div class="tx-item">
+                <div class="tx-left">
+                    <div class="tx-icon out">
+                        <div class="inner-white-circle">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#30b856" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                        </div>
+                    </div>
+                    <div class="tx-details">
+                        <span class="tx-address">thedns-telegram-m.ton</span>
+                        <span class="tx-type">Outgoing transfer</span>
+                        <span class="tx-date">Oct 20, 20:14</span>
+                    </div>
+                </div>
+                <div class="tx-amount negative">−3.82 <svg class="mini-gem-svg"><use href="#mini-gem"/></svg></div>
+            </div>
+
+            <div class="tx-item">
+                <div class="tx-left">
+                    <div class="tx-icon in">
+                        <div class="inner-white-circle">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2787e7" stroke-width="2.5"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+                        </div>
+                    </div>
+                    <div class="tx-details">
+                        <span class="tx-address">UQDh...A_MX</span>
+                        <span class="tx-type">Incoming transfer</span>
+                        <span class="tx-date">Oct 20, 20:07</span>
+                    </div>
+                </div>
+                <div class="tx-amount positive">+0.53 <svg class="mini-gem-svg"><use href="#mini-gem"/></svg></div>
+            </div>
+
+            <div class="tx-item">
+                <div class="tx-left">
+                    <div class="tx-icon in">
+                        <div class="inner-white-circle">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2787e7" stroke-width="2.5"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+                        </div>
+                    </div>
+                    <div class="tx-details">
+                        <span class="tx-address">EQAT...ur95</span>
+                        <span class="tx-type">Incoming transfer</span>
+                        <span class="tx-date">Oct 20, 19:46</span>
+                    </div>
+                </div>
+                <div class="tx-amount positive">+2 <svg class="mini-gem-svg"><use href="#mini-gem"/></svg></div>
+            </div>
+
+            <div class="tx-item">
+                <div class="tx-left">
+                    <div class="tx-icon out">
+                        <div class="inner-white-circle">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#30b856" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                        </div>
+                    </div>
+                    <div class="tx-details">
+                        <span class="tx-address">thedns-telegram-m.ton</span>
+                        <span class="tx-type">Outgoing transfer</span>
+                        <span class="tx-date">Oct 20, 19:45</span>
+                    </div>
+                </div>
+                <div class="tx-amount negative">−2 <svg class="mini-gem-svg"><use href="#mini-gem"/></svg></div>
+            </div>
+
+            <div class="tx-item">
+                <div class="tx-left">
+                    <div class="tx-icon dot-avatar"></div>
+                    <div class="tx-details">
+                        <span class="tx-address">.</span>
+                        <span class="tx-type">Incoming transfer</span>
+                        <span class="tx-date">Oct 20, 19:33</span>
+                    </div>
+                </div>
+                <div class="tx-amount positive">+0.21 <svg class="mini-gem-svg"><use href="#mini-gem"/></svg></div>
+            </div>
+
+            <div class="tx-item">
+                <div class="tx-left">
+                    <div class="tx-icon dot-avatar"></div>
+                    <div class="tx-details">
+                        <span class="tx-address">.</span>
+                        <span class="tx-type">Outgoing transfer</span>
+                        <span class="tx-date">Oct 20, 19:33</span>
+                    </div>
+                </div>
+                <div class="tx-amount negative">−0.2 <svg class="mini-gem-svg"><use href="#mini-gem"/></svg></div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div class="section">
-    <div class="section-head">
-      <span class="section-title">تاریخچه</span>
+    <!-- ================================================================= -->
+    <!-- صفحه ۲: انتخاب گیرنده (Send Grams) - دقیقاً مطابق تصویر دوم -->
+    <!-- ================================================================= -->
+    <div id="screen-recipient" class="screen">
+        <div class="header">
+            <div class="header-left">
+                <button class="icon-btn" onclick="showScreen('screen-home')">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                </button>
+                <span class="header-title">Send Grams</span>
+            </div>
+        </div>
+
+        <div class="recipient-box">
+            <div class="box-label">Recipient</div>
+            <div class="input-row">
+                <input type="text" id="recipient-input" class="recipient-input" placeholder="Address or name">
+                <button class="paste-btn" onclick="pasteClipboard()">Paste</button>
+                <button class="icon-btn" style="color:#3875e8;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/>
+                        <line x1="7" y1="12" x2="17" y2="12"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="recent-box">
+            <div class="box-label">Recent</div>
+
+            <!-- 1. Ali Spider -->
+            <div class="contact-item" onclick="selectRecipient('Mr.Sadra @GIFTSDouble')">
+                <div class="avatar" style="background: radial-gradient(circle at 50% 40%, #555, #111);">
+                    <span style="font-size:20px; filter:grayscale(1);">🕷️</span>
+                </div>
+                <div class="contact-info">
+                    <div class="contact-name" style="font-family: 'Roboto Mono', monospace; font-weight: 700; font-size: 14.5px;">
+                        Ali Spider
+                        <!-- بج کریستال بنفش/نارنجی -->
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                            <polygon points="12,2 4,9 8,21 16,21 20,9" fill="url(#crystalGrad)"/>
+                            <polygon points="12,2 9,11 12,21 15,11" fill="#ff9ff3" opacity="0.6"/>
+                            <defs>
+                                <linearGradient id="crystalGrad" x1="4" y1="2" x2="20" y2="21" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#c56cf0"/>
+                                    <stop offset="0.5" stop-color="#ff4d4d"/>
+                                    <stop offset="1" stop-color="#ffaf40"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div class="contact-handle">@bitchbaz</div>
+                </div>
+            </div>
+
+            <!-- 2. S. Shakib -->
+            <div class="contact-item" onclick="selectRecipient('Mr.Sadra @GIFTSDouble')">
+                <div class="avatar" style="background: linear-gradient(180deg, #ffb142, #ee8c25);">S.</div>
+                <div class="contact-info">
+                    <div class="contact-name">
+                        S. Shakib
+                        <!-- بج آبی کنار اسم -->
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <path d="M4 16C4 10 10 5 19 4C16 9 16 13 19 17C13 17 8 18 4 16Z" fill="#2e6be6"/>
+                            <path d="M8 14L17 8M10 16L18 12" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="contact-handle">@sadra</div>
+                </div>
+            </div>
+
+            <!-- 3. . (@Vnkuddc) -->
+            <div class="contact-item" onclick="selectRecipient('Mr.Sadra @GIFTSDouble')">
+                <div class="avatar tx-icon dot-avatar" style="width:46px; height:46px;"></div>
+                <div class="contact-info">
+                    <div class="contact-name">.</div>
+                    <div class="contact-handle">@Vnkuddc</div>
+                </div>
+            </div>
+
+            <!-- 4. Mahdie Khale -->
+            <div class="contact-item" onclick="selectRecipient('Mahdie Khale @W_pang7')">
+                <div class="avatar" style="background: radial-gradient(circle, #485460, #1e272e); border: 1.5px solid #d2a679;">
+                    <span style="font-size:21px;">👾</span>
+                </div>
+                <div class="contact-info">
+                    <div class="contact-name">Mahdie Khale</div>
+                    <div class="contact-handle">@W_pang7</div>
+                </div>
+            </div>
+
+            <!-- 5. Portal -->
+            <div class="contact-item" onclick="selectRecipient('Portal @GiftsToPortals')">
+                <div class="avatar" style="background: linear-gradient(180deg, #54a8ff, #2780e3);">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <path d="M6 19V10a6 6 0 0 1 12 0v9"/>
+                        <path d="M9 19v-7a3 3 0 0 1 6 0v7"/>
+                    </svg>
+                </div>
+                <div class="contact-info">
+                    <div class="contact-name">
+                        <!-- بج تاج آبی در سمت چپ -->
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="#4a7dff">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M7 15h10l1-6-3.5 2.5L12 8l-2.5 3.5L6 9l1 6z" fill="white"/>
+                        </svg>
+                        Portal
+                        <!-- تیک آبی در سمت راست -->
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#4a7dff">
+                            <path d="M12 2l2.4 2.1 3.1-.4 1.2 2.9 3 1.2-.4 3.1 2.1 2.4-2.1 2.4.4 3.1-3 1.2-1.2 2.9-3.1-.4L12 22l-2.4-2.1-3.1.4-1.2-2.9-3-1.2.4-3.1L.6 12l2.1-2.4-.4-3.1 3-1.2 1.2-2.9 3.1.4L12 2z"/>
+                            <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="contact-handle">@GiftsToPortals</div>
+                </div>
+            </div>
+
+            <!-- 6. Father -->
+            <div class="contact-item" onclick="selectRecipient('Father @Heydar6111')">
+                <div class="avatar" style="background: linear-gradient(180deg, #82cc59, #57b147);">F</div>
+                <div class="contact-info">
+                    <div class="contact-name">Father</div>
+                    <div class="contact-handle">@Heydar6111</div>
+                </div>
+            </div>
+
+            <!-- 7. Daii -->
+            <div class="contact-item" onclick="selectRecipient('Daii @katanaforu')">
+                <div class="avatar" style="background: linear-gradient(180deg, #d2dae2, #808e9b);">
+                    <span style="font-size:22px;">🤵🏻‍♂️</span>
+                </div>
+                <div class="contact-info">
+                    <div class="contact-name">Daii</div>
+                    <div class="contact-handle">@katanaforu</div>
+                </div>
+            </div>
+
+            <!-- 8. Simin Ros -->
+            <div class="contact-item" onclick="selectRecipient('Simin Ros')">
+                <div class="avatar" style="background: linear-gradient(180deg, #f37999, #e15b83);">SR</div>
+                <div class="contact-info">
+                    <div class="contact-name">Simin Ros</div>
+                </div>
+            </div>
+
+            <!-- 9. AMIN ×Abn -->
+            <div class="contact-item" onclick="selectRecipient('AMIN ×Abn')">
+                <div class="avatar" style="background: linear-gradient(180deg, #4cd137, #0097e6);">
+                    <span style="font-size:20px;">🏕️</span>
+                </div>
+                <div class="contact-info">
+                    <div class="contact-name">AMIN ×Abn</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-fixed-bar">
+            <button class="primary-bottom-btn" onclick="goToAmountScreen()">Continue</button>
+        </div>
     </div>
-    <div id="txList">
-      <div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">در حال بارگذاری…</div>
+
+    <!-- ================================================================= -->
+    <!-- صفحه ۳: وارد کردن مبلغ و الماس متحرک (Send Money to) -->
+    <!-- ================================================================= -->
+    <div id="screen-amount" class="screen screen-white">
+        <div class="header">
+            <div class="header-left">
+                <button class="icon-btn" onclick="showScreen('screen-recipient')">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                </button>
+                <span class="header-title">Send Money to</span>
+            </div>
+            <div class="header-right">
+                <button class="icon-btn">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- کپسول مشخصات گیرنده مطابق تصویر سوم -->
+        <div class="recipient-pill">
+            <div class="pill-avatar"></div>
+            <div class="pill-info">
+                <div class="pill-name" id="selected-recipient-name">Mr.Sadra @GIFTSDouble</div>
+                <div class="pill-address">
+                    UQDb glvq KwDc <b>-wVB</b> gGgG <b>iuXo</b><br>
+                    <b>cpoh</b> eAry <b>hatM</b> CCMe <b>1zDv</b> GXUA
+                </div>
+            </div>
+            <div class="help-circle" title="Wallet V5 Non-bounceable Address">?</div>
+        </div>
+
+        <!-- بخش وسط صفحه با الماس متحرک -->
+        <div class="amount-center-area">
+            <div class="amount-input-wrapper" onclick="document.getElementById('send-amount-input').focus()">
+                <div class="animated-diamond-wrap" onclick="triggerGemSpin()">
+                    <!-- الماس سه‌بعدی چندوجهی دقیقاً مثل تصویر سوم -->
+                    <svg id="moving-diamond" class="animated-diamond" viewBox="0 0 64 64" fill="none">
+                        <!-- تاج بالایی الماس -->
+                        <polygon points="18,12 46,12 58,24 6,24" fill="#63b8ff"/>
+                        <polygon points="18,12 32,24 6,24" fill="#3a95f5"/>
+                        <polygon points="46,12 58,24 32,24" fill="#1e78e8"/>
+                        <polygon points="18,12 46,12 32,24" fill="#99d6ff"/>
+                        <!-- بدنه پایینی الماس -->
+                        <polygon points="6,24 32,24 32,56" fill="#1565c0"/>
+                        <polygon points="58,24 32,24 32,56" fill="#0d47a1"/>
+                        <polygon points="18,24 46,24 32,56" fill="#2185ef"/>
+                        <polygon points="24,24 40,24 32,56" fill="#4da3ff" opacity="0.75"/>
+                    </svg>
+                </div>
+
+                <input type="number" id="send-amount-input" class="big-amount-input" value="0" min="0" step="any" oninput="onAmountInput(this)">
+                <span class="big-currency-label" id="currency-unit-label">GRAM</span>
+            </div>
+
+            <div class="usd-equivalent-pill" id="send-usd-equiv" onclick="toggleCurrencyMode()">≈ $0.00 ↑↓</div>
+
+            <button class="deposit-shortcut-pill" onclick="openDepositModal()">
+                Deposit funds
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+        </div>
+
+        <div class="bottom-fixed-bar" style="background: white;">
+            <div class="balance-footer-text">Balance: <span id="footer-balance">0.016</span> Grams</div>
+            <button id="final-send-btn" class="primary-bottom-btn" disabled onclick="executeSendTransaction()">Send Grams</button>
+        </div>
     </div>
-  </div>
-</div>
 
-<!-- MENU SHEET -->
-<div class="overlay" id="menuBg">
-  <div class="sheet">
-    <h2>تنظیمات</h2>
-    <p>مدیریت ولت</p>
-    <button class="btn-full ghost" id="viewSeedMenu">🔑 نمایش کلمات بازیابی</button>
-    <button class="btn-full ghost" id="refreshMenu">🔄 بروزرسانی</button>
-    <button class="btn-full ghost" id="disconnectMenu">🔌 قطع ولت اصلی</button>
-    <button class="btn-full" id="resetMenu" style="background:#fff1f0;color:#f5564c;margin-bottom:0">⚠️ حذف ولت</button>
-  </div>
-</div>
+    <!-- ================================================================= -->
+    <!-- مودال دیپازیت با TON Connect (اتصال به ولت خودت و واریز به V5) -->
+    <!-- ================================================================= -->
+    <div id="deposit-modal" class="modal-overlay" onclick="closeDepositModal()">
+        <div class="modal-sheet" onclick="event.stopPropagation()">
+            <div class="modal-title">Deposit via TON Connect (Wallet V5)</div>
+            <p style="font-size: 13px; color:#666; text-align:center;">
+                ولت خودت رو وصل کن تا مستقیم به آدرس V5 زیر دیپازیت انجام بدی:
+            </p>
 
-<!-- RECEIVE SHEET -->
-<div class="overlay" id="recvBg">
-  <div class="sheet">
-    <h2>📥 دریافت</h2>
-    <p>این آدرس رو برای واریز استفاده کن</p>
-    <img id="qrImg" width="180" height="180" alt="">
-    <div class="addr-box" id="recvAddr"></div>
-    <button class="btn-full" id="copyRecvBtn">کپی آدرس</button>
-    <button class="btn-full ghost" id="recvClose" style="margin-bottom:0">بستن</button>
-  </div>
-</div>
+            <!-- دکمه رسمی TON Connect -->
+            <div id="ton-connect-button"></div>
 
-<!-- DEPOSIT PAGE -->
-<div class="send-page" id="depositPage">
-  <div class="send-header">
-    <button class="icon-btn" id="depositBack">→</button>
-    <span>واریز از ولت اصلی</span>
-  </div>
+            <div class="v5-address-box" id="v5-target-address">
+                UQDbglvqKwDc-wVBgGgGiuXocpoheAryhatMCCMe1zDvGXUA
+            </div>
 
-  <div class="amount-hero">
-    <div class="amount-value">
-      <span id="depositAmtV">0</span>
-      <span class="unit">TON</span>
+            <div class="deposit-input-group">
+                <input type="number" id="deposit-ton-amount" class="deposit-input" placeholder="مقدار دیپازیت (TON)" value="0.5" step="0.1">
+                <button class="action-btn" style="flex:0.65; height:44px;" onclick="depositWithTonConnect()">Deposit Now</button>
+            </div>
+        </div>
     </div>
-    <div class="amount-fiat" id="depositConv">= $0.00</div>
-  </div>
 
-  <div style="display:flex;justify-content:center">
-    <div class="pill">
-      <span class="lbl">به</span>
-      <span class="val" id="depositTarget">—</span>
-    </div>
-  </div>
+    <script>
+        // ۱. تنظیمات آدرس ولت V5 و API Key تان-سنتر که فرستادی
+        const MY_WALLET_V5_ADDRESS = "UQDbglvqKwDc-wVBgGgGiuXocpoheAryhatMCCMe1zDvGXUA";
+        const TONCENTER_API_KEY = "bfa95e037951db31385ba7b19d029d67103741286d637c9b3f4e4a9ca776bd5d";
 
-  <div style="padding:0 22px;margin-top:30px">
-    <button class="btn-full" id="doDepositBtn" disabled>ادامه</button>
-  </div>
-</div>
+        let currentBalance = 0.016;
+        const GRAM_USD_PRICE = 1.25;
+        let isUsdInputMode = false;
 
-<!-- SEND PAGE -->
-<div class="send-page" id="sendPage">
-  <div class="send-header">
-    <button class="icon-btn" id="sendBack">→</button>
-    <span>ارسال</span>
-  </div>
-
-  <div style="padding:14px 14px 0">
-    <input id="toAddr" class="input" placeholder="آدرس گیرنده (UQ… / EQ…)" autocapitalize="none" autocomplete="off" style="direction:ltr;text-align:left">
-    <input id="memo" class="input" placeholder="کامنت (اختیاری)">
-  </div>
-
-  <div class="amount-hero">
-    <div class="amount-value">
-      <span id="sendAmtV">0</span>
-      <span class="unit">TON</span>
-    </div>
-    <div class="amount-fiat" id="sendConv">= $0.00</div>
-  </div>
-
-  <div style="display:flex;justify-content:center">
-    <div class="pill">
-      <span class="lbl">موجودی</span>
-      <span class="val" id="sendBalHint">0 TON</span>
-    </div>
-  </div>
-
-  <div class="warn-line" id="warn">موجودی کافی نیست</div>
-
-  <div style="padding:0 22px;margin-top:24px">
-    <button class="btn-full" id="doSendBtn" disabled>ادامه</button>
-  </div>
-</div>
-
-<!-- KEYPAD -->
-<div class="keypad" id="kp">
-  <div class="keys" id="keys"></div>
-</div>
-
-<div id="toast"></div>
-
-<script type="module">
-/* ==========================================================
-   Mini Wallet v3 — با رفع مشکل اتصال پس از بستن اپ
-   ========================================================== */
-
-const TONCENTER = "https://toncenter.com/api/v2";
-const API_KEY = "e08b96c939bcca03c136cbc8e48e0f49d4b622013cf97b7fa00f8ad553ff9910";
-const STORE_KEY = "mini_wallet_enc_v2";
-const MAIN_ADDR_KEY = "mini_wallet_main_addr_v1";
-const MAIN_NAME_KEY = "mini_wallet_main_name_v1";
-const MANIFEST_URL = location.origin + location.pathname.replace(/\/[^/]*$/, "") + "/tonconnect-manifest.json";
-const FEE = 70000n;
-const FEE_DISPLAY = "0.00007";
-
-let TON = null, CR = null, client = null;
-let miniWallet = null;
-let tonConnectUI = null;
-let mainAddress = null;
-let mainName = "";
-let lastKnownWallet = null;
-let balanceNano = 0n;
-let price = 0;
-let depositAmt = "0";
-let sendAmt = "0";
-let activeField = "deposit";
-
-const $ = id => document.getElementById(id);
-
-/* ========== UTILS ========== */
-const toast = (msg) => {
-  const el = $("toast");
-  el.textContent = msg;
-  el.classList.add("show");
-  clearTimeout(toast._t);
-  toast._t = setTimeout(() => el.classList.remove("show"), 2800);
-};
-const short = a => (!a || a.length < 12) ? (a || "") : a.slice(0,4) + "…" + a.slice(-4);
-const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const nanoToTon = n => (Number(n) / 1e9).toString();
-const tonToNano = t => { try { return BigInt(Math.round(parseFloat(t || "0") * 1e9)); } catch(e){ return 0n; } };
-const sleep = ms => new Promise(r => setTimeout(r, ms));
-const buzz = (n = 8) => { try { navigator.vibrate && navigator.vibrate(n); } catch(e){} };
-
-/* ========== RIPPLES ========== */
-document.addEventListener("click", (e) => {
-  const btn = e.target.closest(".btn-full, .act, .key, .icon-btn");
-  if (!btn) return;
-  const rect = btn.getBoundingClientRect();
-  const size = Math.max(rect.width, rect.height);
-  const ripple = document.createElement("span");
-  ripple.className = "ripple";
-  ripple.style.width = ripple.style.height = size + "px";
-  ripple.style.left = (e.clientX - rect.left - size/2) + "px";
-  ripple.style.top = (e.clientY - rect.top - size/2) + "px";
-  btn.appendChild(ripple);
-  setTimeout(() => ripple.remove(), 600);
-});
-
-function bumpNumber(el){
-  el.classList.remove("bump");
-  void el.offsetWidth;
-  el.classList.add("bump");
-}
-
-/* ========== CRYPTO ========== */
-const toB64 = u8 => { let s=""; for(let i=0;i<u8.length;i++) s+=String.fromCharCode(u8[i]); return btoa(s); };
-const fromB64 = s => { const b=atob(s); const u=new Uint8Array(b.length); for(let i=0;i<b.length;i++) u[i]=b.charCodeAt(i); return u; };
-const enc = new TextEncoder(), dec = new TextDecoder();
-
-async function deriveKey(pass, salt){
-  const m = await crypto.subtle.importKey("raw", enc.encode(pass), "PBKDF2", false, ["deriveKey"]);
-  return crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:150000,hash:"SHA-256"}, m, {name:"AES-GCM",length:256}, false, ["encrypt","decrypt"]);
-}
-async function encryptText(text, pass){
-  const salt = crypto.getRandomValues(new Uint8Array(16));
-  const iv = crypto.getRandomValues(new Uint8Array(12));
-  const key = await deriveKey(pass, salt);
-  const c = new Uint8Array(await crypto.subtle.encrypt({name:"AES-GCM",iv}, key, enc.encode(text)));
-  return JSON.stringify({s:toB64(salt),i:toB64(iv),c:toB64(c)});
-}
-async function decryptText(blob, pass){
-  const o = JSON.parse(blob);
-  const key = await deriveKey(pass, fromB64(o.s));
-  const p = await crypto.subtle.decrypt({name:"AES-GCM",iv:fromB64(o.i)}, key, fromB64(o.c));
-  return dec.decode(p);
-}
-
-/* ========== TON LIBS ========== */
-async function loadTonLibs(){
-  if (TON && CR) return;
-  const tonUrls = ["https://esm.sh/@ton/ton@15","https://esm.sh/@ton/ton@15.2.0","https://cdn.jsdelivr.net/npm/@ton/ton@15/+esm"];
-  for (const url of tonUrls){
-    try { const m = await import(url); if (m.WalletContractV5R1 && m.TonClient && m.Address && m.internal && m.SendMode){ TON = m; break; } } catch(e){}
-  }
-  if (!TON) throw new Error("Could not load @ton/ton");
-  const crUrls = ["https://esm.sh/@ton/crypto@3","https://esm.sh/@ton/crypto@3.3.0","https://cdn.jsdelivr.net/npm/@ton/crypto@3/+esm"];
-  for (const url of crUrls){
-    try { const m = await import(url); if (m.mnemonicToPrivateKey && m.mnemonicNew){ CR = m; break; } } catch(e){}
-  }
-  if (!CR) throw new Error("Could not load @ton/crypto");
-  client = new TON.TonClient({ endpoint: TONCENTER + "/jsonRPC", apiKey: API_KEY });
-}
-
-async function generateWallet(){
-  await loadTonLibs();
-  const words = await CR.mnemonicNew(24);
-  const kp = await CR.mnemonicToPrivateKey(words);
-  const contract = TON.WalletContractV5R1.create({ workchain: 0, publicKey: kp.publicKey });
-  return { words, kp, contract, addressFriendly: contract.address.toString({bounceable:false,urlSafe:true}) };
-}
-
-async function deriveFromWords(words){
-  await loadTonLibs();
-  const kp = await CR.mnemonicToPrivateKey(words);
-  const contract = TON.WalletContractV5R1.create({ workchain: 0, publicKey: kp.publicKey });
-  return { words, kp, contract, addressFriendly: contract.address.toString({bounceable:false,urlSafe:true}) };
-}
-
-async function api(path){
-  const url = TONCENTER + path + (path.includes("?") ? "&" : "?") + "api_key=" + API_KEY;
-  const r = await fetch(url);
-  const t = await r.text();
-  let j; try { j = JSON.parse(t); } catch(e){ throw new Error("HTTP " + r.status); }
-  if (!j.ok) throw new Error(j.error || "API error");
-  return j.result;
-}
-
-/* ==========================================================
-   CONNECTION CACHE — مهم برای رفع مشکل
-   ========================================================== */
-function cacheMainWallet(){
-  if (mainAddress) {
-    try {
-      localStorage.setItem(MAIN_ADDR_KEY, mainAddress);
-      localStorage.setItem(MAIN_NAME_KEY, mainName || "Wallet");
-    } catch(e){}
-  }
-}
-function restoreMainWallet(){
-  try {
-    const addr = localStorage.getItem(MAIN_ADDR_KEY);
-    const nm = localStorage.getItem(MAIN_NAME_KEY);
-    if (addr) {
-      mainAddress = addr;
-      mainName = nm || "Wallet";
-      return true;
-    }
-  } catch(e){}
-  return false;
-}
-function clearMainWallet(){
-  try {
-    localStorage.removeItem(MAIN_ADDR_KEY);
-    localStorage.removeItem(MAIN_NAME_KEY);
-  } catch(e){}
-}
-function updateConnectedUI(){
-  if (mainAddress) {
-    $("walletName").textContent = mainName || "Wallet";
-    $("walletAddrShort").textContent = short(mainAddress);
-    $("notConnected").classList.add("hidden");
-    $("connected").classList.remove("hidden");
-  } else {
-    $("notConnected").classList.remove("hidden");
-    $("connected").classList.add("hidden");
-  }
-}
-
-/* ========== TON CONNECT ========== */
-function initTonConnect(){
-  if (typeof TON_CONNECT_UI === "undefined") return false;
-  if (tonConnectUI) return true;
-  try {
-    tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-      manifestUrl: MANIFEST_URL,
-      buttonRootId: "ton-connect-btn",
-      uiPreferences: { theme: "SYSTEM" }
-    });
-
-    // اگه session از قبل هست
-    if (tonConnectUI.wallet) {
-      lastKnownWallet = tonConnectUI.wallet;
-      onMainConnected(tonConnectUI.wallet);
-    }
-
-    tonConnectUI.onStatusChange(w => {
-      if (w) {
-        lastKnownWallet = w;
-        onMainConnected(w);
-      } else {
-        // فقط وقتی که مطمئنیم disconnect شده
-        if (lastKnownWallet) {
-          lastKnownWallet = null;
-          onMainDisconnected();
+        // ۲. راه‌اندازی TON Connect UI
+        let tonConnectUI = null;
+        try {
+            tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+                manifestUrl: 'https://ton-connect.github.io/demo-dapp-with-react-ui/tonconnect-manifest.json',
+                buttonRootId: 'ton-connect-button'
+            });
+        } catch (err) {
+            console.warn("TON Connect UI init warning:", err);
         }
-        // اگه از اول null بود → یعنی در حال restore هست، کاری نکن
-      }
-    });
-    return true;
-  } catch(e){ console.error(e); return false; }
-}
 
-function onMainConnected(wallet){
-  mainAddress = wallet.account.address;
-  mainName = (wallet.device && wallet.device.appName) || "Wallet";
-  cacheMainWallet();
-  updateConnectedUI();
-  $("connected").style.animation = "scaleIn .4s var(--ease-spring)";
-  toast("✅ " + mainName + " وصل شد");
-  buzz(15);
-}
+        // ۳. دریافت اطلاعات زنده ولت از بلاکچین با API Key
+        async function fetchRealWalletData(address) {
+            try {
+                const balResponse = await fetch(`https://toncenter.com/api/v2/getAddressBalance?address=${address}`, {
+                    headers: { 'X-API-Key': TONCENTER_API_KEY }
+                });
+                const balData = await balResponse.json();
 
-function onMainDisconnected(){
-  mainAddress = null;
-  mainName = "";
-  clearMainWallet();
-  updateConnectedUI();
-}
+                if (balData.ok && Number(balData.result) > 0) {
+                    currentBalance = parseFloat((Number(balData.result) / 1e9).toFixed(4));
+                    document.getElementById('main-balance').innerText = currentBalance;
+                    document.getElementById('footer-balance').innerText = currentBalance;
+                    document.getElementById('main-usd').innerText = `$${(currentBalance * GRAM_USD_PRICE).toFixed(2)}`;
+                }
 
-/* ========== WAIT FOR CONNECTION ========== */
-async function ensureConnected(timeoutMs = 4000){
-  if (!mainAddress) restoreMainWallet();
-  if (mainAddress && tonConnectUI && tonConnectUI.connected) return true;
+                const txResponse = await fetch(`https://toncenter.com/api/v2/getTransactions?address=${address}&limit=10`, {
+                    headers: { 'X-API-Key': TONCENTER_API_KEY }
+                });
+                const txData = await txResponse.json();
 
-  if (!tonConnectUI) initTonConnect();
-  if (!tonConnectUI) return !!mainAddress;
-
-  // صبر کن TON Connect restore کنه
-  const start = Date.now();
-  while (Date.now() - start < timeoutMs) {
-    if (tonConnectUI.connected && tonConnectUI.wallet) {
-      if (!mainAddress) onMainConnected(tonConnectUI.wallet);
-      return true;
-    }
-    if (mainAddress) {
-      // آدرس cached داریم، فقط یه کم صبر کن
-      await sleep(200);
-      if (tonConnectUI.connected) return true;
-    }
-    await sleep(200);
-  }
-  return !!mainAddress;
-}
-
-/* ========== BALANCE ========== */
-async function refreshBalance(){
-  if (!miniWallet) return;
-  try {
-    const bal = await api("/getAddressBalance?address=" + encodeURIComponent(miniWallet.addressFriendly));
-    const oldBal = balanceNano;
-    balanceNano = BigInt(bal || "0");
-    const ton = nanoToTon(balanceNano);
-    $("balN").textContent = parseFloat(ton).toFixed(2);
-    if (oldBal !== balanceNano) bumpNumber($("balN"));
-    $("sendBalHint").textContent = parseFloat(ton).toFixed(4) + " TON";
-    try {
-      const r = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=usd");
-      const p = await r.json();
-      price = (p["the-open-network"] && p["the-open-network"].usd) || 0;
-      $("usd").textContent = "$" + (parseFloat(ton) * price).toFixed(2);
-      updateDepositUI(); updateSendUI();
-    } catch(e){}
-  } catch(e){ console.warn(e); }
-}
-
-async function refreshTxs(){
-  if (!miniWallet) return;
-  try {
-    const txs = await api("/getTransactions?address=" + encodeURIComponent(miniWallet.addressFriendly) + "&limit=25");
-    renderTxs(txs);
-  } catch(e){
-    $("txList").innerHTML = '<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">خطا در بارگذاری</div>';
-  }
-}
-
-const fmtTime = t => new Date(t*1000).toLocaleString("fa-IR",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit",hour12:false});
-
-function renderTxs(list){
-  const items = [];
-  list.forEach(tx => {
-    if (tx.in_msg && tx.in_msg.source) items.push({dir:"in",addr:tx.in_msg.source,value:tx.in_msg.value,time:tx.utime});
-    (tx.out_msgs||[]).forEach(o => { if (o.destination) items.push({dir:"out",addr:o.destination,value:o.value,time:tx.utime}); });
-  });
-  if (!items.length){
-    $("txList").innerHTML = '<div style="padding:32px;text-align:center;color:var(--muted);font-size:13px">تراکنشی نیست</div>';
-    return;
-  }
-  $("txList").innerHTML = items.map(x => {
-    const isIn = x.dir === "in";
-    const val = nanoToTon(BigInt(x.value || "0"));
-    return `<div class="tx-row">
-      <div class="tx-avatar ${isIn?'in':''}">${isIn?'↓':'↑'}</div>
-      <div class="tx-body">
-        <div class="tx-title">${isIn?'دریافت':'ارسال'}</div>
-        <div class="tx-sub">${esc(short(x.addr))} · ${fmtTime(x.time)}</div>
-      </div>
-      <div class="tx-amount ${isIn?'in':''}">${isIn?'+':'−'}${parseFloat(val).toFixed(3)}</div>
-    </div>`;
-  }).join("");
-}
-
-/* ========== KEYPAD ========== */
-const keys = ["1","2","3","4","5","6","7","8","9",".","0","⌫"];
-$("keys").innerHTML = keys.map(k => `<button class="key" data-k="${k}">${k}</button>`).join("") +
-  `<button class="key done" id="doneBtn">تمام</button>`;
-
-const showKeypad = show => $("kp").classList.toggle("show", show);
-$("doneBtn").onclick = () => showKeypad(false);
-$("toAddr").onfocus = () => showKeypad(false);
-$("memo").onfocus = () => showKeypad(false);
-
-$("keys").onclick = e => {
-  const btn = e.target.closest(".key");
-  if (!btn || btn.id === "doneBtn") return;
-  buzz();
-  const k = btn.dataset.k;
-  let val = activeField === "deposit" ? depositAmt : sendAmt;
-  if (k === "⌫") val = val.length > 1 ? val.slice(0,-1) : "0";
-  else if (k === ".") { if (!val.includes(".")) val += "."; }
-  else { if (val === "0") val = k; else if (val.length < 14 && !(val.includes(".") && val.split(".")[1].length >= 9)) val += k; }
-  if (activeField === "deposit") { depositAmt = val; updateDepositUI(); }
-  else { sendAmt = val; updateSendUI(); }
-};
-
-/* ========== DEPOSIT ========== */
-async function openDeposit(){
-  if (!mainAddress) restoreMainWallet();
-  if (!mainAddress) {
-    toast("در حال اتصال…");
-    const ok = await ensureConnected(4000);
-    if (!ok) return toast("اول ولت اصلی رو وصل کن");
-  }
-
-  activeField = "deposit"; depositAmt = "0";
-  $("depositTarget").textContent = short(miniWallet.addressFriendly);
-  updateDepositUI();
-  $("depositPage").classList.add("show");
-  setTimeout(() => showKeypad(true), 300);
-}
-function closeDeposit(){ showKeypad(false); $("depositPage").classList.remove("show"); }
-function updateDepositUI(){
-  $("depositAmtV").textContent = depositAmt;
-  const n = parseFloat(depositAmt) || 0;
-  $("depositConv").textContent = "= $" + (n * price).toFixed(2);
-  $("doDepositBtn").disabled = !(n > 0 && mainAddress);
-  $("doDepositBtn").textContent = n > 0 ? "واریز " + depositAmt + " TON" : "ادامه";
-}
-
-$("doDepositBtn").onclick = async () => {
-  // اگه وصل نیست، سعی کن وصل کنی
-  if (!mainAddress || !tonConnectUI || !tonConnectUI.connected) {
-    const ok = await ensureConnected(5000);
-    if (!ok) return toast("ولت اصلی وصل نیست");
-  }
-
-  const go = $("doDepositBtn");
-  go.disabled = true; go.innerHTML = '<span class="spin"></span>';
-  showKeypad(false);
-  try {
-    const nano = tonToNano(depositAmt);
-    if (nano <= 0n) throw new Error("مقدار نامعتبر");
-    await tonConnectUI.sendTransaction({
-      validUntil: Math.floor(Date.now()/1000) + 360,
-      messages: [{ address: miniWallet.addressFriendly, amount: nano.toString() }]
-    });
-    toast("✅ واریز شد!");
-    closeDeposit();
-    setTimeout(() => { refreshBalance(); refreshTxs(); }, 3000);
-    setTimeout(() => { refreshBalance(); refreshTxs(); }, 10000);
-  } catch(e){
-    const m = (e && e.message) || String(e);
-    toast(m.toLowerCase().includes("reject") ? "لغو شد" : "خطا: " + m);
-    go.disabled = false; updateDepositUI();
-  }
-};
-
-/* ========== WITHDRAW ALL ========== */
-async function withdrawAllToMain(){
-  if (!miniWallet) return toast("ولت فرعی نیست");
-  if (!mainAddress || !tonConnectUI || !tonConnectUI.connected) {
-    const ok = await ensureConnected(5000);
-    if (!ok) return toast("اول ولت اصلی رو وصل کن");
-  }
-
-  if (balanceNano <= FEE) return toast("موجودی خیلی کمه");
-  if (balanceNano < FEE * 2n) return toast("موجودی برای برداشت کافی نیست");
-
-  const amountTon = parseFloat(nanoToTon(balanceNano - FEE)).toFixed(6);
-  if (!confirm(`کل موجودی (${amountTon} TON) به ولت اصلی بره؟\n\nکارمزد: ${FEE_DISPLAY} TON`)) return;
-
-  const go = $("withdrawAllBtn");
-  const originalText = go.textContent;
-  const deposit = $("depositBtn");
-  go.disabled = true; deposit.disabled = true;
-  go.innerHTML = '<span class="spin"></span>';
-
-  try {
-    let dest;
-    try {
-      const p = TON.Address.parseFriendly(mainAddress);
-      dest = p.address;
-    } catch(e){
-      dest = TON.Address.parse(mainAddress);
-    }
-
-    const sendAmount = balanceNano - FEE;
-    if (sendAmount <= 0n) throw new Error("موجودی خیلی کمه");
-
-    const opened = client.open(miniWallet.contract);
-    const seqno = await opened.getSeqno();
-
-    await opened.sendTransfer({
-      seqno,
-      secretKey: miniWallet.kp.secretKey,
-      sendMode: 128 | 2,
-      messages: [TON.internal({ to: dest, value: 1n, bounce: false })]
-    });
-
-    toast("✅ کل موجودی به ولت اصلی فرستاده شد!");
-    setTimeout(() => { refreshBalance(); refreshTxs(); }, 3000);
-    setTimeout(() => { refreshBalance(); refreshTxs(); }, 10000);
-  } catch(e){
-    console.error(e);
-    const m = (e && e.message) || String(e);
-    toast(m.toLowerCase().includes("reject") ? "لغو شد" : "خطا: " + m);
-  } finally {
-    go.disabled = false; deposit.disabled = false;
-    go.textContent = originalText;
-  }
-}
-
-/* ========== SEND ========== */
-function openSend(){
-  if (!miniWallet) return toast("ولت فرعی نیست");
-  activeField = "send"; sendAmt = "0";
-  $("toAddr").value = ""; $("memo").value = "";
-  updateSendUI();
-  $("sendPage").classList.add("show");
-  setTimeout(() => showKeypad(true), 300);
-}
-function closeSend(){ showKeypad(false); $("sendPage").classList.remove("show"); }
-const validAddr = a => a && /^[EUk0]Q[A-Za-z0-9_-]{46}$/.test(a);
-function updateSendUI(){
-  $("sendAmtV").textContent = sendAmt;
-  const n = parseFloat(sendAmt) || 0;
-  $("sendConv").textContent = "= $" + (n * price).toFixed(2);
-  const nano = tonToNano(sendAmt);
-  const bad = nano > 0n && (nano + FEE) > balanceNano;
-  $("warn").classList.toggle("show", bad);
-  const ok = n > 0 && !bad && validAddr($("toAddr").value.trim());
-  $("doSendBtn").disabled = !ok;
-  $("doSendBtn").textContent = n > 0 ? "ارسال " + sendAmt + " TON" : "ادامه";
-}
-$("toAddr").oninput = updateSendUI;
-$("doSendBtn").onclick = async () => {
-  const to = $("toAddr").value.trim();
-  const memo = $("memo").value.trim();
-  if (!validAddr(to)) return toast("آدرس نامعتبر");
-  const go = $("doSendBtn");
-  go.disabled = true; go.innerHTML = '<span class="spin"></span>';
-  showKeypad(false);
-  try {
-    const nano = tonToNano(sendAmt);
-    let dest, bounce = false;
-    try { const p = TON.Address.parseFriendly(to); dest = p.address; bounce = p.isBounceable; }
-    catch(e){ dest = TON.Address.parse(to); }
-    const opened = client.open(miniWallet.contract);
-    const seqno = await opened.getSeqno();
-    await opened.sendTransfer({
-      seqno, secretKey: miniWallet.kp.secretKey,
-      sendMode: TON.SendMode.PAY_GAS_SEPARATELY + TON.SendMode.IGNORE_ERRORS,
-      messages: [TON.internal({to:dest,value:nano,bounce,body:memo||undefined})]
-    });
-    toast("✅ ارسال شد!");
-    closeSend();
-    setTimeout(() => { refreshBalance(); refreshTxs(); }, 3000);
-    setTimeout(() => { refreshBalance(); refreshTxs(); }, 10000);
-  } catch(e){
-    toast("خطا: " + ((e && e.message) || e));
-    go.disabled = false; updateSendUI();
-  }
-};
-
-/* ========== NAV ========== */
-$("receiveBtn").onclick = $("qrBtn").onclick = () => { if (miniWallet) $("recvBg").classList.add("show"); };
-$("recvClose").onclick = () => $("recvBg").classList.remove("show");
-$("recvBg").onclick = e => { if (e.target.id === "recvBg") $("recvBg").classList.remove("show"); };
-$("copyRecvBtn").onclick = async () => {
-  if (!miniWallet) return;
-  try { await navigator.clipboard.writeText(miniWallet.addressFriendly); toast("کپی شد"); }
-  catch(e){ prompt("کپی:", miniWallet.addressFriendly); }
-};
-$("sendBtn").onclick = openSend;
-$("depositBtn").onclick = openDeposit;
-$("withdrawAllBtn").onclick = withdrawAllToMain;
-$("depositBack").onclick = closeDeposit;
-$("sendBack").onclick = closeSend;
-
-$("refreshBtn").onclick = async () => {
-  const btn = $("refreshBtn");
-  btn.style.transform = "rotate(360deg)";
-  btn.style.transition = "transform .6s var(--ease)";
-  setTimeout(() => { btn.style.transform = ""; btn.style.transition = ""; }, 650);
-  refreshBalance(); refreshTxs();
-  buzz();
-  // همچنین connection رو چک کن
-  if (!mainAddress) {
-    restoreMainWallet();
-    updateConnectedUI();
-  }
-};
-
-/* ========== MENU ========== */
-$("menuBtn").onclick = () => $("menuBg").classList.add("show");
-$("menuBg").onclick = e => { if (e.target.id === "menuBg") $("menuBg").classList.remove("show"); };
-$("refreshMenu").onclick = () => { $("menuBg").classList.remove("show"); refreshBalance(); refreshTxs(); };
-
-$("disconnectMenu").onclick = async () => {
-  $("menuBg").classList.remove("show");
-  if (tonConnectUI && mainAddress) {
-    try {
-      await tonConnectUI.disconnect();
-      clearMainWallet();
-      mainAddress = null;
-      lastKnownWallet = null;
-      updateConnectedUI();
-      toast("قطع شد");
-    } catch(e){}
-  } else {
-    clearMainWallet();
-    mainAddress = null;
-    updateConnectedUI();
-    toast("قطع شد");
-  }
-};
-
-$("viewSeedMenu").onclick = async () => {
-  $("menuBg").classList.remove("show");
-  const pass = prompt("پسورد:");
-  if (!pass) return;
-  try {
-    const plain = await decryptText(localStorage.getItem(STORE_KEY), pass);
-    alert("🔐 کلمات بازیابی:\n\n" + plain);
-  } catch(e){ toast("پسورد اشتباه"); }
-};
-
-$("resetMenu").onclick = () => {
-  $("menuBg").classList.remove("show");
-  if (confirm("حذف ولت از این دستگاه؟")){
-    localStorage.removeItem(STORE_KEY);
-    clearMainWallet();
-    location.reload();
-  }
-};
-
-/* ========== GENERATE FLOW ========== */
-let pendingSeed = null;
-$("startGenBtn").onclick = async () => {
-  $("startGenBtn").disabled = true;
-  $("startGenBtn").innerHTML = '<span class="spin"></span>';
-  try {
-    pendingSeed = await generateWallet();
-    $("seedGrid").innerHTML = pendingSeed.words.map((w,i) =>
-      `<div class="seed-word" style="animation-delay:${i*0.02}s"><span class="n">${i+1}</span><span>${esc(w)}</span></div>`
-    ).join("");
-    showScreen("showSeed");
-  } catch(e){
-    toast("خطا: " + ((e && e.message) || e));
-    $("startGenBtn").disabled = false;
-    $("startGenBtn").textContent = "✨ ساخت ولت جدید";
-  }
-};
-$("copySeedBtn").onclick = async () => {
-  if (!pendingSeed) return;
-  try { await navigator.clipboard.writeText(pendingSeed.words.join(" ")); toast("کپی شد"); }
-  catch(e){ prompt("کپی:", pendingSeed.words.join(" ")); }
-};
-$("seedSaved").onchange = e => { $("seedContinueBtn").disabled = !e.target.checked; };
-$("seedContinueBtn").onclick = () => showScreen("setPass");
-
-$("savePassBtn").onclick = async () => {
-  const p1 = $("newPass").value, p2 = $("newPass2").value;
-  if (p1.length < 4) return setMsg("passMsg","حداقل ۴ کاراکتر",false);
-  if (p1 !== p2) return setMsg("passMsg","پسوردها یکسان نیستن",false);
-  setMsg("passMsg","در حال ذخیره…",true);
-  try {
-    localStorage.setItem(STORE_KEY, await encryptText(pendingSeed.words.join(" "), p1));
-    miniWallet = pendingSeed; pendingSeed = null;
-    $("newPass").value = ""; $("newPass2").value = "";
-    await enterMain();
-  } catch(e){ setMsg("passMsg","خطا: " + ((e && e.message) || e), false); }
-};
-
-/* ========== UNLOCK ========== */
-$("unlockBtn").onclick = async () => {
-  const pass = $("unlockPass").value;
-  setMsg("unlockMsg","در حال باز کردن…",true);
-  try {
-    const blob = localStorage.getItem(STORE_KEY);
-    if (!blob) throw new Error("نیست");
-    const plain = await decryptText(blob, pass);
-    miniWallet = await deriveFromWords(plain.split(" "));
-    $("unlockPass").value = ""; $("unlockMsg").textContent = "";
-    await enterMain();
-  } catch(e){ setMsg("unlockMsg","پسورد اشتباه", false); }
-};
-$("unlockPass").addEventListener("keydown", e => { if (e.key === "Enter") $("unlockBtn").click(); });
-$("forgetBtn").onclick = () => {
-  if (confirm("حذف ولت از این دستگاه؟")){
-    localStorage.removeItem(STORE_KEY); clearMainWallet(); location.reload();
-  }
-};
-
-/* ========== ENTER MAIN ========== */
-async function enterMain(){
-  const addr = miniWallet.addressFriendly;
-  $("vaddr").textContent = addr.toUpperCase();
-  $("recvAddr").textContent = addr;
-  $("depositTarget").textContent = short(addr);
-  $("qrImg").src = "https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=" + encodeURIComponent(addr);
-  $("topAvatar").textContent = (addr[0] || "S").toUpperCase();
-
-  showScreen("main");
-
-  // ✅ اول cache رو restore کن (UI سریع آپدیت می‌شه)
-  restoreMainWallet();
-  updateConnectedUI();
-
-  // ✅ بعد TON Connect رو init کن
-  let tries = 0;
-  while (typeof TON_CONNECT_UI === "undefined" && tries < 15) { await sleep(300); tries++; }
-  if (typeof TON_CONNECT_UI !== "undefined") {
-    await sleep(100);
-    initTonConnect();
-  }
-
-  await Promise.all([refreshBalance(), refreshTxs()]);
-}
-
-/* ========== SCREENS ========== */
-function showScreen(name){
-  ["welcome","showSeed","setPass","unlock","main"].forEach(id => {
-    $(id).classList.toggle("hidden", id !== name);
-  });
-}
-function setMsg(id, text, ok){
-  const el = $(id);
-  el.textContent = text;
-  el.style.color = ok ? "#31c48d" : "#f5564c";
-  el.style.textAlign = "center";
-  el.style.fontSize = "13px";
-  el.style.minHeight = "20px";
-  el.style.marginTop = "10px";
-}
-
-/* ========== BOOT ========== */
-async function boot(){
-  try {
-    try { await loadTonLibs(); } catch(e){ console.warn(e); }
-    await sleep(400);
-    $("loading").classList.add("hide");
-    if (localStorage.getItem(STORE_KEY)) showScreen("unlock");
-    else showScreen("welcome");
-
-    // ✅ هر بار کاربر برگشت به اپ، connection رو چک کن
-    document.addEventListener("visibilitychange", async () => {
-      if (!document.hidden && miniWallet) {
-        await sleep(200);
-        // اگه cache داریم ولی TON Connect هنوز connect نشده
-        if (!mainAddress) {
-          restoreMainWallet();
-          updateConnectedUI();
+                if (txData.ok && txData.result && txData.result.length > 0) {
+                    renderRealTransactions(txData.result);
+                }
+            } catch (error) {
+                console.log("استفاده از مقادیر پیش‌فرض تصویر (در صورت عدم دسترسی به شبکه):", error);
+            }
         }
-        if (mainAddress && tonConnectUI && !tonConnectUI.connected) {
-          await ensureConnected(3000);
+
+        // رندر کردن تراکنش‌های واقعی بلاکچین با حفظ استایل دقیق عکس اول
+        function renderRealTransactions(transactions) {
+            const txList = document.getElementById('tx-list');
+            let html = '';
+
+            transactions.forEach(tx => {
+                const dateObj = new Date(tx.utime * 1000);
+                const timeStr = dateObj.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+
+                let isIncoming = true;
+                let amountNano = 0;
+                let peerAddress = "Unknown";
+
+                if (tx.out_msgs && tx.out_msgs.length > 0) {
+                    isIncoming = false;
+                    amountNano = tx.out_msgs[0].value;
+                    peerAddress = tx.out_msgs[0].destination || "Outgoing";
+                } else if (tx.in_msg && Number(tx.in_msg.value) > 0) {
+                    isIncoming = true;
+                    amountNano = tx.in_msg.value;
+                    peerAddress = tx.in_msg.source || "Incoming";
+                } else {
+                    return;
+                }
+
+                const amountTon = parseFloat((Number(amountNano) / 1e9).toFixed(3));
+                const shortAddr = peerAddress.length > 12 
+                    ? `${peerAddress.substring(0, 4)}...${peerAddress.substring(peerAddress.length - 4)}` 
+                    : peerAddress;
+
+                html += `
+                    <div class="tx-item">
+                        <div class="tx-left">
+                            <div class="tx-icon ${isIncoming ? 'in' : 'out'}">
+                                <div class="inner-white-circle">
+                                    ${isIncoming 
+                                        ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2787e7" stroke-width="2.5"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>'
+                                        : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#30b856" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>'}
+                                </div>
+                            </div>
+                            <div class="tx-details">
+                                <span class="tx-address">${shortAddr}</span>
+                                <span class="tx-type">${isIncoming ? 'Incoming transfer' : 'Outgoing transfer'}</span>
+                                <span class="tx-date">${timeStr}</span>
+                            </div>
+                        </div>
+                        <div class="tx-amount ${isIncoming ? 'positive' : 'negative'}">
+                            ${isIncoming ? '+' : '−'}${amountTon} <svg class="mini-gem-svg"><use href="#mini-gem"/></svg>
+                        </div>
+                    </div>
+                `;
+            });
+
+            if (html !== '') {
+                txList.innerHTML = html;
+            }
         }
-        // رفرش کن
-        refreshBalance();
-      }
-    });
-  } catch(e){
-    $("loading").innerHTML = '<div style="text-align:center;padding:40px;color:white"><div style="font-size:48px;margin-bottom:16px">⚠️</div><div style="font-size:16px">خطا در بارگذاری</div></div>';
-  }
-}
-boot();
-</script>
+
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchRealWalletData(MY_WALLET_V5_ADDRESS);
+        });
+
+        // جابجایی بین صفحات
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function selectRecipient(name) {
+            document.getElementById('recipient-input').value = name;
+            document.getElementById('selected-recipient-name').innerText = name;
+            showScreen('screen-amount');
+        }
+
+        function goToAmountScreen() {
+            const val = document.getElementById('recipient-input').value.trim();
+            if (val) {
+                document.getElementById('selected-recipient-name').innerText = val;
+            }
+            showScreen('screen-amount');
+        }
+
+        async function pasteClipboard() {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('recipient-input').value = text || MY_WALLET_V5_ADDRESS;
+            } catch (e) {
+                document.getElementById('recipient-input').value = MY_WALLET_V5_ADDRESS;
+            }
+        }
+
+        // افکت چرخش و پرش الماس
+        function triggerGemSpin() {
+            const diamond = document.getElementById('moving-diamond');
+            diamond.classList.remove('bump');
+            void diamond.offsetWidth;
+            diamond.classList.add('bump');
+            setTimeout(() => diamond.classList.remove('bump'), 200);
+        }
+
+        // مدیریت تایپ عدد در صفحه سوم
+        function onAmountInput(input) {
+            triggerGemSpin();
+
+            // حذف صفر اول وقتی کاربر عددی تایپ می‌کند
+            if (input.value.length > 1 && input.value.startsWith('0') && !input.value.startsWith('0.')) {
+                input.value = input.value.replace(/^0+/, '');
+            }
+            if (input.value === '') {
+                input.value = '0';
+            }
+
+            let val = parseFloat(input.value) || 0;
+            const charCount = Math.max(1, input.value.length);
+            input.style.width = (charCount * 32 + 12) + 'px';
+
+            if (val > 0) {
+                input.classList.add('has-val');
+                document.getElementById('final-send-btn').disabled = false;
+            } else {
+                input.classList.remove('has-val');
+                document.getElementById('final-send-btn').disabled = true;
+            }
+
+            updateEquivalentLabel(val);
+        }
+
+        function updateEquivalentLabel(val) {
+            if (!isUsdInputMode) {
+                const usd = (val * GRAM_USD_PRICE).toFixed(2);
+                document.getElementById('send-usd-equiv').innerText = `≈ $${usd} ↑↓`;
+            } else {
+                const grams = (val / GRAM_USD_PRICE).toFixed(3);
+                document.getElementById('send-usd-equiv').innerText = `≈ ${grams} GRAM ↑↓`;
+            }
+        }
+
+        function toggleCurrencyMode() {
+            isUsdInputMode = !isUsdInputMode;
+            document.getElementById('currency-unit-label').innerText = isUsdInputMode ? 'USD' : 'GRAM';
+            const val = parseFloat(document.getElementById('send-amount-input').value) || 0;
+            updateEquivalentLabel(val);
+            triggerGemSpin();
+        }
+
+        function openDepositModal() {
+            document.getElementById('deposit-modal').classList.add('open');
+        }
+
+        function closeDepositModal() {
+            document.getElementById('deposit-modal').classList.remove('open');
+        }
+
+        // دیپازیت واقعی با TON Connect به آدرس V5
+        async function depositWithTonConnect() {
+            const amountTon = parseFloat(document.getElementById('deposit-ton-amount').value);
+            if (!amountTon || amountTon <= 0) {
+                alert("لطفاً یک مقدار معتبر وارد کن!");
+                return;
+            }
+
+            if (!tonConnectUI || !tonConnectUI.connected) {
+                if (tonConnectUI) await tonConnectUI.openModal();
+                return;
+            }
+
+            const nanoTons = Math.floor(amountTon * 1e9).toString();
+            const transaction = {
+                validUntil: Math.floor(Date.now() / 1000) + 300,
+                messages: [{ address: MY_WALLET_V5_ADDRESS, amount: nanoTons }]
+            };
+
+            try {
+                await tonConnectUI.sendTransaction(transaction);
+                updateBalanceUI(amountTon, true, "My V5 Wallet Deposit");
+                closeDepositModal();
+                setTimeout(() => fetchRealWalletData(MY_WALLET_V5_ADDRESS), 10000);
+            } catch (error) {
+                console.error("لغو یا خطا در تراکنش:", error);
+            }
+        }
+
+        // ارسال تراکنش از صفحه سوم
+        async function executeSendTransaction() {
+            const rawVal = parseFloat(document.getElementById('send-amount-input').value) || 0;
+            const amount = isUsdInputMode ? parseFloat((rawVal / GRAM_USD_PRICE).toFixed(4)) : rawVal;
+            const recipientName = document.getElementById('selected-recipient-name').innerText;
+
+            if (tonConnectUI && tonConnectUI.connected) {
+                const nanoTons = Math.floor(amount * 1e9).toString();
+                try {
+                    await tonConnectUI.sendTransaction({
+                        validUntil: Math.floor(Date.now() / 1000) + 300,
+                        messages: [{ address: MY_WALLET_V5_ADDRESS, amount: nanoTons }]
+                    });
+                } catch (e) {
+                    console.log("لغو شد یا در حالت دمو ثبت شد.");
+                }
+            }
+
+            updateBalanceUI(amount, false, recipientName);
+            const input = document.getElementById('send-amount-input');
+            input.value = "0";
+            onAmountInput(input);
+            showScreen('screen-home');
+        }
+
+        // آپدیت موجودی و افزودن تراکنش به بالای لیست صفحه اول
+        function updateBalanceUI(amount, isIncoming, title) {
+            currentBalance = isIncoming ? (currentBalance + amount) : Math.max(0, currentBalance - amount);
+            const formattedBal = parseFloat(currentBalance.toFixed(4));
+
+            document.getElementById('main-balance').innerText = formattedBal;
+            document.getElementById('footer-balance').innerText = formattedBal;
+            document.getElementById('main-usd').innerText = `$${(currentBalance * GRAM_USD_PRICE).toFixed(2)}`;
+
+            const txList = document.getElementById('tx-list');
+            const now = new Date();
+            const timeStr = `Oct 20, ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+            const txHtml = `
+                <div class="tx-item">
+                    <div class="tx-left">
+                        <div class="tx-icon ${isIncoming ? 'in' : 'out'}">
+                            <div class="inner-white-circle">
+                                ${isIncoming 
+                                    ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2787e7" stroke-width="2.5"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>'
+                                    : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#30b856" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>'}
+                            </div>
+                        </div>
+                        <div class="tx-details">
+                            <span class="tx-address">${title}</span>
+                            <span class="tx-type">${isIncoming ? 'Incoming transfer' : 'Outgoing transfer'}</span>
+                            <span class="tx-date">${timeStr}</span>
+                        </div>
+                    </div>
+                    <div class="tx-amount ${isIncoming ? 'positive' : 'negative'}">
+                        ${isIncoming ? '+' : '−'}${amount} <svg class="mini-gem-svg"><use href="#mini-gem"/></svg>
+                    </div>
+                </div>
+            `;
+            txList.insertAdjacentHTML('afterbegin', txHtml);
+        }
+    </script>
 </body>
 </html>
